@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shifts_repository/src/models/shift.dart';
 
 class ShiftEntity extends Equatable {
   final String designation;
   final String employee;
   final String end_shift;
   final int local_DB_ID;
-  final Timestamp shift_date;
+  final DateTime shift_date;
   final String start_shift;
   final String id;
 
@@ -54,7 +55,7 @@ class ShiftEntity extends Equatable {
       json['employee'] as String,
       json['end_shift'] as String,
       json['local_DB_ID'] as int,
-      json['shift_date'] as Timestamp,
+      Shift.convertingFirestoreDateToDateTime(json['shift_date'] as Timestamp),
       json['start_shift'] as String,
       json['id'] as String
     );
@@ -66,7 +67,7 @@ class ShiftEntity extends Equatable {
       snap.data['employee'],
       snap.data['end_shift'],
       snap.data['local_DB_ID'],
-      snap.data['shift_date'],
+      Shift.convertingFirestoreDateToDateTime(snap.data['shift_date']),
       snap.data['start_shift'],
       snap.documentID,
     );

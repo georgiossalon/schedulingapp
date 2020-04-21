@@ -3,13 +3,33 @@ import 'package:bloc/bloc.dart';
 import 'package:snapshot_test/blocs/blocs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
+import 'package:snapshot_test/widgets/calendar.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  runApp(ShiftsApp());
+  initializeDateFormatting().then((_) => runApp(ShiftsApp()));
+  // runApp(ShiftsApp());
 }
 
+
 class ShiftsApp extends StatelessWidget {
+
+static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(List<Shift> shiftList) {
+    Map<DateTime, List<Shift>> map = {};
+    for (int i = 0; i < shiftList.length; i++) {
+      Shift shift = shiftList[i];
+      DateTime shiftDateTime = shift.shift_date;
+      if (map[shiftDateTime] == null) {
+        // creating a new List and passing a widget
+        map[shiftDateTime] = [shift];
+      } else {
+        List<Shift> helpList = map[shiftDateTime];
+        helpList.add(shift);
+      }
+    }
+    return map;
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,13 +61,26 @@ class ShiftListPage extends StatelessWidget {
                   ),
                 ));
           } else if (state is ShiftsLoaded) {
-            final shifts = state.shifts;
-            return ListView.builder(
-              itemCount: shifts.length,
-              itemBuilder: (context, index) {
-                final shift = shifts[index];
-                return _buildShiftContainer(shift: shift, context: context);
-              },
+            final shiftsList = state.shifts;
+            Map<DateTime,List<Shift>> map = ShiftsApp.shiftListToCalendarEventMap(shiftsList);
+            print(map);
+            //todo work with the map above to arange the shifts within the calendar
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  //fixme: how to get the selected day?
+                  Calendar(),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: shiftsList.length,
+                      itemBuilder: (context, index) {
+                        final shift = shiftsList[index];
+                        // return _buildShiftContainer(shift: shift);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
           } else {
             return Container(
@@ -59,7 +92,7 @@ class ShiftListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShiftContainer({Shift shift, BuildContext context}) {
+  Widget _buildShiftContainer({Shift shift}) {
 //    new Builder(builder: (gestureBuilder) {
     return Container(
 //      height: 250.0,
@@ -124,4 +157,3 @@ class ShiftListPage extends StatelessWidget {
 //    });
   }
 }
-

@@ -11,7 +11,7 @@ class Shift {
   final String employee;
   final String end_shift;
   final int local_DB_ID;
-  final Timestamp shift_date;
+  final DateTime shift_date;
   final String start_shift;
   final String id;
   Shift({
@@ -23,6 +23,13 @@ class Shift {
     this.start_shift,
     this.id,
   });
+
+  static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
+    DateTime dateTimeHiringDate =
+        DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+    return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
+        dateTimeHiringDate.day, 12);
+  }
 
   // Shift(
   //   this.designation,
@@ -62,7 +69,7 @@ class Shift {
     String employee,
     String end_shift,
     int local_DB_ID,
-    String shift_date,
+    DateTime shift_date,
     String start_shift,
     String id,
   }) {
