@@ -14,7 +14,7 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     _shiftsRepository = shiftsRepository;
 
   @override
-  ShiftsState get initialState => ShiftsLoaded();
+  ShiftsState get initialState => ShiftsLoading();
 
   @override
   Stream<ShiftsState> mapEventToState(ShiftsEvent event) async* {

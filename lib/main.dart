@@ -3,7 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:snapshot_test/blocs/blocs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+//todo save the data from the Firestore in a Map instead of a list
+// todo push data to Firestore
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(ShiftsApp());
@@ -41,12 +43,14 @@ class ShiftListPage extends StatelessWidget {
                   ),
                 ));
           } else if (state is ShiftsLoaded) {
-            final shifts = state.shifts;
+            final shiftsMap = state.shiftsMap;
+            DateTime dateTime = new DateTime(2020,04,18,12);
             return ListView.builder(
-              itemCount: shifts.length,
+              itemCount: shiftsMap[dateTime].length,
               itemBuilder: (context, index) {
-                final shift = shifts[index];
+                final shift = shiftsMap[dateTime][index];
                 return _buildShiftContainer(shift: shift, context: context);
+                // return Text('test');
               },
             );
           } else {
@@ -60,9 +64,7 @@ class ShiftListPage extends StatelessWidget {
   }
 
   Widget _buildShiftContainer({Shift shift, BuildContext context}) {
-//    new Builder(builder: (gestureBuilder) {
     return Container(
-//      height: 250.0,
       color: Colors.blueGrey,
       height: 65.0,
       child: Column(
@@ -106,7 +108,7 @@ class ShiftListPage extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  '${shift.id}',
+                  '${shift.firestore_id}',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
                   textAlign: TextAlign.left,
                 ),

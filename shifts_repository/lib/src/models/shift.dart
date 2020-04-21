@@ -11,9 +11,9 @@ class Shift {
   final String employee;
   final String end_shift;
   final int local_DB_ID;
-  final Timestamp shift_date;
+  final DateTime shift_date;
   final String start_shift;
-  final String id;
+  final String firestore_id;
   Shift({
     this.designation,
     this.employee,
@@ -21,9 +21,15 @@ class Shift {
     this.local_DB_ID,
     this.shift_date,
     this.start_shift,
-    this.id,
+    this.firestore_id,
   });
 
+  static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
+    DateTime dateTimeHiringDate =
+        DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+    return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
+        dateTimeHiringDate.day, 12);
+  }
   // Shift(
   //   this.designation,
   //   this.employee,
@@ -64,7 +70,7 @@ class Shift {
     int local_DB_ID,
     String shift_date,
     String start_shift,
-    String id,
+    String firestore_id,
   }) {
     return Shift(
       designation: designation ?? this.designation,
@@ -73,7 +79,7 @@ class Shift {
       local_DB_ID: local_DB_ID ?? this.local_DB_ID,
       shift_date: shift_date ?? this.shift_date,
       start_shift: start_shift ?? this.start_shift,
-      id: id ?? this.id,
+      firestore_id: firestore_id ?? this.firestore_id,
     );
   }
 
@@ -85,7 +91,7 @@ class Shift {
         local_DB_ID.hashCode ^
         shift_date.hashCode ^
         start_shift.hashCode ^
-        id.hashCode;
+        firestore_id.hashCode;
   }
 
   @override
@@ -99,12 +105,12 @@ class Shift {
         o.local_DB_ID == local_DB_ID &&
         o.shift_date == shift_date &&
         o.start_shift == start_shift &&
-        o.id == id;
+        o.firestore_id == firestore_id;
   }
 
   @override
   String toString() {
-    return 'Shift(designation: $designation, employee: $employee, end_shift: $end_shift, local_DB_ID: $local_DB_ID, shift_date: $shift_date, start_shift: $start_shift, id: $id)';
+    return 'Shift(designation: $designation, employee: $employee, end_shift: $end_shift, local_DB_ID: $local_DB_ID, shift_date: $shift_date, start_shift: $start_shift, id: $firestore_id)';
   }
 
   ShiftEntity toEntity() {
@@ -115,7 +121,7 @@ class Shift {
       local_DB_ID,
       shift_date,
       start_shift,
-      id,
+      firestore_id,
     );
   }
 
@@ -127,7 +133,7 @@ class Shift {
       local_DB_ID: entity.local_DB_ID,
       shift_date: entity.shift_date,
       start_shift: entity.start_shift,
-      id: entity.id,
+      firestore_id: entity.firestore_id,
     );
   }
 }

@@ -1,14 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shifts_repository/shifts_repository.dart';
 
 class ShiftEntity extends Equatable {
   final String designation;
   final String employee;
   final String end_shift;
   final int local_DB_ID;
-  final Timestamp shift_date;
+  final DateTime shift_date;
   final String start_shift;
-  final String id;
+  final String firestore_id;
 
   const ShiftEntity(
     this.designation,
@@ -17,7 +18,7 @@ class ShiftEntity extends Equatable {
     this.local_DB_ID,
     this.shift_date,
     this.start_shift,
-    this.id,
+    this.firestore_id,
   );
 
   @override
@@ -29,7 +30,7 @@ class ShiftEntity extends Equatable {
       'local_DB_ID': local_DB_ID,
       'shift_date': shift_date,
       'start_shift': start_shift,
-      'id':id,
+      'id':firestore_id,
     };
   }
   
@@ -40,12 +41,12 @@ class ShiftEntity extends Equatable {
         local_DB_ID,
         shift_date,
         start_shift,
-        id,
+        firestore_id,
       ];
 
   @override
   String toString() {
-    return 'ShiftEntity(designation: $designation, employee: $employee, end_shift: $end_shift, local_DB_ID: $local_DB_ID, shift_date: $shift_date, start_shift: $start_shift, id:$id)';
+    return 'ShiftEntity(designation: $designation, employee: $employee, end_shift: $end_shift, local_DB_ID: $local_DB_ID, shift_date: $shift_date, start_shift: $start_shift, id:$firestore_id)';
   }
   
   static ShiftEntity fromJson(Map<String,Object> json) {
@@ -54,9 +55,9 @@ class ShiftEntity extends Equatable {
       json['employee'] as String,
       json['end_shift'] as String,
       json['local_DB_ID'] as int,
-      json['shift_date'] as Timestamp,
+      Shift.convertingFirestoreDateToDateTime(json['shift_date'] as Timestamp),
       json['start_shift'] as String,
-      json['id'] as String
+      json['firestore_id'] as String
     );
   }
 
@@ -66,7 +67,7 @@ class ShiftEntity extends Equatable {
       snap.data['employee'],
       snap.data['end_shift'],
       snap.data['local_DB_ID'],
-      snap.data['shift_date'],
+        Shift.convertingFirestoreDateToDateTime(snap.data['shift_date']),
       snap.data['start_shift'],
       snap.documentID,
     );

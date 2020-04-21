@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:shifts_repository/shifts_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class ShiftsEvent extends Equatable {
   const ShiftsEvent();
@@ -47,7 +48,7 @@ class DeleteShift extends ShiftsEvent {
 }
 
 class ShiftsUpdated extends ShiftsEvent {
-  final List<Shift> shifts;
+  final Map<DateTime,List<Shift>> shifts;
 
   const ShiftsUpdated(this.shifts);
 
