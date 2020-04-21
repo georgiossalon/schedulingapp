@@ -15,9 +15,11 @@ class ShiftsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BlocProvider(
+      home: BlocProvider<ShiftsBloc>(
         create: (context) {
-          return ShiftsBloc(shiftsRepository: FirebaseShiftsRepository());
+          return ShiftsBloc(
+            shiftsRepository: FirebaseShiftsRepository(),
+          )..add(LoadShifts());
           // )..add(AppStarted());
         },
         child: ShiftListPage(),

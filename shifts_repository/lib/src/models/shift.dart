@@ -123,7 +123,7 @@ class Shift {
       designation: entity.designation,
       employee: entity.employee,
       end_shift: entity.end_shift,
-      local_DB_ID: entity.local_DB_ID,
+      local_DB_ID: entity.local_DB_ID.toString(),
       shift_date: entity.shift_date,
       start_shift: entity.start_shift,
       id: entity.id,
