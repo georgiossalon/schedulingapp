@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 import '../entities/entities.dart';
@@ -9,8 +10,8 @@ class Shift {
   final String designation;
   final String employee;
   final String end_shift;
-  final String local_DB_ID;
-  final String shift_date;
+  final int local_DB_ID;
+  final Timestamp shift_date;
   final String start_shift;
   final String id;
   Shift({
@@ -60,7 +61,7 @@ class Shift {
     String designation,
     String employee,
     String end_shift,
-    String local_DB_ID,
+    int local_DB_ID,
     String shift_date,
     String start_shift,
     String id,
@@ -123,7 +124,7 @@ class Shift {
       designation: entity.designation,
       employee: entity.employee,
       end_shift: entity.end_shift,
-      local_DB_ID: entity.local_DB_ID.toString(),
+      local_DB_ID: entity.local_DB_ID,
       shift_date: entity.shift_date,
       start_shift: entity.start_shift,
       id: entity.id,

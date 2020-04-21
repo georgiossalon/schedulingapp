@@ -5,8 +5,8 @@ class ShiftEntity extends Equatable {
   final String designation;
   final String employee;
   final String end_shift;
-  final String local_DB_ID;
-  final String shift_date;
+  final int local_DB_ID;
+  final Timestamp shift_date;
   final String start_shift;
   final String id;
 
@@ -53,8 +53,8 @@ class ShiftEntity extends Equatable {
       json['designation'] as String,
       json['employee'] as String,
       json['end_shift'] as String,
-      json['local_DB_ID'] as String,
-      json['shift_date'] as String,
+      json['local_DB_ID'] as int,
+      json['shift_date'] as Timestamp,
       json['start_shift'] as String,
       json['id'] as String
     );
