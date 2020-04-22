@@ -31,39 +31,6 @@ class Shift {
         dateTimeHiringDate.day, 12);
   }
 
-  // Shift(
-  //   this.designation,
-  //   this.employee,
-  //   this.end_shift,
-  //   this.local_DB_ID,
-  //   this.shift_date,
-  //   this.start_shift,
-  //   this.id,
-  // );
-  // Shift copyWith({
-  //   String designation,
-  //   String employee,
-  //   String end_shift,
-  //   String local_DB_ID,
-  //   String shift_date,
-  //   String start_shift,
-  //   String id,
-  // }) {
-  //   return Shift(
-  //     designation ?? this.designation,
-  //     employee ?? this.employee,
-  //     end_shift ?? this.end_shift,
-  //     local_DB_ID ?? this.local_DB_ID,
-  //     shift_date ?? this.shift_date,
-  //     start_shift ?? this.start_shift,
-  //     id ?? this.id,
-  //   );
-  // }
-
-  // @override
-  // int get hashCode =>
-  //   designation.hashCode ^ employee.hashCode ^ end_shift.hashCode ^ local_DB_ID.hashCode ^ shift_date.hashCode ^ start_shift.hashCode ^ id.hashCode;
-
   Shift copyWith({
     String designation,
     String employee,

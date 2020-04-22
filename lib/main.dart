@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -12,10 +13,9 @@ void main() {
   // runApp(ShiftsApp());
 }
 
-
 class ShiftsApp extends StatelessWidget {
-
-static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(List<Shift> shiftList) {
+  static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(
+      List<Shift> shiftList) {
     Map<DateTime, List<Shift>> map = {};
     for (int i = 0; i < shiftList.length; i++) {
       Shift shift = shiftList[i];
@@ -30,6 +30,7 @@ static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(List<Shift> shiftL
     }
     return map;
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,27 +63,11 @@ class ShiftListPage extends StatelessWidget {
                 ));
           } else if (state is ShiftsLoaded) {
             final shiftsList = state.shifts;
-            Map<DateTime,List<Shift>> map = ShiftsApp.shiftListToCalendarEventMap(shiftsList);
-            print(map);
-            //todo work with the map above to arange the shifts within the calendar
-            return Calendar(map: map,);
-            // Container(
-            //   child: Column(
-            //     children: <Widget>[
-            //       //fixme: how to get the selected day?
-            //       Calendar(),
-                  // Expanded(
-                  //   child: ListView.builder(
-                  //     itemCount: shiftsList.length,
-                  //     itemBuilder: (context, index) {
-                  //       final shift = shiftsList[index];
-                  //       // return _buildShiftContainer(shift: shift);
-                  //     },
-                  //   ),
-                  // ),
-            //     ],
-            //   ),
-            // );
+            Map<DateTime, List<Shift>> map =
+                ShiftsApp.shiftListToCalendarEventMap(shiftsList);
+            return Calendar(
+              map: map,
+            );
           } else {
             return Container(
               child: Text('Shit happens'),
@@ -90,16 +75,17 @@ class ShiftListPage extends StatelessWidget {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Navigator.pushNamed(context, routeName);
+          }
+        ),
     );
   }
-
-
 }
 
-
 class Calendar extends StatefulWidget {
-  Map<DateTime,List<Shift>> map;
-
+  Map<DateTime, List<Shift>> map;
 
   Calendar({Key key, this.map}) : super(key: key);
 
@@ -109,20 +95,20 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   // Example holidays
-final Map<DateTime, List> _holidays = {
-  DateTime(2019, 1, 1): ['New Year\'s Day'],
-  DateTime(2019, 1, 6): ['Epiphany'],
-  DateTime(2019, 2, 14): ['Valentine\'s Day'],
-  DateTime(2019, 4, 21): ['Easter Sunday'],
-  DateTime(2019, 4, 22): ['Easter Monday'],
-};
+  final Map<DateTime, List> _holidays = {
+    DateTime(2019, 1, 1): ['New Year\'s Day'],
+    DateTime(2019, 1, 6): ['Epiphany'],
+    DateTime(2019, 2, 14): ['Valentine\'s Day'],
+    DateTime(2019, 4, 21): ['Easter Sunday'],
+    DateTime(2019, 4, 22): ['Easter Monday'],
+  };
   Map<DateTime, List> _events;
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     // final _selectedDay = DateTime.now();
     _calendarController = CalendarController();
@@ -139,21 +125,22 @@ final Map<DateTime, List> _holidays = {
     print('CALLBACK: _onDaySelected');
     setState(() {
       if (_selectedEvents != null) {
-      _selectedEvents = events;
-
+        _selectedEvents = events;
       }
     });
   }
 
-  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
-  void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
+  void _onCalendarCreated(
+      DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onCalendarCreated');
   }
 
-    Widget _buildShiftContainer({Shift shift}) {
+  Widget _buildShiftContainer({Shift shift}) {
 //    new Builder(builder: (gestureBuilder) {
     return Container(
 //      height: 250.0,
@@ -218,7 +205,7 @@ final Map<DateTime, List> _holidays = {
 //    });
   }
 
-Widget _buildTableCalendarWithBuilders() {
+  Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
       locale: 'de_DE',
       events: widget.map,
@@ -238,7 +225,7 @@ Widget _buildTableCalendarWithBuilders() {
 //      initialSelectedDay: DateTime(2020, 3, 25),
       onDaySelected: (date, events) {
         setState(() {
-        // I use this for the length of the ListView.separator/builder
+          // I use this for the length of the ListView.separator/builder
           // _listOfShiftsPerGivenDay = events;
         });
       },
@@ -284,7 +271,9 @@ Widget _buildTableCalendarWithBuilders() {
         shape: BoxShape.rectangle,
         color: _calendarController.isSelected(date)
             ? Colors.brown[500]
-            : _calendarController.isToday(date) ? Colors.brown[300] : Colors.blue[400],
+            : _calendarController.isToday(date)
+                ? Colors.brown[300]
+                : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -300,7 +289,7 @@ Widget _buildTableCalendarWithBuilders() {
     );
   }
 
-   static DateTime utcTo12oclock(DateTime dateTimeToChange) {
+  static DateTime utcTo12oclock(DateTime dateTimeToChange) {
     if (dateTimeToChange != null) {
       DateTime dateOfShift = dateTimeToChange.toLocal();
       /*each device has a different utc. The table_calendar gives back
@@ -313,22 +302,27 @@ Widget _buildTableCalendarWithBuilders() {
   @override
   Widget build(BuildContext context) {
     return Container(
-       child: Column(
-         children: <Widget>[
-           _buildTableCalendarWithBuilders(),
-           Expanded(
-                    child: ListView.builder(
-                      itemCount: widget.map[utcTo12oclock(_calendarController.selectedDay)] != null
-                                  ? widget.map[utcTo12oclock(_calendarController.selectedDay)].length
-                                  : 0,
-                      itemBuilder: (context, index) {
-                        final shift = widget.map[utcTo12oclock(_calendarController.selectedDay)][index];
-                       return _buildShiftContainer(shift: shift);
-                      },
-                    ),
-                  ),
-         ],
-       ),
+      child: Column(
+        children: <Widget>[
+          _buildTableCalendarWithBuilders(),
+          Expanded(
+            child: ListView.builder(
+              itemCount:
+                  widget.map[utcTo12oclock(_calendarController.selectedDay)] !=
+                          null
+                      ? widget
+                          .map[utcTo12oclock(_calendarController.selectedDay)]
+                          .length
+                      : 0,
+              itemBuilder: (context, index) {
+                final shift = widget
+                    .map[utcTo12oclock(_calendarController.selectedDay)][index];
+                return _buildShiftContainer(shift: shift);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
