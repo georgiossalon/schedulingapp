@@ -1,6 +1,6 @@
 # scheduling_app
 
-A new Flutter project.
+Trying to write a simple scheduling app using the Bloc technology and the table_calendar package.
 
 ## Getting Started
 
