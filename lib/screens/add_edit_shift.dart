@@ -27,12 +27,13 @@ class _AddEditShiftState extends State<AddEditShift> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _designation;
-  String 
+  String _employeeName;
+  DateTime _shiftDate;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-       child: child,
+       child: Text('Test'),
     );
   }
 }
