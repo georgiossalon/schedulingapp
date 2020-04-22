@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 
 typedef OnSaveCallback = Function(
-    String designation, String employeeName,DateTime shiftDate,);
+    String designation, String employeeName,DateTime start_shift, DateTime end_shift);
 
 class AddEditShift extends StatefulWidget {
   static const String screenId = 'add_edit_shift';
@@ -28,12 +28,51 @@ class _AddEditShiftState extends State<AddEditShift> {
 
   String _designation;
   String _employeeName;
-  DateTime _shiftDate;
+  DateTime _start_shift;
+  DateTime _end_shift;
+
+  bool get isEditing => widget.isEditing;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-       child: Text('Test'),
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          isEditing ? 'Edit Todo' : 'Add Todo',
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey, 
+          child: ListView(
+            children: <Widget>[
+              TextFormField(
+                initialValue: isEditing ? widget.shift.designation : '',
+                autofocus: !isEditing,
+                decoration: InputDecoration(
+                  hintText: 'Designation for the Shift'
+                ),
+                validator: (val) {
+                  return val.trim().isEmpty ? 'Please give a Designation': null;
+                },
+                onSaved: (value) => _designation = value,
+              ),
+              TextFormField(
+                initialValue: isEditing ? widget.shift.employee: '',
+                decoration: InputDecoration(
+                  hintText: 'Employee Name for the Shift'
+                ),
+                validator: (val) {
+                  return val.trim().isEmpty ? 'Please give a Employee Name': null;
+                },
+                onSaved: (value) => _employeeName = value,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

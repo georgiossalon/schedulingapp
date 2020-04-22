@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:snapshot_test/blocs/blocs.dart';
+import 'package:snapshot_test/screens/add_edit_shift.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -9,41 +10,36 @@ class CalendarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ShiftsBloc, ShiftsState>(
-        builder: (context, state) {
-          if (state is ShiftsLoading) {
-            return Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Container(
-                  child: Text(
-                    'Loading',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                ));
-          } else if (state is ShiftsLoaded) {
-            final shiftsList = state.shifts;
-            Map<DateTime, List<Shift>> map =
-                CalendarScreen.shiftListToCalendarEventMap(shiftsList);
-            return Calendar(
-              map: map,
-            );
-          } else {
-            return Container(
-              child: Text('Shit happens'),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Navigator.pushNamed(context, routeName);
-          }
-        ),
+    return BlocBuilder<ShiftsBloc, ShiftsState>(
+      builder: (context, state) {
+        // final shift = (state as ShiftsLoaded)
+        //     .shifts
+        //     .firstWhere((shift) => shift.id == shiftBlocId, orElse: () => null);
+        final shiftsList = ShiftsLoaded.shifts;
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+              onPressed: shift == null
+                  ? null
+                  : () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return AddEditShift(
+                          onSave: (designation, employeeName, start_shift,
+                              end_shift) {
+                            BlocProvider.of<ShiftsBloc>(context)
+                                .add(UpdateShift(
+                              shift.copyWith(),
+                            ));
+                          },
+                        );
+                      }));
+                    }),
+        );
+      },
     );
   }
 
-    static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(
+  static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(
       List<Shift> shiftList) {
     Map<DateTime, List<Shift>> map = {};
     for (int i = 0; i < shiftList.length; i++) {
@@ -65,7 +61,6 @@ class Calendar extends StatefulWidget {
   Map<DateTime, List<Shift>> map;
 
   Calendar({Key key, this.map}) : super(key: key);
-
 
   @override
   _CalendarState createState() => _CalendarState();
