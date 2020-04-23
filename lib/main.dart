@@ -10,13 +10,15 @@ import 'package:snapshot_test/screens/calendar_screen.dart';
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   initializeDateFormatting().then((_) => runApp(ShiftsApp()));
-  // runApp(ShiftsApp());
 }
 
 class ShiftsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.pink
+      ),
       home: BlocProvider<ShiftsBloc>(
         create: (context) {
           return ShiftsBloc(
@@ -27,34 +29,31 @@ class ShiftsApp extends StatelessWidget {
           initialRoute: CalendarScreen.screenId,
           routes: {
             CalendarScreen.screenId: (context) {
-              return BlocBuilder<ShiftsBloc, ShiftsState>(
-                builder: (context, state) {
-                  if (state is ShiftsLoading) {
-                    return Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Container(
-                          child: Text(
-                            'Loading',
-                            style: TextStyle(fontSize: 20.0),
-                          ),
-                        ));
-                  } else if (state is ShiftsLoaded) {
-                    // final shiftsList = state.shifts;
-                    // Map<DateTime, List<Shift>> map =
-                    //     CalendarScreen.shiftListToCalendarEventMap(shiftsList);
-                    // return Calendar(
-                    //   map: map,
-                    // );
-                    return CalendarScreen();
-                  } else {
-                    return Container(
-                      child: Text('Shit happens'),
-                    );
-                  }
-                },
-              );
+              //todo do I have to use a bloc provider here?
+              return CalendarScreen();
             },
-            AddEditShift.screenId: (context) {}
+            AddEditShift.screenId: (context) {
+              return AddEditShift(
+                onSave: (
+                  designation,
+                  employeeName,
+                  start_shift,
+                  end_shift,
+                  shift_date,
+                ) {
+                  BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+                    Shift(
+                      designation: designation,
+                      employee: employeeName,
+                      start_shift: start_shift,
+                      end_shift: end_shift,
+                      shift_date: shift_date,
+                    ),
+                  ));
+                },
+                isEditing: false,
+              );
+            }
           },
         ),
       ),

@@ -7,34 +7,60 @@ import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatelessWidget {
   static const String screenId = 'calendar_screen';
+  static DateTime selectedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
-        // final shift = (state as ShiftsLoaded)
-        //     .shifts
-        //     .firstWhere((shift) => shift.id == shiftBlocId, orElse: () => null);
-        final shiftsList = ShiftsLoaded.shifts;
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-              onPressed: shift == null
-                  ? null
-                  : () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return AddEditShift(
-                          onSave: (designation, employeeName, start_shift,
-                              end_shift) {
-                            BlocProvider.of<ShiftsBloc>(context)
-                                .add(UpdateShift(
-                              shift.copyWith(),
-                            ));
-                          },
-                        );
-                      }));
-                    }),
-        );
+        if (state is ShiftsLoading) {
+          return Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Container(
+                child: Text(
+                  'Loading',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ));
+        } else if (state is ShiftsLoaded) {
+          final shiftsList = state.shifts;
+          Map<DateTime, List<Shift>> map =
+              CalendarScreen.shiftListToCalendarEventMap(shiftsList);
+          return Scaffold(
+            body: Calendar(
+              map: map,
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              backgroundColor: Colors.pink,
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return AddEditShift(
+                    onSave:
+                        (designation, employeeName, start_shift, end_shift, shift_date) {
+                      BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+                        Shift(
+                          designation: designation,
+                          employee: employeeName,
+                          start_shift: start_shift,
+                          end_shift: end_shift,
+                          shift_date: shift_date
+                        ),
+                      ));
+                    },
+                    daySelected: selectedDay,
+                    isEditing: false,
+                  );
+                }));
+              },
+            ),
+          );
+        } else {
+          return Container(
+            child: Text('Shit happens'),
+          );
+        }
       },
     );
   }
@@ -195,11 +221,9 @@ class _CalendarState extends State<Calendar> {
       ),
       startingDayOfWeek: StartingDayOfWeek.monday,
       initialSelectedDay: DateTime.now(),
-//      initialSelectedDay: DateTime(2020, 3, 25),
       onDaySelected: (date, events) {
         setState(() {
-          // I use this for the length of the ListView.separator/builder
-          // _listOfShiftsPerGivenDay = events;
+          CalendarScreen.selectedDay = _calendarController.selectedDay;
         });
       },
       builders: CalendarBuilders(
