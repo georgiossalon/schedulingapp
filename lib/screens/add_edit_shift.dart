@@ -45,6 +45,12 @@ class _AddEditShiftState extends State<AddEditShift> {
     }
   }
 
+  void initState() { 
+    super.initState();
+    widget.shift == null ? '' : _start_shift = widget.shift.start_shift;
+    widget.shift == null ? '' : _end_shift = widget.shift.end_shift;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

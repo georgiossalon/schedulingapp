@@ -37,16 +37,15 @@ class CalendarScreen extends StatelessWidget {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return AddEditShift(
-                    onSave:
-                        (designation, employeeName, start_shift, end_shift, shift_date) {
+                    onSave: (designation, employeeName, start_shift, end_shift,
+                        shift_date) {
                       BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                         Shift(
-                          designation: designation,
-                          employee: employeeName,
-                          start_shift: start_shift,
-                          end_shift: end_shift,
-                          shift_date: shift_date
-                        ),
+                            designation: designation,
+                            employee: employeeName,
+                            start_shift: start_shift,
+                            end_shift: end_shift,
+                            shift_date: shift_date),
                       ));
                     },
                     daySelected: selectedDay,
@@ -140,64 +139,91 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _buildShiftContainer({Shift shift}) {
-//    new Builder(builder: (gestureBuilder) {
     return Container(
-//      height: 250.0,
       color: Colors.blueGrey,
       height: 65.0,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Row(
-//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                'Start ${shift.start_shift}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17.0,
-                ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    'Start ${shift.start_shift}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Text(
+                    'End ${shift.end_shift}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 20.0,
+              Text(
+                'Designation: ${shift.designation}',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                textAlign: TextAlign.left,
               ),
               Text(
-                'End ${shift.end_shift}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17.0,
+                'Employee: ${shift.employee}',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                textAlign: TextAlign.left,
+              ),
+              Visibility(
+                visible: false,
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      '${shift.id}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 17.0),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          Text(
-            'Designation: ${shift.designation}',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-            textAlign: TextAlign.left,
-          ),
-          Text(
-            'Employee: ${shift.employee}',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-            textAlign: TextAlign.left,
-          ),
-          Visibility(
-            visible: false,
-            child: Row(
-              children: <Widget>[
-                Text(
-                  '${shift.id}',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-                  textAlign: TextAlign.left,
-                ),
-                // Text(
-                //   '${shift.firestoreId}',
-                //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-                //   textAlign: TextAlign.left,
-                // )
-              ],
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                child: Icon(Icons.edit),
+                color: Colors.yellow.shade700,
+              ),
             ),
-          ),
+            onTap: () {
+              Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return AddEditShift(
+                    onSave: (designation, employeeName, start_shift, end_shift,
+                        shift_date) {
+                      BlocProvider.of<ShiftsBloc>(context).add(UpdateShift(
+                        shift.copyWith(
+                          designation: designation,
+                          employee: employeeName,
+                          start_shift: start_shift,
+                          end_shift: end_shift,)
+                      ));
+                    },
+                    daySelected: CalendarScreen.selectedDay,
+                    isEditing: true,
+                    shift: shift,
+                  );
+                }));
+            },
+          )
         ],
       ),
     );
