@@ -195,7 +195,21 @@ class _CalendarState extends State<Calendar> {
               ),
             ],
           ),
-          GestureDetector(
+          Row(
+            children: <Widget>[
+              GestureDetector(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    child: Icon(Icons.delete),
+                    color: Colors.red,
+                  ),
+                ),
+                onTap: () {
+                  BlocProvider.of<ShiftsBloc>(context).add(DeleteShift(shift));
+                },
+              ),
+              GestureDetector(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -224,6 +238,9 @@ class _CalendarState extends State<Calendar> {
                 }));
             },
           )
+            ],
+          ),
+          
         ],
       ),
     );
