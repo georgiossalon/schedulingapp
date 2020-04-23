@@ -26,33 +26,35 @@ class CalendarScreen extends StatelessWidget {
           final shiftsList = state.shifts;
           Map<DateTime, List<Shift>> map =
               CalendarScreen.shiftListToCalendarEventMap(shiftsList);
-          return Scaffold(
-            body: Calendar(
-              map: map,
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
-              backgroundColor: Colors.pink,
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return AddEditShift(
-                    onSave: (designation, employeeName, start_shift, end_shift,
-                        shift_date) {
-                      BlocProvider.of<ShiftsBloc>(context).add(AddShift(
-                        Shift(
-                            designation: designation,
-                            employee: employeeName,
-                            start_shift: start_shift,
-                            end_shift: end_shift,
-                            shift_date: shift_date),
-                      ));
-                    },
-                    daySelected: selectedDay,
-                    isEditing: false,
-                  );
-                }));
-              },
+          return SafeArea(
+                      child: Scaffold(
+              body: Calendar(
+                map: map,
+              ),
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                backgroundColor: Colors.pink,
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return AddEditShift(
+                      onSave: (designation, employeeName, start_shift, end_shift,
+                          shift_date) {
+                        BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+                          Shift(
+                              designation: designation,
+                              employee: employeeName,
+                              start_shift: start_shift,
+                              end_shift: end_shift,
+                              shift_date: shift_date),
+                        ));
+                      },
+                      daySelected: selectedDay,
+                      isEditing: false,
+                    );
+                  }));
+                },
+              ),
             ),
           );
         } else {
