@@ -226,11 +226,10 @@ class _CalendarState extends State<Calendar> {
                 ),
                 onTap: () {
                   BlocProvider.of<ShiftsBloc>(context).add(DeleteShift(shift));
-                  setState(() {
                     // hide previous snackbars and show only the current one
                     Scaffold.of(context).hideCurrentSnackBar();
                     showSnackBar(context, shift);
-                  });                  
+                  //todo snackbar with bloc and not setState
                   //todo authentication bloc
                 },
               ),
