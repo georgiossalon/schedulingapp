@@ -34,6 +34,13 @@ class FirebaseShiftsRepository implements ShiftsRepository {
         .updateData(update.toEntity().toDocument());
   }
 
+  @override
+  Future<void> redoShift(Shift redo) {
+    return shiftCollection
+    .document(redo.id)
+    .setData(redo.toEntity().toDocument());
+  }
+
   
 
 }

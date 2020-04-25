@@ -33,6 +33,17 @@ class UpdateShift extends ShiftsEvent {
   @override
   String toString() => 'UpdateShift { updatedShift: $updatedShift }';
 }
+class RedoShift extends ShiftsEvent {
+  final Shift redoneShift;
+
+  const RedoShift(this.redoneShift);
+
+  @override
+  List<Object> get props => [redoneShift];
+
+  @override
+  String toString() => 'RedoShift { redoneShift: $redoneShift }';
+}
 
 class DeleteShift extends ShiftsEvent {
   final Shift shift;

@@ -140,6 +140,23 @@ class _CalendarState extends State<Calendar> {
     print('CALLBACK: _onCalendarCreated');
   }
 
+  showSnackBar(context,deletedShift) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Shift Deleted!'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            BlocProvider.of<ShiftsBloc>(context).add(RedoShift(
+              deletedShift
+            ));
+          },
+        ),
+      )
+    );
+  }
+
   Widget _buildShiftContainer({Shift shift}) {
     return Container(
       color: Colors.blueGrey,
@@ -209,6 +226,12 @@ class _CalendarState extends State<Calendar> {
                 ),
                 onTap: () {
                   BlocProvider.of<ShiftsBloc>(context).add(DeleteShift(shift));
+                  setState(() {
+                    // hide previous snackbars and show only the current one
+                    Scaffold.of(context).hideCurrentSnackBar();
+                    showSnackBar(context, shift);
+                  });                  
+                  //todo authentication bloc
                 },
               ),
               GestureDetector(

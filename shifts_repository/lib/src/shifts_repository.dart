@@ -11,4 +11,6 @@ abstract class ShiftsRepository {
   Stream<List<Shift>> shifts();
 
   Future<void> updateShift(Shift shift);
+
+  Future<void> redoShift(Shift shift);
 }

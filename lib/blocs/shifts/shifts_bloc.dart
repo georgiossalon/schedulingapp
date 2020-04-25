@@ -28,6 +28,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       yield* _mapDeleteShiftToState(event);
     } else if (event is ShiftsUpdated) {
       yield* _mapShiftsUpdateToState(event);
+    } else if (event is RedoShift) {
+      yield* _mapShiftsRedoToState(event);
     }
   }
 
@@ -41,6 +43,10 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
 
   Stream<ShiftsState> _mapAddShiftToState(AddShift event) async* {
     _shiftsRepository.addNewShift(event.shift);
+  }
+  
+  Stream<ShiftsState> _mapShiftsRedoToState(RedoShift event) async* {
+    _shiftsRepository.redoShift(event.redoneShift);
   }
 
   Stream<ShiftsState> _mapUpdateShiftToState(UpdateShift event) async* {
