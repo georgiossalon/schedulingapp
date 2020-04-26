@@ -25,6 +25,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   shifts_repository:
     path: shifts_repository
+  user_repository:
+    path: user_repository
 
 dev_dependencies:
   flutter_test:
