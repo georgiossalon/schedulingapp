@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:snapshot_test/blocs/authentication_bloc/bloc.dart';
+import 'package:snapshot_test/blocs/authentication_bloc/authentication.dart';
 
 
 
@@ -27,6 +27,8 @@ class AuthenticationBloc
       yield* _mapLoggedOutToState();
     }
   }
+  //todo implement the authentication bloc into the main
+  //todo also check how to implement in the main the signinwithemail and password(signinwithcredentials)
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     final isSignedIn = await _userRepository.isSignedIn();
