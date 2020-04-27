@@ -32,4 +32,9 @@ class FirebaseUserRepository implements UserRepository {
   Future<String> getUserId() async {
     return (await _firebaseAuth.currentUser()).uid;
   }
+  
+  @override
+  Future<String> getUserEmail() async {
+    return (await _firebaseAuth.currentUser()).email;
+  }
 }

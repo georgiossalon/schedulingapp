@@ -5,7 +5,7 @@ import 'package:snapshot_test/blocs/blocs.dart';
 import 'package:snapshot_test/screens/add_edit_shift.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarScreen extends StatelessWidget {
+class CalendarWidget extends StatelessWidget {
   static const String screenId = 'calendar_screen';
   static DateTime selectedDay = DateTime.now();
 
@@ -25,7 +25,7 @@ class CalendarScreen extends StatelessWidget {
         } else if (state is ShiftsLoaded) {
           final shiftsList = state.shifts;
           Map<DateTime, List<Shift>> map =
-              CalendarScreen.shiftListToCalendarEventMap(shiftsList);
+              CalendarWidget.shiftListToCalendarEventMap(shiftsList);
           return SafeArea(
                       child: Scaffold(
               body: Calendar(
@@ -104,7 +104,6 @@ class _CalendarState extends State<Calendar> {
   };
   Map<DateTime, List> _events;
   List _selectedEvents;
-  AnimationController _animationController;
   CalendarController _calendarController;
 
   @override
@@ -116,7 +115,6 @@ class _CalendarState extends State<Calendar> {
 
   @override
   void dispose() {
-    _animationController.dispose();
     _calendarController.dispose();
     super.dispose();
   }
@@ -229,8 +227,6 @@ class _CalendarState extends State<Calendar> {
                     // hide previous snackbars and show only the current one
                     Scaffold.of(context).hideCurrentSnackBar();
                     showSnackBar(context, shift);
-                  //todo snackbar with bloc and not setState
-                  //todo authentication bloc
                 },
               ),
               GestureDetector(
@@ -255,7 +251,7 @@ class _CalendarState extends State<Calendar> {
                           end_shift: end_shift,)
                       ));
                     },
-                    daySelected: CalendarScreen.selectedDay,
+                    daySelected: CalendarWidget.selectedDay,
                     isEditing: true,
                     shift: shift,
                   );
@@ -290,7 +286,7 @@ class _CalendarState extends State<Calendar> {
       initialSelectedDay: DateTime.now(),
       onDaySelected: (date, events) {
         setState(() {
-          CalendarScreen.selectedDay = _calendarController.selectedDay;
+          CalendarWidget.selectedDay = _calendarController.selectedDay;
         });
       },
       builders: CalendarBuilders(

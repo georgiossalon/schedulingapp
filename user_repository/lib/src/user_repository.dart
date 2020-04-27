@@ -11,4 +11,6 @@ abstract class UserRepository {
   Future<bool> isSignedIn();
  
   Future<String> getUserId();
+  
+  Future<String> getUserEmail();
 }

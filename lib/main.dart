@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:snapshot_test/screens/add_edit_shift.dart';
-import 'package:snapshot_test/screens/calendar_screen.dart';
+import 'package:snapshot_test/widgets/calendar_screen.dart';
+import 'package:snapshot_test/screens/home_screen.dart';
 import 'package:snapshot_test/screens/splash_screen.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -36,16 +37,19 @@ class ShiftsApp extends StatelessWidget {
       // todo after restarting the app the user is still loged in
       child: MaterialApp(
         theme: ThemeData(primaryColor: Colors.pink),
-        initialRoute: CalendarScreen.screenId,
+        initialRoute: HomeScreen.screenId,
         routes: {
-          CalendarScreen.screenId: (context) {
+          HomeScreen.screenId: (context) {
             return BlocBuilder<AuthenticationBloc, AuthenticationState>(
                 builder: (context, state) {
               if (state is Uninitialized) {
                 // todo edit the splash screen
                 return SplashScreen();
               } else if (state is Authenticated) {
-                return CalendarScreen();
+                return BlocProvider<TabBloc>(
+                  create: (context) => TabBloc(),
+                  child: HomeScreen(userEmail: state.userEmail,),
+                );
               } else if (state is Unauthenticated) {
                 return LoginScreen(
                   userRepository: FirebaseUserRepository(),

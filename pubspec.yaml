@@ -31,7 +31,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  font_awesome_flutter: ^8.7.0
+  font_awesome_flutter: ^8.8.1
   avataaar_image: ^1.0.8
   intl: ^0.16.1
   table_calendar: ^2.2.3
@@ -57,4 +57,3 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
