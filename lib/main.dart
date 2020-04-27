@@ -10,6 +10,7 @@ import 'package:snapshot_test/screens/splash_screen.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'blocs/authentication_bloc/authentication.dart';
+import 'blocs/login/login.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -44,8 +45,8 @@ class ShiftsApp extends StatelessWidget {
               } else if (state is Authenticated) {
                 return CalendarScreen();
               } else if (state is Unauthenticated) {
-                return Center(
-                  child: Text('Could not authenticate the user!'),
+                return LoginScreen(
+                  userRepository: FirebaseUserRepository(),
                 );
               } else {
                 return Center(child: CircularProgressIndicator());

@@ -88,7 +88,7 @@ class _LoginFormState extends State<LoginForm> {
                     keyboardType: TextInputType.emailAddress,
                     autovalidate: true,
                     autocorrect: false,
-                    validator: (_) {
+                    validator: (value) {
                       return !state.isEmailValid ? 'Invalid Email' : null;
                     },
                   ),
@@ -141,8 +141,8 @@ class _LoginFormState extends State<LoginForm> {
   void _onFormSubmitted() {
     _loginBloc.add(
       LoginWithCredentialsPressed(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       ),
     );
   }
