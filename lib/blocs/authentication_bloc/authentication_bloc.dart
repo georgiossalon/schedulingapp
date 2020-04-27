@@ -27,10 +27,10 @@ class AuthenticationBloc
       yield* _mapLoggedOutToState();
     }
   }
-  //todo implement the authentication bloc into the main
-  //todo also check how to implement in the main the signinwithemail and password(signinwithcredentials)
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
+    //todo: currently if a user has signed in once, he does not have to re sign in
+    //todo... in the future I might want to change that
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
       final userId = await _userRepository.getUserId();

@@ -33,6 +33,7 @@ class ShiftsApp extends StatelessWidget {
           )..add(LoadShifts());
         })
       ],
+      // todo after restarting the app the user is still loged in
       child: MaterialApp(
         theme: ThemeData(primaryColor: Colors.pink),
         initialRoute: CalendarScreen.screenId,
@@ -41,6 +42,7 @@ class ShiftsApp extends StatelessWidget {
             return BlocBuilder<AuthenticationBloc, AuthenticationState>(
                 builder: (context, state) {
               if (state is Uninitialized) {
+                // todo edit the splash screen
                 return SplashScreen();
               } else if (state is Authenticated) {
                 return CalendarScreen();
