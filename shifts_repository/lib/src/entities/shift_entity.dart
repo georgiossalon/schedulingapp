@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shifts_repository/src/models/shift.dart';
+import 'package:shifts_repository/src/models/models.dart';
 
 class ShiftEntity extends Equatable {
   final String designation;

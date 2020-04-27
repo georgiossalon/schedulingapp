@@ -3,6 +3,7 @@ import 'package:snapshot_test/blocs/authentication_bloc/authentication.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserPage extends StatelessWidget {
+  //todo add user information. For this to happen I need a user in the db
   final String userEmail;
 
   const UserPage({Key key, this.userEmail}) : super(key: key);

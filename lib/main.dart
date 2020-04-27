@@ -16,6 +16,7 @@ import 'blocs/login/login.dart';
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   initializeDateFormatting().then((_) => runApp(ShiftsApp()));
+  
 }
 
 class ShiftsApp extends StatelessWidget {

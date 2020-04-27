@@ -27,6 +27,8 @@ dependencies:
     path: shifts_repository
   user_repository:
     path: user_repository
+  employees_repository:
+    path: employees_repository
 
 dev_dependencies:
   flutter_test:
