@@ -7,6 +7,7 @@ import 'entities/entities.dart';
 
 class FirebaseShiftsRepository implements ShiftsRepository {
   final shiftCollection = Firestore.instance.collection('Shifts');
+  
 
   @override
   Future<void> addNewShift(Shift shift) {
