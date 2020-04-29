@@ -38,7 +38,6 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     _shiftsSubscription = _shiftsRepository.shifts().listen(
       (shifts) => add(ShiftsUpdated(shifts)),
     );
-    print(_shiftsSubscription);
   }
 
   Stream<ShiftsState> _mapAddShiftToState(AddShift event) async* {
