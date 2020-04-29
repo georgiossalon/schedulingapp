@@ -35,10 +35,15 @@ class _AddEditShiftState extends State<AddEditShift> {
 
   bool get isEditing => widget.isEditing;
 
+  //fixme: When editing time the initial time is always the current Time!
+  //fixme... I might have to change _start/_end time data type from String
   Future<TimeOfDay> selectTime(BuildContext context) async {
     final TimeOfDay _picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay.now()
+      // initialTime: selected == null 
+      //                 ? TimeOfDay.now()
+      //                 : selected,
     );
     if (_picked != null) {
       return _picked;
@@ -47,10 +52,11 @@ class _AddEditShiftState extends State<AddEditShift> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
-    widget.shift == null ? '' : _start_shift = widget.shift.start_shift;
-    widget.shift == null ? '' : _end_shift = widget.shift.end_shift;
+    isEditing ? _start_shift = widget.shift.start_shift : '';
+    isEditing ? _end_shift = widget.shift.end_shift : '';
   }
 
   //todo: edit the add shift layout

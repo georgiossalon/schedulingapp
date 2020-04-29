@@ -27,34 +27,39 @@ class CalendarWidget extends StatelessWidget {
           Map<DateTime, List<Shift>> map =
               CalendarWidget.shiftListToCalendarEventMap(shiftsList);
           return Scaffold(
-              body: Calendar(
-                map: map,
-              ),
-              floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.add),
-                backgroundColor: Colors.pink,
-                onPressed: () {
-                  Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) {
-                    return AddEditShift(
-          onSave: (designation, employeeName, start_shift, end_shift,
-              shift_date) {
-            BlocProvider.of<ShiftsBloc>(context).add(AddShift(
-              Shift(
-                  designation: designation,
-                  employee: employeeName,
-                  start_shift: start_shift,
-                  end_shift: end_shift,
-                  shift_date: shift_date),
-            ));
-          },
-          daySelected: selectedDay,
-          isEditing: false,
-                    );
-                  }));
-                },
-              ),
-            );
+            body: Calendar(
+              map: map,
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              backgroundColor: Colors.pink,
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return AddEditShift(
+                    onSave: (
+                      designation,
+                      employeeName,
+                      start_shift,
+                      end_shift,
+                      shift_date,
+                    ) {
+                      BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+                        Shift(
+                            designation: designation,
+                            employee: employeeName,
+                            start_shift: start_shift,
+                            end_shift: end_shift,
+                            shift_date: shift_date),
+                      ));
+                    },
+                    daySelected: selectedDay,
+                    isEditing: false,
+                  );
+                }));
+              },
+            ),
+          );
         } else {
           return Container(
             child: Text('Shit happens'),
@@ -136,21 +141,17 @@ class _CalendarState extends State<Calendar> {
     print('CALLBACK: _onCalendarCreated');
   }
 
-  showSnackBar(context,deletedShift) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Shift Deleted!'),
-        duration: Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'UNDO',
-          onPressed: () {
-            BlocProvider.of<ShiftsBloc>(context).add(RedoShift(
-              deletedShift
-            ));
-          },
-        ),
-      )
-    );
+  showSnackBar(context, deletedShift) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('Shift Deleted!'),
+      duration: Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'UNDO',
+        onPressed: () {
+          BlocProvider.of<ShiftsBloc>(context).add(RedoShift(deletedShift));
+        },
+      ),
+    ));
   }
 
   Widget _buildShiftContainer({Shift shift}) {
@@ -222,43 +223,42 @@ class _CalendarState extends State<Calendar> {
                 ),
                 onTap: () {
                   BlocProvider.of<ShiftsBloc>(context).add(DeleteShift(shift));
-                    // hide previous snackbars and show only the current one
-                    Scaffold.of(context).hideCurrentSnackBar();
-                    showSnackBar(context, shift);
+                  // hide previous snackbars and show only the current one
+                  Scaffold.of(context).hideCurrentSnackBar();
+                  showSnackBar(context, shift);
                 },
               ),
               GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                child: Icon(Icons.edit),
-                color: Colors.yellow.shade700,
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return AddEditShift(
-                    onSave: (designation, employeeName, start_shift, end_shift,
-                        shift_date) {
-                      BlocProvider.of<ShiftsBloc>(context).add(UpdateShift(
-                        shift.copyWith(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    child: Icon(Icons.edit),
+                    color: Colors.yellow.shade700,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return AddEditShift(
+                      onSave: (designation, employeeName, start_shift,
+                          end_shift, shift_date) {
+                        BlocProvider.of<ShiftsBloc>(context)
+                            .add(UpdateShift(shift.copyWith(
                           designation: designation,
                           employee: employeeName,
                           start_shift: start_shift,
-                          end_shift: end_shift,)
-                      ));
-                    },
-                    daySelected: CalendarWidget.selectedDay,
-                    isEditing: true,
-                    shift: shift,
-                  );
-                }));
-            },
-          )
+                          end_shift: end_shift,
+                        )));
+                      },
+                      daySelected: CalendarWidget.selectedDay,
+                      isEditing: true,
+                      shift: shift,
+                    );
+                  }));
+                },
+              )
             ],
           ),
-          
         ],
       ),
     );

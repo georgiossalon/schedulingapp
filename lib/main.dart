@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:snapshot_test/blocs/employees/employees.dart';
+import 'package:snapshot_test/screens/add_edit_employee.dart';
 import 'package:snapshot_test/screens/add_edit_shift.dart';
 import 'package:snapshot_test/screens/home_screen.dart';
 import 'package:snapshot_test/screens/splash_screen.dart';
@@ -87,6 +88,31 @@ class ShiftsApp extends StatelessWidget {
                     shift_date: shift_date,
                   ),
                 ));
+              },
+              isEditing: false,
+            );
+          },
+          AddEditEmployee.screenId: (context) {
+            return AddEditEmployee(
+              onSave: (
+                designation,
+                employeeName,
+                weeklyHours,
+                salary,
+                email,
+                hiringDate,
+              ) {
+                BlocProvider.of<EmployeesBloc>(context).add(AddEmployee(
+                  Employee(
+                    designation: designation,
+                    name: employeeName,
+                    weeklyHours: weeklyHours,
+                    salary: salary,
+                    email: email,
+                    hiringDate: hiringDate
+                  )
+                )
+                );
               },
               isEditing: false,
             );

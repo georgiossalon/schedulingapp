@@ -11,32 +11,32 @@ class Employee {
   final String name;
   final double salary;
   final double weeklyHours;
-  Employee({
-    this.designation,
-    this.email,
-    this.hiringDate,
-    this.id,
-    this.name,
-    this.salary,
-    this.weeklyHours
-  });
+  Employee(
+      {this.designation,
+      this.email,
+      this.hiringDate,
+      this.id,
+      this.name,
+      this.salary,
+      this.weeklyHours});
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
+    if (timestamp != null) {
     DateTime dateTimeHiringDate =
         DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
     return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
         dateTimeHiringDate.day, 12);
+    }
   }
 
-  Employee copyWith({
-    String designation,
-    String email,
-    DateTime hiringDate,
-    int id,
-    String name,
-    double salary,
-    double weeklyHours
-  }) {
+  Employee copyWith(
+      {String designation,
+      String email,
+      DateTime hiringDate,
+      int id,
+      String name,
+      double salary,
+      double weeklyHours}) {
     return Employee(
       designation: designation ?? this.designation,
       email: email ?? this.email,
@@ -61,7 +61,7 @@ class Employee {
 
   @override
   bool operator ==(Object o) {
-    if (identical(this,o)) return true;
+    if (identical(this, o)) return true;
 
     return o is Employee &&
         o.designation == designation &&
@@ -80,25 +80,17 @@ class Employee {
 
   EmployeeEntity toEntity() {
     return EmployeeEntity(
-      designation,
-      email,
-      hiringDate,
-      id,
-      name,
-      salary,
-      weeklyHours
-    );
+        designation, email, hiringDate, id, name, salary, weeklyHours);
   }
 
-  static Employee fromEntity (EmployeeEntity entity) {
+  static Employee fromEntity(EmployeeEntity entity) {
     return Employee(
-      designation: entity.designation,
-      email: entity.email,
-      hiringDate: entity.hiringDate,
-      id: entity.id,
-      name: entity.name,
-      salary: entity.salary,
-      weeklyHours: entity.weeklyHours
-    );
+        designation: entity.designation,
+        email: entity.email,
+        hiringDate: entity.hiringDate,
+        id: entity.id,
+        name: entity.name,
+        salary: entity.salary,
+        weeklyHours: entity.weeklyHours);
   }
 }

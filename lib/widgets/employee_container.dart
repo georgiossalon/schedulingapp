@@ -1,6 +1,7 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 
+//!! Maybe stateful?
 class EmployeeContainer extends StatelessWidget {
   final Employee employee;
 
