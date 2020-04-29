@@ -1,1 +1,1 @@
-enum AppTab {currentDay, calendar, user}
+enum AppTab {currentDay, calendar, employees, user }

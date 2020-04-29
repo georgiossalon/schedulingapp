@@ -13,8 +13,10 @@ class AddEditShift extends StatefulWidget {
   final Shift shift;
 
   AddEditShift(
-      {Key key, 
-      @required this.onSave, @required this.isEditing,@required this.daySelected,
+      {Key key,
+      @required this.onSave,
+      @required this.isEditing,
+      @required this.daySelected,
       this.shift})
       : super(key: key);
 
@@ -45,20 +47,23 @@ class _AddEditShiftState extends State<AddEditShift> {
     }
   }
 
-  void initState() { 
+  void initState() {
     super.initState();
     widget.shift == null ? '' : _start_shift = widget.shift.start_shift;
     widget.shift == null ? '' : _end_shift = widget.shift.end_shift;
   }
 
+  //todo: edit the add shift layout
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.pink,
           title: Text(
-            isEditing ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}' : 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}',
+            isEditing
+                ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                : 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}',
           ),
         ),
         body: Padding(
@@ -67,6 +72,7 @@ class _AddEditShiftState extends State<AddEditShift> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
+                //todo: build a designation dropdown and employee too
                 TextFormField(
                   initialValue: isEditing ? widget.shift.designation : '',
                   autofocus: !isEditing,
@@ -91,20 +97,25 @@ class _AddEditShiftState extends State<AddEditShift> {
                   onSaved: (value) => _employeeName = value,
                 ),
                 RaisedButton(
-                  child: Text(_start_shift == null ?'Select start_shift' :_start_shift),
+                  child: Text(
+                      _start_shift == null ? 'Select Start' : _start_shift),
                   onPressed: () async {
                     TimeOfDay timeOfDay = await selectTime(context);
                     setState(() {
-                    _start_shift = '${timeOfDay.hour}:${timeOfDay.minute}';
+                      if (timeOfDay != null) {
+                        _start_shift = '${timeOfDay.hour}:${timeOfDay.minute}';
+                      }
                     });
                   },
                 ),
                 RaisedButton(
-                  child: Text(_end_shift == null ?'Select end_shift' :_end_shift),
+                  child: Text(_end_shift == null ? 'Select End' : _end_shift),
                   onPressed: () async {
                     TimeOfDay timeOfDay = await selectTime(context);
                     setState(() {
-                    _end_shift = '${timeOfDay.hour}:${timeOfDay.minute}';
+                      if (timeOfDay != null) {
+                        _end_shift = '${timeOfDay.hour}:${timeOfDay.minute}';
+                      }
                     });
                   },
                 ),
@@ -120,7 +131,12 @@ class _AddEditShiftState extends State<AddEditShift> {
             if (_formKey.currentState.validate()) {
               _formKey.currentState.save();
               widget.onSave(
-                  _designation, _employeeName, _start_shift, _end_shift,widget.daySelected,);
+                _designation,
+                _employeeName,
+                _start_shift,
+                _end_shift,
+                widget.daySelected,
+              );
               Navigator.pop(context);
             }
           },

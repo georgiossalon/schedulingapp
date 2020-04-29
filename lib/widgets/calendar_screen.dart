@@ -26,8 +26,7 @@ class CalendarWidget extends StatelessWidget {
           final shiftsList = state.shifts;
           Map<DateTime, List<Shift>> map =
               CalendarWidget.shiftListToCalendarEventMap(shiftsList);
-          return SafeArea(
-                      child: Scaffold(
+          return Scaffold(
               body: Calendar(
                 map: map,
               ),
@@ -36,27 +35,26 @@ class CalendarWidget extends StatelessWidget {
                 backgroundColor: Colors.pink,
                 onPressed: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
+          .push(MaterialPageRoute(builder: (context) {
                     return AddEditShift(
-                      onSave: (designation, employeeName, start_shift, end_shift,
-                          shift_date) {
-                        BlocProvider.of<ShiftsBloc>(context).add(AddShift(
-                          Shift(
-                              designation: designation,
-                              employee: employeeName,
-                              start_shift: start_shift,
-                              end_shift: end_shift,
-                              shift_date: shift_date),
-                        ));
-                      },
-                      daySelected: selectedDay,
-                      isEditing: false,
+          onSave: (designation, employeeName, start_shift, end_shift,
+              shift_date) {
+            BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+              Shift(
+                  designation: designation,
+                  employee: employeeName,
+                  start_shift: start_shift,
+                  end_shift: end_shift,
+                  shift_date: shift_date),
+            ));
+          },
+          daySelected: selectedDay,
+          isEditing: false,
                     );
                   }));
                 },
               ),
-            ),
-          );
+            );
         } else {
           return Container(
             child: Text('Shit happens'),

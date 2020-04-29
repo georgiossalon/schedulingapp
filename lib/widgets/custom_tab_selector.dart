@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:snapshot_test/models/models.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class TabSelector extends StatelessWidget {
+class CustomTabSelector extends StatelessWidget {
   final AppTab activeTab;
   final Function(AppTab) onTabSelected;
 
-  TabSelector({
+  CustomTabSelector({
     Key key,
     @required this.activeTab,
     @required this.onTabSelected,
@@ -19,6 +19,8 @@ class TabSelector extends StatelessWidget {
       return FontAwesomeIcons.calendarAlt;
     } else if (tab == AppTab.currentDay) {
       return FontAwesomeIcons.calendarDay;
+    } else if(tab == AppTab.employees) {
+      return FontAwesomeIcons.users;
     } else if (tab == AppTab.user) {
       return FontAwesomeIcons.user;
     }
@@ -29,6 +31,8 @@ class TabSelector extends StatelessWidget {
           return Text('Calendar');
         } else if (tab == AppTab.currentDay) {
           return Text('Today');
+        } else if (tab == AppTab.employees) {
+          return Text('Employees');
         } else if (tab == AppTab.user) {
           return Text('User');
         }
@@ -37,6 +41,7 @@ class TabSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       currentIndex: AppTab.values.indexOf(activeTab),
       onTap: (index) => onTabSelected(AppTab.values[index]),
       items: AppTab.values.map((tab) {
