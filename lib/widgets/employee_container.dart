@@ -73,79 +73,85 @@ class EmployeeContainer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   //Availability
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10.0),
-                    child: FlatButton(
-                      onPressed: () {
-                        //todo implement the availability on click
-                      },
-                      color: Colors.blueGrey.shade400,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Text(
-                        'Availability',
-                        style: TextStyle(color: Colors.white),
+                  Expanded(
+                                      child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          //todo implement the availability on click
+                        },
+                        color: Colors.blueGrey.shade400,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Text(
+                          'Availability',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
                   // Edit
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10.0),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return AddEditEmployee(
-                            onSave: (
-                              designation,
-                              employeeName,
-                              weeklyHours,
-                              salary,
-                              email,
-                              hiringDate,
-                            ) {
-                              BlocProvider.of<EmployeesBloc>(context)
-                                  .add(UpdateEmployee(employee.copyWith(
-                                    designation: designation,
-                                    email: email,
-                                    hiringDate: hiringDate,
-                                    name: employeeName,
-                                    salary: salary,
-                                    weeklyHours: weeklyHours
-                                  )));
-                            },
-                            isEditing: true,
-                            employee: employee,
-                          );
-                        }));
-                      },
-                      color: Colors.blueGrey.shade400,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(color: Colors.white),
+                  Expanded(
+                                      child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return AddEditEmployee(
+                              onSave: (
+                                designation,
+                                employeeName,
+                                weeklyHours,
+                                salary,
+                                email,
+                                hiringDate,
+                              ) {
+                                BlocProvider.of<EmployeesBloc>(context)
+                                    .add(UpdateEmployee(employee.copyWith(
+                                      designation: designation,
+                                      email: email,
+                                      hiringDate: hiringDate,
+                                      name: employeeName,
+                                      salary: salary,
+                                      weeklyHours: weeklyHours
+                                    )));
+                              },
+                              isEditing: true,
+                              employee: employee,
+                            );
+                          }));
+                        },
+                        color: Colors.blueGrey.shade400,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
                   // Delete
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10.0),
-                    child: FlatButton(
-                      onPressed: () {
-                        BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(employee));
-                        Scaffold.of(scaffoldContext).hideCurrentSnackBar();
-                        showSnackBar(scaffoldContext, employee);
-                      },
-                      color: Colors.blueGrey.shade400,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Text(
-                        'Delete',
-                        style: TextStyle(color: Colors.white),
+                  Expanded(
+                                      child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        onPressed: () {
+                          BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(employee));
+                          Scaffold.of(scaffoldContext).hideCurrentSnackBar();
+                          showSnackBar(scaffoldContext, employee);
+                        },
+                        color: Colors.blueGrey.shade400,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   )
