@@ -4,6 +4,7 @@ import 'package:snapshot_test/blocs/employees/employees.dart';
 import 'package:snapshot_test/blocs/employees/employees_bloc.dart';
 import 'package:snapshot_test/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapshot_test/widgets/employee_container.dart';
 
 class EmployeesList extends StatefulWidget {
   EmployeesList({Key key}) : super(key: key);
@@ -28,8 +29,7 @@ class _EmployeesListState extends State<EmployeesList> {
           body: ListView.builder(
             itemCount: state.employees.length,
             itemBuilder: (context, index){
-              // print(state.employees[index]);
-              return Text(state.employees[index].name);
+              return EmployeeContainer(employee: state.employees[index], scaffoldContext: context,);
             }),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),

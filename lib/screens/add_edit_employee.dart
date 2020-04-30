@@ -94,7 +94,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildSalaryField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Salary'),
-      initialValue: isEditing ? widget.employee.salary : '',
+      initialValue: isEditing ? widget.employee.salary.toString() : '',
       keyboardType: TextInputType.number,
       validator: (String value) {
         // in germany the use "," instead of "." for decimals
@@ -115,7 +115,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
       decoration: InputDecoration(
         labelText: 'Weekly Working Hours',
       ),
-      initialValue: isEditing ? widget.employee.weeklyHours : '',
+      initialValue: isEditing ? widget.employee.weeklyHours.toString() : '',
       keyboardType: TextInputType.number,
       validator: (String value) {
         double number = double.tryParse(value);
@@ -132,7 +132,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildEmailField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Email'),
-      initialValue: _email,
+      initialValue: isEditing ? widget.employee.email : '',
       keyboardType: TextInputType.emailAddress,
       validator: (String value) {
         if (value.isEmpty) {
