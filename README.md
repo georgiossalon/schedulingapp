@@ -2,7 +2,7 @@
 
 Trying to write a simple scheduling app using the Bloc technology and the table_calendar package.
 
-![](https://raw.githubusercontent.com/georgiossalon/schedulingapp/master/images/home.PNG)
+![](https://raw.githubusercontent.com/georgiossalon/schedulingapp/master/images/demo.gif)
 
 ## Getting Started
 
