@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:employees_repository/employees_repository.dart';
 import 'package:employees_repository/src/models/employee.dart';
 import 'package:equatable/equatable.dart';
 
