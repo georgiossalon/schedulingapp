@@ -43,11 +43,11 @@ class UnavailabilityEntity extends Equatable {
     return 'UnavailabilityEntity(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description)';
   }
   
-  static UnavailabilityEntity fromJson(Map<String, Object> json) {
+  static UnavailabilityEntity fromJson(Map<String, Object> json, DateTime date) {
     if (json == null) return null;
   
     return UnavailabilityEntity(
-      unavailabilityDate: DateTime.fromMillisecondsSinceEpoch(json['unavailability_date']),
+      unavailabilityDate: date,
       start_shift: json['start_shift'] as String,
       end_shift: json['end_shift'] as String,
       reason: json['reason'] as String,

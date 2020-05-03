@@ -12,3 +12,4 @@ dependencies:
   rxdart: ^0.23.0
   equatable: ^1.0.0
   firebase_core: ^0.4.3+3
+  intl: ^0.16.1

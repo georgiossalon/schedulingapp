@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:employees_repository/employees_repository.dart';
 import 'package:meta/meta.dart';
 import '../entities/entities.dart';
 
@@ -11,6 +12,7 @@ class Employee {
   final String name;
   final double salary;
   final double weeklyHours;
+  final List<Unavailability> currentWeekUnavailability;
   Employee(
       {this.designation,
       this.email,
@@ -18,7 +20,8 @@ class Employee {
       this.id,
       this.name,
       this.salary,
-      this.weeklyHours});
+      this.weeklyHours,
+      this.currentWeekUnavailability});
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
     if (timestamp != null) {
@@ -36,7 +39,8 @@ class Employee {
       int id,
       String name,
       double salary,
-      double weeklyHours}) {
+      double weeklyHours,
+      List<Unavailability> currentWeekUnavailability}) {
     return Employee(
       designation: designation ?? this.designation,
       email: email ?? this.email,
@@ -45,6 +49,7 @@ class Employee {
       name: name ?? this.name,
       salary: salary ?? this.salary,
       weeklyHours: weeklyHours ?? this.weeklyHours,
+      currentWeekUnavailability: currentWeekUnavailability ?? this.currentWeekUnavailability
     );
   }
 
@@ -56,7 +61,8 @@ class Employee {
         id.hashCode ^
         name.hashCode ^
         salary.hashCode ^
-        weeklyHours.hashCode;
+        weeklyHours.hashCode ^
+        currentWeekUnavailability.hashCode;
   }
 
   @override
@@ -70,17 +76,18 @@ class Employee {
         o.id == id &&
         o.name == name &&
         o.salary == salary &&
-        o.weeklyHours == weeklyHours;
+        o.weeklyHours == weeklyHours &&
+        o.currentWeekUnavailability == currentWeekUnavailability;
   }
 
   @override
   String toString() {
-    return 'Employee(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours)';
+    return 'Employee(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekUnavailability: $currentWeekUnavailability)';
   }
 
   EmployeeEntity toEntity() {
     return EmployeeEntity(
-        designation, email, hiringDate, id, name, salary, weeklyHours);
+        designation, email, hiringDate, id, name, salary, weeklyHours,currentWeekUnavailability);
   }
 
   static Employee fromEntity(EmployeeEntity entity) {
@@ -91,6 +98,7 @@ class Employee {
         id: entity.id,
         name: entity.name,
         salary: entity.salary,
-        weeklyHours: entity.weeklyHours);
+        weeklyHours: entity.weeklyHours,
+        currentWeekUnavailability: entity.currentWeekUnavailability);
   }
 }

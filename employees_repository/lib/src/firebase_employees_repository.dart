@@ -17,53 +17,52 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     return employeeCollection.document(employee.id).delete();
   }
 
-  // @override
-  // Stream<List<Employee>> employees() {
-  //   return employeeCollection.snapshots().map((snapshot) {
-  //     return snapshot.documents
-  //         .map((doc) => Employee.fromEntity(EmployeeEntity.fromSnapshot(doc)))
-  //         .toList();
-  //   });
-  // }
-  
   @override
   Stream<List<Employee>> employees() {
     return employeeCollection.snapshots().map((snapshot) {
       return snapshot.documents
-          .map((doc) {
-
-            // Stream<List<Unavailability>> unavailabilities = 
-            //     employeeCollection
-            //     .document(doc.documentID)
-            //     .collection('Unavailabilities')
-            //     .snapshots().map((snapshot) {
-            //       return snapshot.documents
-            //           .map((innerDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innerDoc)));
-            //     }).toList()
-            //     ;
-            
-            return Employee.fromEntity(EmployeeEntity.fromSnapshot(doc));})
+          .map((doc) => Employee.fromEntity(EmployeeEntity.fromSnapshot(doc)))
           .toList();
     });
   }
+    
+  // @override
+  // Stream<List<Employee>> employees() {
+  //   return employeeCollection.snapshots().map((snapshot) {
+  //     return snapshot.documents
+  //         .map((doc) {
 
-  @override
-  Stream<List<Unavailability>> unavailabilities() {
-    return employeeCollection.snapshots().map((snapshot) {
-      return snapshot.documents
-          .map((doc) {
-            employeeCollection
-            .document(doc.documentID)
-            .collection('unavailabilities')
-            .snapshots().map((snapshot) {
-              return snapshot.documents
-                  .map((innterDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innterDoc)))
-                  .toList();
-            });
+  //           Stream<List<Unavailability>> unavailabilities = 
+  //               employeeCollection
+  //               .document(doc.documentID)
+  //               .collection('Unavailabilities')
+  //               .snapshots().map((snapshot) {
+  //                 return snapshot.documents
+  //                     .map((innerDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innerDoc)));
+  //               });
 
-          }).toList();
-    });
-  }
+  //           return Employee.fromEntity(EmployeeEntity.fromSnapshot(doc));})
+  //         .toList();
+  //   });
+  // }
+
+  // @override
+  // Stream<List<Unavailability>> unavailabilities() {
+  //   return employeeCollection.snapshots().map((snapshot) {
+  //     return snapshot.documents
+  //         .map((doc) {
+  //           employeeCollection
+  //           .document(doc.documentID)
+  //           .collection('unavailabilities')
+  //           .snapshots().map((snapshot) {
+  //             return snapshot.documents
+  //                 .map((innterDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innterDoc)))
+  //                 .toList();
+  //           });
+
+  //         }).toList();
+  //   });
+  // }
 
   @override
   Future<void> updateEmployee(Employee update) {
@@ -100,6 +99,12 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   @override
   Future<void> updateUnavailability(Unavailability unavailability) {
     // TODO: implement updateUnavailability
+    return null;
+  }
+
+  @override
+  Stream<List<Unavailability>> unavailabilities() {
+    // TODO: implement unavailabilities
     return null;
   }
 
