@@ -69,6 +69,16 @@ class EmployeeEntity extends Equatable {
   //   );
   // }
 
+    static DateTime utcTo12oclock(DateTime dateTimeToChange) {
+    if (dateTimeToChange != null) {
+      DateTime dateOfEvent = dateTimeToChange.toLocal();
+      /*each device has a different utc. The table_calendar gives back
+    everything as utc. Thus I have to find a way to edit everything to 12 o'clock*/
+      return new DateTime(
+          dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 12);
+    }
+  }
+
   static List<Unavailability> snapMapToList(var snapMap) {
     if (snapMap != null) {
       List<Unavailability> hList = new List<Unavailability>();
@@ -76,8 +86,9 @@ class EmployeeEntity extends Equatable {
         //fixme: the unavailability keys are of type String.
         //fixme... make the keys to have the same format example 2020-05-31
         var dateTime = DateTime.parse(k);
+        DateTime updatedDateTime = utcTo12oclock(dateTime);
         Unavailability unavailability = Unavailability.fromEntity(
-            UnavailabilityEntity.fromJson(v, dateTime));
+            UnavailabilityEntity.fromJson(v, updatedDateTime));
         hList.add(unavailability);
       });
       return hList;
@@ -98,7 +109,7 @@ class EmployeeEntity extends Equatable {
         );
   }
 
-  Map unavailabilityListToMap (List<Unavailability> currentWeekUnavailability) {
+  static Map unavailabilityListToMap (List<Unavailability> currentWeekUnavailability) {
     Map<String, Map<String,String>> hMap = new Map<String, Map<String,String>>();
     for (Unavailability unavailability in currentWeekUnavailability) {
       Map<String,String> hhMap = new Map<String,String>();

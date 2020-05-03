@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:snapshot_test/widgets/build_shift_container.dart';
+import 'package:snapshot_test/widgets/build_unavailability_container.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarWidget extends StatefulWidget {
-  Map<DateTime, List<Shift>> map;
+  Map<DateTime, List<dynamic>> map;
   DateTime selectedDay;
+  bool isShift;
 
-  CalendarWidget({Key key, this.map, this.selectedDay}) : super(key: key);
+  CalendarWidget({Key key, this.map, this.selectedDay, this.isShift}) : super(key: key);
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -143,11 +145,11 @@ class _CalendarState extends State<CalendarWidget> {
 
   static DateTime utcTo12oclock(DateTime dateTimeToChange) {
     if (dateTimeToChange != null) {
-      DateTime dateOfShift = dateTimeToChange.toLocal();
+      DateTime dateOfEvent = dateTimeToChange.toLocal();
       /*each device has a different utc. The table_calendar gives back
     everything as utc. Thus I have to find a way to edit everything to 12 o'clock*/
       return new DateTime(
-          dateOfShift.year, dateOfShift.month, dateOfShift.day, 12);
+          dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 12);
     }
   }
 
@@ -167,9 +169,13 @@ class _CalendarState extends State<CalendarWidget> {
                           .length
                       : 0,
               itemBuilder: (context, index) {
-                final shift = widget
+                final event = widget
                     .map[utcTo12oclock(_calendarController.selectedDay)][index];
-                return BuildShiftContainer(shift: shift, scaffoldContext: context,);
+                //todo if I want to reuse this Widget I have to specify 
+                //todo... if I have a shift or an other unavailability
+                return widget.isShift 
+                    ? BuildShiftContainer(shift: event, scaffoldContext: context,) 
+                    : BuildUnavailabilityContainer(unavailability: event, scaffoldContext: context,);
               },
             ),
           ),
