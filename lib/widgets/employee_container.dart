@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/blocs/employees/employees.dart';
 import 'package:snapshot_test/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapshot_test/screens/employee_availability.dart';
 
 //!! Maybe stateful?
 class EmployeeContainer extends StatelessWidget {
@@ -79,7 +82,10 @@ class EmployeeContainer extends StatelessWidget {
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
-                          //todo implement the availability on click
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                                return EmployeeAvailability(employee: employee,);
+                              }));
                         },
                         color: Colors.blueGrey.shade400,
                         shape: RoundedRectangleBorder(

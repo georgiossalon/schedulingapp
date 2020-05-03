@@ -37,7 +37,6 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     _employeesSubscription = _employeesRepository.employees().listen(
       (employees) => add(EmployeesUpdated(employees)),
     );
-    print('Te');
   }
 
   Stream<EmployeesState> _mapAddEmployeeToState(AddEmployee event) async* {

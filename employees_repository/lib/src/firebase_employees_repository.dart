@@ -26,44 +26,6 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     });
   }
     
-  // @override
-  // Stream<List<Employee>> employees() {
-  //   return employeeCollection.snapshots().map((snapshot) {
-  //     return snapshot.documents
-  //         .map((doc) {
-
-  //           Stream<List<Unavailability>> unavailabilities = 
-  //               employeeCollection
-  //               .document(doc.documentID)
-  //               .collection('Unavailabilities')
-  //               .snapshots().map((snapshot) {
-  //                 return snapshot.documents
-  //                     .map((innerDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innerDoc)));
-  //               });
-
-  //           return Employee.fromEntity(EmployeeEntity.fromSnapshot(doc));})
-  //         .toList();
-  //   });
-  // }
-
-  // @override
-  // Stream<List<Unavailability>> unavailabilities() {
-  //   return employeeCollection.snapshots().map((snapshot) {
-  //     return snapshot.documents
-  //         .map((doc) {
-  //           employeeCollection
-  //           .document(doc.documentID)
-  //           .collection('unavailabilities')
-  //           .snapshots().map((snapshot) {
-  //             return snapshot.documents
-  //                 .map((innterDoc) => Unavailability.fromEntity(UnavailabilityEntity.fromSnapshot(innterDoc)))
-  //                 .toList();
-  //           });
-
-  //         }).toList();
-  //   });
-  // }
-
   @override
   Future<void> updateEmployee(Employee update) {
     return employeeCollection
@@ -103,11 +65,10 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Stream<List<Unavailability>> unavailabilities() {
+  Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks) {
     // TODO: implement unavailabilities
     return null;
   }
 
-  //todo implement unavailability
 
 }
