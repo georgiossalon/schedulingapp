@@ -27,6 +27,9 @@ class ShiftCalendarWidget extends StatelessWidget {
           Map<DateTime, List<Shift>> map =
               ShiftCalendarWidget.shiftListToCalendarEventMap(shiftsList);
           return Scaffold(
+            appBar: AppBar(
+              title: Text('Shifts'),
+            ),
             body: CalendarWidget(
               map: map,
               selectedDay: selectedDay,
@@ -46,6 +49,7 @@ class ShiftCalendarWidget extends StatelessWidget {
                       end_shift,
                       shift_date,
                     ) {
+                      //todo add this also to the unavailability of the chosen employee
                       BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                         Shift(
                             designation: designation,

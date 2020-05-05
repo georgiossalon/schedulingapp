@@ -1,8 +1,10 @@
+import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:shifts_repository/shifts_repository.dart';
 import 'package:snapshot_test/widgets/build_shift_container.dart';
 import 'package:snapshot_test/widgets/build_unavailability_container.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'date_info.dart';
 
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;
@@ -24,7 +26,7 @@ class _CalendarState extends State<CalendarWidget> {
     DateTime(2019, 4, 21): ['Easter Sunday'],
     DateTime(2019, 4, 22): ['Easter Monday'],
   };
-  Map<DateTime, List> _events;
+  // Map<DateTime, List> _events;
   List _selectedEvents;
   CalendarController _calendarController;
 
@@ -60,6 +62,32 @@ class _CalendarState extends State<CalendarWidget> {
     print('CALLBACK: _onCalendarCreated');
   }
 
+  Color dateColorAccordingToAction(DateTime dateTime, bool today) {
+    if (widget.map[DateInfo.utcTo12oclock(dateTime)] == null ||
+        widget.map[DateInfo.utcTo12oclock(dateTime)].isEmpty) {
+      //for no input leave the color as is
+      if (today) {
+        // the today date gets a light blue color
+        return Colors.blue.shade200;
+      } else {
+        // the remaining days get the standard white one
+        return Colors.white24;
+      }
+    } else {
+      // if the list _events[_calendarController.selectedDay] contains as
+      // the first element a string, then I have an unavailability entry
+      // if it is not a string it is probably a shift object
+      // employee unavailable then the color is red
+      Unavailability unavailability = widget.map[DateInfo.utcTo12oclock(dateTime)][0];
+      if (unavailability.reason == 'shift') {
+        return Colors.green;
+      } else {
+        // employee has a shift
+        return Colors.red;
+      }
+    }
+  }
+
 
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -87,7 +115,7 @@ class _CalendarState extends State<CalendarWidget> {
           selectedDayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: Colors.pink,
+                color: Colors.blueGrey.shade200,
                 child: Text(
                   date.day.toString(),
                 ),
@@ -95,10 +123,18 @@ class _CalendarState extends State<CalendarWidget> {
           todayDayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: Colors.teal.shade100,
+                color: widget.isShift ? Colors.teal.shade100 : dateColorAccordingToAction(date,true),
                 child: Text(
                   date.day.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                ),
+              ),
+               dayBuilder: (context, date, events) => Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.all(4.0),
+                color: widget.isShift ? Colors.white24 : dateColorAccordingToAction(date, false),
+                child: Text(
+                  date.day.toString(),
                 ),
               ),
           markersBuilder: (context, date, events, holidays) {

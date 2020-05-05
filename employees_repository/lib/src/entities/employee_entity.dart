@@ -69,7 +69,7 @@ class EmployeeEntity extends Equatable {
   //   );
   // }
 
-    static DateTime utcTo12oclock(DateTime dateTimeToChange) {
+  static DateTime utcTo12oclock(DateTime dateTimeToChange) {
     if (dateTimeToChange != null) {
       DateTime dateOfEvent = dateTimeToChange.toLocal();
       /*each device has a different utc. The table_calendar gives back
@@ -109,23 +109,28 @@ class EmployeeEntity extends Equatable {
         );
   }
 
-  static Map unavailabilityListToMap (List<Unavailability> currentWeekUnavailability) {
-    Map<String, Map<String,String>> hMap = new Map<String, Map<String,String>>();
-    for (Unavailability unavailability in currentWeekUnavailability) {
-      Map<String,String> hhMap = new Map<String,String>();
-      hhMap['start_shift'] = unavailability.start_shift;
-      hhMap['end_shift'] = unavailability.end_shift;
-      hhMap['reason'] = unavailability.reason;
-      hhMap['description'] = unavailability.description;
-      // Firestore keys (map) have to be of type String
-      // key: date -> 
-      // val: Map (keys: start_shift, end_shift, reason, description)
-      var formatter = new DateFormat('yyyy-MM-dd');
-      String formatedDate = formatter.format(unavailability.unavailabilityDate);
-      // connecting the unavailability details with the date
-      hMap[formatedDate] = hhMap;
+  static Map unavailabilityListToMap(
+      List<Unavailability> currentWeekUnavailability) {
+    if (currentWeekUnavailability != null) {
+      Map<String, Map<String, String>> hMap =
+          new Map<String, Map<String, String>>();
+      for (Unavailability unavailability in currentWeekUnavailability) {
+        Map<String, String> hhMap = new Map<String, String>();
+        hhMap['start_shift'] = unavailability.start_shift;
+        hhMap['end_shift'] = unavailability.end_shift;
+        hhMap['reason'] = unavailability.reason;
+        hhMap['description'] = unavailability.description;
+        // Firestore keys (map) have to be of type String
+        // key: date ->
+        // val: Map (keys: start_shift, end_shift, reason, description)
+        var formatter = new DateFormat('yyyy-MM-dd');
+        String formatedDate =
+            formatter.format(unavailability.unavailabilityDate);
+        // connecting the unavailability details with the date
+        hMap[formatedDate] = hhMap;
+      }
+      return hMap;
     }
-    return hMap;
   }
 
   Map<String, Object> toDocument() {

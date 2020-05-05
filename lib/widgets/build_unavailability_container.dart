@@ -2,6 +2,8 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/blocs/employees/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapshot_test/screens/add_edit_employee_unavailability.dart';
+import 'package:snapshot_test/widgets/shift_calendar_widget.dart';
 
 class BuildUnavailabilityContainer extends StatelessWidget {
   final Unavailability unavailability;
@@ -78,24 +80,25 @@ class BuildUnavailabilityContainer extends StatelessWidget {
                 ),
                 onTap: () {
                   //todo create unavailability add/edit screen
-                  // Navigator.of(context)
-                  //     .push(MaterialPageRoute(builder: (context) {
-                  //   return AddEditShift(
-                  //     onSave: (designation, employeeName, start_shift,
-                  //         end_shift, shift_date) {
-                  //       BlocProvider.of<ShiftsBloc>(context)
-                  //           .add(UpdateShift(shift.copyWith(
-                  //         designation: designation,
-                  //         employee: employeeName,
-                  //         start_shift: start_shift,
-                  //         end_shift: end_shift,
-                  //       )));
-                  //     },
-                  //     daySelected: ShiftCalendarWidget.selectedDay,
-                  //     isEditing: true,
-                  //     shift: shift,
-                  //   );
-                  // }));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return AddEditEmployeeUnavailability(
+                      onSave: (reason, description, selectedDay,
+                          ) {
+                            //todo use the unavailability bloc
+                        // BlocProvider.of<ShiftsBloc>(context)
+                        //     .add(UpdateShift(shift.copyWith(
+                        //   designation: designation,
+                        //   employee: employeeName,
+                        //   start_shift: start_shift,
+                        //   end_shift: end_shift,
+                        // )));
+                      },
+                      daySelected: ShiftCalendarWidget.selectedDay,
+                      isEditing: true,
+                      unavailability: unavailability,
+                    );
+                  }));
                 },
               )
             ],
