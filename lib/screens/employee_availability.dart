@@ -63,6 +63,7 @@ class EmployeeAvailability extends StatelessWidget {
                       end_shift,
                       shift_date,
                     ) {
+                      //todo: add the shift to the employees unavailabilities (Bloc)
                       BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                         Shift(
                             designation: designation,

@@ -5,6 +5,8 @@ import 'package:employees_repository/employees_repository.dart';
 import 'entities/entities.dart';
 
 class FirebaseEmployeesRepository implements EmployeesRepository {
+  final String unavailabilitiesCollectionName = 'unavailabilities';
+
   final employeeCollection = Firestore.instance.collection('Employees');
 
   @override
@@ -41,27 +43,40 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<void> addNewUnavailability(Unavailability unavailability) {
-    // TODO: implement addNewUnavailability
-    return null;
+  Future<void> addNewUnavailability(Unavailability unavailability, Employee employee) {
+    return employeeCollection
+        .document(employee.id)
+        .collection(unavailabilitiesCollectionName)
+        .add(unavailability.toEntity().toDocument());
   }
 
   @override
-  Future<void> deleteUnavailability(Unavailability unavailability) {
-    // TODO: implement deleteUnavailability
-    return null;
+  Future<void> deleteUnavailability(Unavailability unavailability, Employee employee) {
+    return employeeCollection
+            .document(employee.id)
+            .collection(unavailabilitiesCollectionName)
+            .document(unavailability.id)
+            .delete();
   }
 
   @override
-  Future<void> redoUnavailability(Unavailability unavailability) {
-    // TODO: implement redoUnavailability
-    return null;
+  Future<void> updateUnavailability(Unavailability unavailability, Employee employee) {
+    return employeeCollection
+            .document(employee.id)
+            .collection(unavailabilitiesCollectionName)
+            .document(unavailability.id)
+            .updateData(unavailability.toEntity().toDocument());
   }
 
+  //todo Continue with the implementation of the unavailability Blocs
+  
   @override
-  Future<void> updateUnavailability(Unavailability unavailability) {
-    // TODO: implement updateUnavailability
-    return null;
+  Future<void> redoUnavailability(Unavailability unavailability, Employee employee) {
+    return employeeCollection
+            .document(employee.id)
+            .collection(unavailabilitiesCollectionName)
+            .document(unavailability.id)
+            .setData(unavailability.toEntity().toDocument());
   }
 
   @override

@@ -16,12 +16,12 @@ abstract class EmployeesRepository {
   // create a stream for a given employee
   Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks);
 
-  Future<void> updateUnavailability(Unavailability unavailability);
+  Future<void> updateUnavailability(Unavailability unavailability, Employee employee);
 
-  Future<void> deleteUnavailability(Unavailability unavailability);
+  Future<void> deleteUnavailability(Unavailability unavailability, Employee employee);
   
-  Future<void> addNewUnavailability(Unavailability unavailability);
+  Future<void> addNewUnavailability(Unavailability unavailability, Employee employee);
   
-  Future<void> redoUnavailability(Unavailability unavailability);
+  Future<void> redoUnavailability(Unavailability unavailability, Employee employee);
 
 }

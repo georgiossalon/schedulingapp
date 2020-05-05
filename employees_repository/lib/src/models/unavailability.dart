@@ -11,6 +11,7 @@ class Unavailability {
   final String end_shift;
   final String reason;
   final String description;
+  final String id;
   
   Unavailability({
     this.unavailabilityDate,
@@ -18,6 +19,7 @@ class Unavailability {
     this.end_shift,
     this.reason,
     this.description,
+    this.id
   });
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
@@ -35,6 +37,7 @@ class Unavailability {
     String end_shift,
     String reason,
     String description,
+    int id,
   }) {
     return Unavailability(
       unavailabilityDate: unavailabilityDate ?? this.unavailabilityDate,
@@ -42,6 +45,7 @@ class Unavailability {
       end_shift: end_shift ?? this.end_shift,
       reason: reason ?? this.reason,
       description: description ?? this.description,
+      id: id ?? this.id,
     );
   }
 
@@ -51,7 +55,8 @@ class Unavailability {
       start_shift.hashCode ^
       end_shift.hashCode ^
       reason.hashCode ^
-      description.hashCode;
+      description.hashCode ^
+      id.hashCode;
   }
  
   @override
@@ -63,12 +68,13 @@ class Unavailability {
       o.start_shift == start_shift &&
       o.end_shift == end_shift &&
       o.reason == reason &&
-      o.description == description;
+      o.description == description &&
+      o.id == id;
   }
   
   @override
   String toString() {
-    return 'Unavailability(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description)';
+    return 'Unavailability(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
   }
 
   UnavailabilityEntity toEntity() {
@@ -77,7 +83,8 @@ class Unavailability {
       start_shift: start_shift, 
       end_shift: end_shift,
       reason: reason, 
-      description: description
+      description: description,
+      id: id,
     );
   }
 
@@ -87,7 +94,8 @@ class Unavailability {
       start_shift: entity.start_shift,
       end_shift: entity.end_shift,
       reason: entity.reason,
-      description: entity.description
+      description: entity.description,
+      id: entity.id
     );
   }
 

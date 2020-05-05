@@ -10,6 +10,7 @@ class UnavailabilityEntity extends Equatable {
   final String end_shift;
   final String reason;
   final String description;
+  final String id;
   
   const UnavailabilityEntity({
     this.unavailabilityDate,
@@ -17,6 +18,7 @@ class UnavailabilityEntity extends Equatable {
     this.end_shift,
     this.reason,
     this.description,
+    this.id,
   });
 
   @override
@@ -26,7 +28,8 @@ class UnavailabilityEntity extends Equatable {
       'start_shift': start_shift,
       'end_shift': end_shift,
       'reason': reason,
-      'description': description
+      'description': description,
+      'id': id,
     };
   }
 
@@ -35,12 +38,13 @@ class UnavailabilityEntity extends Equatable {
     start_shift,
     end_shift,
     reason,
-    description
+    description,
+    id
   ];
 
   @override
   String toString() {
-    return 'UnavailabilityEntity(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description)';
+    return 'UnavailabilityEntity(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
   }
   
   static UnavailabilityEntity fromJson(Map<String, Object> json, DateTime date) {
@@ -52,6 +56,7 @@ class UnavailabilityEntity extends Equatable {
       end_shift: json['end_shift'] as String,
       reason: json['reason'] as String,
       description: json['description'] as String,
+      id: json['id'] as String
     );
   }
 
@@ -62,6 +67,7 @@ class UnavailabilityEntity extends Equatable {
       end_shift: snap.data['end_shift'],
       reason: snap.data['reason'],
       description: snap.data['description'],
+      id: snap.documentID
     );
   }
 
