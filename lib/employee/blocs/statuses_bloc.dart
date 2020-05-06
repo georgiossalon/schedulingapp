@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:snapshot_test/employee/blocs/unavailabilities.dart';
+import 'package:snapshot_test/employee/blocs/statuses.dart';
 import 'package:employees_repository/employees_repository.dart';
 
 class UnavailabilitiesBloc extends Bloc<UnavailabilitiesEvent, UnavailabilitiesState> {

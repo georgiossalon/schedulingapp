@@ -2,7 +2,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_unavailability.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
 import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 
 class BuildUnavailabilityContainer extends StatelessWidget {

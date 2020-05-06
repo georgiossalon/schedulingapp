@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
-import 'package:snapshot_test/employee/blocs/unavailabilities.dart';
+import 'package:snapshot_test/employee/blocs/statuses.dart';
 
 abstract class UnavailabilitiesEvent extends Equatable {
   const UnavailabilitiesEvent();
