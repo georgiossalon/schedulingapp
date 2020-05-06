@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:snapshot_test/blocs/tab/tab.dart';
-import 'package:snapshot_test/models/models.dart';
+import 'package:snapshot_test/tabs/app_tab.dart';
+import 'package:snapshot_test/tabs/blocs/tab.dart';
 
 class TabBloc extends Bloc<TabEvent, AppTab> {
   @override

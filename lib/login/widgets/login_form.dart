@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/authentication/blocs/authentication.dart';
-import 'package:snapshot_test/blocs/login/login.dart';
+import 'package:snapshot_test/login/login.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

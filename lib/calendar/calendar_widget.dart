@@ -1,10 +1,10 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/widgets/build_shift_calendar_container.dart';
 import 'package:snapshot_test/employee/screens/build_unavailability_container.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
+import 'build_shift_calendar_container.dart';
 
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;

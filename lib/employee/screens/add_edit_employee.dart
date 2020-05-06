@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:employees_repository/employees_repository.dart';
-import 'package:snapshot_test/validators.dart';
+import 'package:snapshot_test/core/validators.dart';
 
 typedef OnSaveCallback = Function(
   String designation,

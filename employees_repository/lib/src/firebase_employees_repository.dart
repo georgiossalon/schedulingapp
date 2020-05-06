@@ -7,7 +7,7 @@ import 'entities/entities.dart';
 class FirebaseEmployeesRepository implements EmployeesRepository {
   final String unavailabilitiesCollectionName = 'unavailabilities';
 // todo --
-  final _firestore = Firestore.instance;
+  static final _firestore = Firestore.instance;
 
   final CollectionReference _employeeCollection = _firestore.collection('Employees');
 
@@ -82,7 +82,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   @override
   Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks) {
     // TODO: implement unavailabilities
-    return _employeeCollection.document('${employee.id}').collection('unavailabilities').snapshots().map((snapshot) => snapshots.map((doc) =>Unavailability.fromJson(doc.data)));
+//    return _employeeCollection.document('${employee.id}').collection('unavailabilities').snapshots().map((snapshot) => snapshots.map((doc) =>Unavailability.fromJson(doc.data)));
   }
 
 

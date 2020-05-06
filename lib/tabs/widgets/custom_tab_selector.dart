@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/models/models.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:snapshot_test/tabs/app_tab.dart';
 
 class CustomTabSelector extends StatelessWidget {
   final AppTab activeTab;

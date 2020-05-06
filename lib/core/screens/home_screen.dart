@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/blocs/blocs.dart';
-import 'package:snapshot_test/widgets/widgets.dart';
-import 'package:snapshot_test/models/models.dart';
+import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
+import 'package:snapshot_test/current_day/current_day.dart';
+import 'package:snapshot_test/employee/widgets/employees_list.dart';
+import 'package:snapshot_test/tabs/app_tab.dart';
+import 'package:snapshot_test/tabs/blocs/tab.dart';
+import 'package:snapshot_test/tabs/widgets/custom_tab_selector.dart';
+import 'package:snapshot_test/user/user_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String screenId = 'home_screen';

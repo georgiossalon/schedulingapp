@@ -1,20 +1,22 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
-import 'package:snapshot_test/blocs/blocs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:snapshot_test/blocs/employees/employees.dart';
-import 'package:snapshot_test/screens/add_edit_employee.dart';
-import 'package:snapshot_test/screens/add_edit_shift.dart';
-import 'package:snapshot_test/screens/home_screen.dart';
-import 'package:snapshot_test/screens/splash_screen.dart';
+import 'package:snapshot_test/core/simple_bloc_delegate.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
+import 'package:snapshot_test/shifts/blocs/shifts.dart';
+import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
+import 'package:snapshot_test/core/screens/home_screen.dart';
+import 'package:snapshot_test/core/screens/splash_screen.dart';
+import 'package:snapshot_test/tabs/blocs/tab.dart';
 import 'package:user_repository/user_repository.dart';
 
-import 'blocs/authentication_bloc/authentication.dart';
-import 'blocs/employees/employees_bloc.dart';
-import 'blocs/login/login.dart';
+import 'authentication/blocs/authentication.dart';
+import 'employee/blocs/employees_bloc.dart';
+import 'login/login.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();

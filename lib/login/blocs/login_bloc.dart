@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:snapshot_test/blocs/login/bloc/login.dart';
+import 'package:snapshot_test/login/blocs/login.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:snapshot_test/core/validators.dart';
 

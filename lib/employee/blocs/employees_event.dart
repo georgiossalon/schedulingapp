@@ -67,11 +67,11 @@ class EmployeesUpdated extends EmployeesEvent {
   List<Object> get props => [employees];
 }
 
-class EmployeeUnavailabilityRequested {
-  final String employeeId;
+// class EmployeeUnavailabilityRequested {
+//   final String employeeId;
 
-  @override
-  List<Object> get props => [employeeId];
-}
+//   @override
+//   List<Object> get props => [employeeId];
+// }
 
 
