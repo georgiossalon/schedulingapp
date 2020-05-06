@@ -25,10 +25,10 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapUpdateEmployeeToState(event);
     } else if (event is DeleteEmployee) {
       yield* _mapDeleteEmployeeToState(event);
-    } else if (event is EmployeesUpdated) {
-      yield* _mapEmployeesUpdateToState(event);
     } else if (event is RedoEmployee) {
       yield* _mapEmployeesRedoToState(event);
+    } else if (event is EmployeesUpdated) {
+      yield* _mapEmployeesUpdateToState(event);
     }
   }
 

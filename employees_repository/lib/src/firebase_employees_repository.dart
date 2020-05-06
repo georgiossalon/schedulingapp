@@ -68,8 +68,6 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
             .updateData(unavailability.toEntity().toDocument());
   }
 
-  //todo Continue with the implementation of the unavailability Blocs
-  
   @override
   Future<void> redoUnavailability(Unavailability unavailability, Employee employee) {
     return employeeCollection
