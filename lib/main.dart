@@ -13,6 +13,7 @@ import 'package:snapshot_test/core/screens/home_screen.dart';
 import 'package:snapshot_test/core/screens/splash_screen.dart';
 import 'package:snapshot_test/tabs/blocs/tab.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:snapshot_test/employee/blocs/statuses.dart';
 
 import 'authentication/blocs/authentication.dart';
 import 'employee/blocs/employees_bloc.dart';
@@ -46,7 +47,12 @@ class ShiftsApp extends StatelessWidget {
             employeesRepository: FirebaseEmployeesRepository(),
           )..add(LoadEmployees());
         }
-        ,)
+        ,),
+        BlocProvider<StatusesBloc>(create: (context) {
+          return StatusesBloc(
+            employeesRepository: FirebaseEmployeesRepository()
+            );
+        },)
       ],
       // fixme: after restarting the app the user is still loged in
       child: MaterialApp(

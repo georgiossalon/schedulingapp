@@ -7,15 +7,15 @@ typedef OnSaveCallback = Function(
   DateTime daySelected,
 );
 
-class AddEditEmployeeUnavailability extends StatefulWidget {
-  static const String screenId = 'add_edit_employee_unavailability';
+class AddEditEmployeeStatus extends StatefulWidget {
+  static const String screenId = 'add_edit_employee_status';
 
   final DateTime daySelected;
   final bool isEditing;
   final OnSaveCallback onSave;
   final Status status;
 
-  AddEditEmployeeUnavailability({
+  AddEditEmployeeStatus({
     Key key,
     this.daySelected,
     this.isEditing,
@@ -24,12 +24,12 @@ class AddEditEmployeeUnavailability extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AddEditEmployeeUnavailabilityState createState() =>
-      _AddEditEmployeeUnavailabilityState();
+  _AddEditEmployeeStatusState createState() =>
+      _AddEditEmployeeStatusState();
 }
 
-class _AddEditEmployeeUnavailabilityState
-    extends State<AddEditEmployeeUnavailability> {
+class _AddEditEmployeeStatusState
+    extends State<AddEditEmployeeStatus> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _reason;

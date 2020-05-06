@@ -24,7 +24,7 @@ class StatusEntity extends Equatable {
   @override
   Map<String,Object> toJson() {
     return {
-      'unavailability_date': statusDate,
+      'status_date': statusDate,
       'start_shift': start_shift,
       'end_shift': end_shift,
       'reason': reason,

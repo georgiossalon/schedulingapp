@@ -18,11 +18,11 @@ class EmployeeAvailability extends StatelessWidget {
 
   const EmployeeAvailability({Key key, this.employee}) : super(key: key);
 
-  static Map<DateTime, List<dynamic>> unavailabilityListToCalendarMap(
-      List<Status> currentWeekUnavailability) {
+  static Map<DateTime, List<dynamic>> statusListToCalendarMap(
+      List<Status> currentWeekStatus) {
     Map<DateTime, List<dynamic>> hMap = new Map<DateTime, List<dynamic>>();
-    if (currentWeekUnavailability != null) {
-      for (Status status in currentWeekUnavailability) {
+    if (currentWeekStatus != null) {
+      for (Status status in currentWeekStatus) {
         //!! only one event is allowed for the availability calendar
         //!! still I use a List. Change this in the future?
         hMap[status.statusDate] = [status];
@@ -40,8 +40,8 @@ class EmployeeAvailability extends StatelessWidget {
         ),
         body: CalendarWidget(
           selectedDay: selectedDay,
-          map: unavailabilityListToCalendarMap(
-              employee.currentWeekUnavailability),
+          map: statusListToCalendarMap(
+              employee.currentWeekStatus),
           isShift: false,
         ),
         floatingActionButton: SpeedDial(
@@ -64,7 +64,7 @@ class EmployeeAvailability extends StatelessWidget {
                         end_shift,
                         shift_date,
                       ) {
-                        //todo: add the shift to the employees unavailabilities (Bloc)
+                        //todo: add the shift to the employees statuses (Bloc)
                         BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                           Shift(
                             designation: designation,
@@ -87,11 +87,12 @@ class EmployeeAvailability extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditEmployeeUnavailability(
+                    return AddEditEmployeeStatus(
                       onSave: (reason, description, selectedDay) {
-                        //todo add status bloc
+                        //todo fix the statusDate it is displayed as a number
+                        //! also this is not displayed at the status calendar!
                         // BlocProvider.of<Employee(context)
-                        BlocProvider.of<UnavailabilitiesBloc>(context).add(
+                        BlocProvider.of<StatusesBloc>(context).add(
                             AddStatus(
                                 Status(
                                     reason: reason,

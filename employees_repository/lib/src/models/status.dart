@@ -32,7 +32,7 @@ class Status {
   }
 
   Status copyWith({
-    DateTime unavailabilityDate,
+    DateTime statusDate,
     String start_shift,
     String end_shift,
     String reason,

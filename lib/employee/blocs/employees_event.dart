@@ -67,7 +67,7 @@ class EmployeesUpdated extends EmployeesEvent {
   List<Object> get props => [employees];
 }
 
-// class EmployeeUnavailabilityRequested {
+// class EmployeeStatusRequested {
 //   final String employeeId;
 
 //   @override

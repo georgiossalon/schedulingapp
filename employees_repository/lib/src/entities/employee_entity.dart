@@ -65,7 +65,7 @@ class EmployeeEntity extends Equatable {
   //     json['name'] as String,
   //     json['salary'] as double,
   //     json['weeklyHours'] as double,
-  //     // json['currentWeekUnavailability'] as Map
+  //     // json['currentWeekStatus'] as Map
   //   );
   // }
 

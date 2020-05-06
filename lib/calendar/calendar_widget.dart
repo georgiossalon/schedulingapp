@@ -211,7 +211,7 @@ class _CalendarState extends State<CalendarWidget> {
                 //todo... if I have a shift or an other status
                 return widget.isShift 
                     ? BuildShiftContainer(shift: event, scaffoldContext: context,) 
-                    : BuildUnavailabilityContainer(status: event, scaffoldContext: context,);
+                    : BuildStatusContainer(status: event, scaffoldContext: context,);
               },
             ),
           ),

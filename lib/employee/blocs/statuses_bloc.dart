@@ -4,11 +4,11 @@ import 'package:meta/meta.dart';
 import 'package:snapshot_test/employee/blocs/statuses.dart';
 import 'package:employees_repository/employees_repository.dart';
 
-class UnavailabilitiesBloc extends Bloc<StatusesEvent, StatusesState> {
+class StatusesBloc extends Bloc<StatusesEvent, StatusesState> {
   final EmployeesRepository _employeesRepository;
   StreamSubscription _statusesSubscription;
 
-  UnavailabilitiesBloc({@required EmployeesRepository employeesRepository})
+  StatusesBloc({@required EmployeesRepository employeesRepository})
       : assert(employeesRepository != null),
         _employeesRepository = employeesRepository;
 
@@ -36,7 +36,7 @@ class UnavailabilitiesBloc extends Bloc<StatusesEvent, StatusesState> {
   Stream<StatusesState> _mapLoadStatusesToState(LoadStatuses event) async* {
     _statusesSubscription?.cancel();
     _statusesSubscription = _employeesRepository.statuses(event.employee, event.numOfWeeks).listen(
-      (unavailabilities) => add(StatusesesUpdated(unavailabilities)));
+      (statuses) => add(StatusesesUpdated(statuses)));
   }
   // ! This will only add an status to the already started stream for the given employee.
   // ! Use Future or a Stream ?

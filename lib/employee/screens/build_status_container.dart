@@ -5,20 +5,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
 import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 
-class BuildUnavailabilityContainer extends StatelessWidget {
+class BuildStatusContainer extends StatelessWidget {
   final Status status;
   final BuildContext scaffoldContext;
 
-  const BuildUnavailabilityContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
+  const BuildStatusContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
 
-  showSnackBar(context, deletedUnavailability) {
+  showSnackBar(context, deletedStatus) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('status Deleted!'),
       duration: Duration(seconds: 3),
       action: SnackBarAction(
         label: 'UNDO',
         onPressed: () {
-          BlocProvider.of<EmployeesBloc>(context).add(RedoEmployee(deletedUnavailability));
+          BlocProvider.of<EmployeesBloc>(context).add(RedoEmployee(deletedStatus));
         },
       ),
     ));
@@ -82,7 +82,7 @@ class BuildUnavailabilityContainer extends StatelessWidget {
                   //todo create status add/edit screen
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditEmployeeUnavailability(
+                    return AddEditEmployeeStatus(
                       onSave: (reason, description, selectedDay,
                           ) {
                             //todo use the status bloc

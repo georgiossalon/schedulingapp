@@ -81,8 +81,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   @override
   Stream<List<Status>> statuses(Employee employee, int numOfWeeks) {
-    // TODO: implement unavailabilities
-//    return _employeeCollection.document('${employee.id}').collection('unavailabilities').snapshots().map((snapshot) => snapshots.map((doc) =>status.fromJson(doc.data)));
+    // TODO: implement statuses
+//    return _employeeCollection.document('${employee.id}').collection('statuses').snapshots().map((snapshot) => snapshots.map((doc) =>status.fromJson(doc.data)));
   }
 
 
