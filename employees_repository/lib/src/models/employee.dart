@@ -12,7 +12,7 @@ class Employee {
   final String name;
   final double salary;
   final double weeklyHours;
-  final List<Unavailability> currentWeekUnavailability;
+  final List<Status> currentWeekUnavailability;
   Employee(
       {this.designation,
       this.email,
@@ -40,7 +40,7 @@ class Employee {
       String name,
       double salary,
       double weeklyHours,
-      List<Unavailability> currentWeekUnavailability}) {
+      List<Status> currentWeekUnavailability}) {
     return Employee(
       designation: designation ?? this.designation,
       email: email ?? this.email,
@@ -99,6 +99,6 @@ class Employee {
         name: entity.name,
         salary: entity.salary,
         weeklyHours: entity.weeklyHours,
-        currentWeekUnavailability: entity.currentWeekUnavailability);
+        currentWeekUnavailability: entity.currentWeekStatus);
   }
 }

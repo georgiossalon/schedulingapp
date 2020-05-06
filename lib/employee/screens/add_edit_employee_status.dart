@@ -13,14 +13,14 @@ class AddEditEmployeeUnavailability extends StatefulWidget {
   final DateTime daySelected;
   final bool isEditing;
   final OnSaveCallback onSave;
-  final Unavailability unavailability;
+  final Status status;
 
   AddEditEmployeeUnavailability({
     Key key,
     this.daySelected,
     this.isEditing,
     this.onSave,
-    this.unavailability,
+    this.status,
   }) : super(key: key);
 
   @override
@@ -66,8 +66,8 @@ class _AddEditEmployeeUnavailabilityState
           backgroundColor: Colors.pink,
           title: Text(
             isEditing
-                ? 'Edit Unavailability on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                : 'Add Unavailability on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}',
+                ? 'Edit status on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                : 'Add status on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}',
           ),
         ),
         body: Padding(
@@ -77,10 +77,10 @@ class _AddEditEmployeeUnavailabilityState
               child: ListView(
                 children: <Widget>[
                   TextFormField(
-                    initialValue: isEditing ? widget.unavailability.reason : '',
+                    initialValue: isEditing ? widget.status.reason : '',
                     autofocus: !isEditing,
                     decoration: InputDecoration(
-                        hintText: 'Reason for the Unavailability'),
+                        hintText: 'Reason for the status'),
                       validator: (val) {
                         return val.trim().isEmpty
                             ? 'Please give a Reason'
@@ -89,8 +89,8 @@ class _AddEditEmployeeUnavailabilityState
                       onSaved: (value) => _reason = value,
                   ),
                   TextFormField(
-                    initialValue: isEditing ? widget.unavailability.description : '',   
-                    decoration: InputDecoration(hintText: 'Unavailability Description'),
+                    initialValue: isEditing ? widget.status.description : '',   
+                    decoration: InputDecoration(hintText: 'status Description'),
                     validator: (val) {
                       return val.trim().isEmpty
                           ? 'Please give a description'
@@ -102,7 +102,7 @@ class _AddEditEmployeeUnavailabilityState
               )),
         ),
         floatingActionButton: FloatingActionButton(
-          tooltip: isEditing ? 'Save Changes' : 'Add Unavailability',
+          tooltip: isEditing ? 'Save Changes' : 'Add status',
           child: Icon(isEditing ? Icons.check : Icons.add),
           backgroundColor: Colors.pink,
           onPressed: () {

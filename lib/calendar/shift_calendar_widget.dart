@@ -49,7 +49,7 @@ class ShiftCalendarWidget extends StatelessWidget {
                       end_shift,
                       shift_date,
                     ) {
-                      //todo add this also to the unavailability of the chosen employee
+                      //todo add this also to the status of the chosen employee
                       BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                         Shift(
                             designation: designation,

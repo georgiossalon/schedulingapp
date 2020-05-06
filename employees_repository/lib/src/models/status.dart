@@ -5,16 +5,16 @@ import 'package:meta/meta.dart';
 import '../entities/entities.dart';
 
 @immutable
-class Unavailability {
-  final DateTime unavailabilityDate;
+class Status {
+  final DateTime statusDate;
   final String start_shift;
   final String end_shift;
   final String reason;
   final String description;
   final String id;
   
-  Unavailability({
-    this.unavailabilityDate,
+  Status({
+    this.statusDate,
     this.start_shift,
     this.end_shift,
     this.reason,
@@ -31,7 +31,7 @@ class Unavailability {
     }
   }
 
-  Unavailability copyWith({
+  Status copyWith({
     DateTime unavailabilityDate,
     String start_shift,
     String end_shift,
@@ -39,8 +39,8 @@ class Unavailability {
     String description,
     int id,
   }) {
-    return Unavailability(
-      unavailabilityDate: unavailabilityDate ?? this.unavailabilityDate,
+    return Status(
+      statusDate: statusDate ?? this.statusDate,
       start_shift: start_shift ?? this.start_shift,
       end_shift: end_shift ?? this.end_shift,
       reason: reason ?? this.reason,
@@ -51,7 +51,7 @@ class Unavailability {
 
   @override
   int get hashCode {
-    return unavailabilityDate.hashCode ^
+    return statusDate.hashCode ^
       start_shift.hashCode ^
       end_shift.hashCode ^
       reason.hashCode ^
@@ -63,8 +63,8 @@ class Unavailability {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
-    return o is Unavailability &&
-      o.unavailabilityDate == unavailabilityDate &&
+    return o is Status &&
+      o.statusDate == statusDate &&
       o.start_shift == start_shift &&
       o.end_shift == end_shift &&
       o.reason == reason &&
@@ -74,12 +74,12 @@ class Unavailability {
   
   @override
   String toString() {
-    return 'Unavailability(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
+    return 'Status( statusDate: $statusDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
   }
 
-  UnavailabilityEntity toEntity() {
-    return UnavailabilityEntity(
-      unavailabilityDate: unavailabilityDate, 
+  StatusEntity toEntity() {
+    return StatusEntity(
+      statusDate: statusDate,
       start_shift: start_shift, 
       end_shift: end_shift,
       reason: reason, 
@@ -88,9 +88,9 @@ class Unavailability {
     );
   }
 
-  static Unavailability fromEntity(UnavailabilityEntity entity) {
-    return Unavailability(
-      unavailabilityDate: entity.unavailabilityDate,
+  static Status fromEntity(StatusEntity entity) {
+    return Status(
+        statusDate: entity.statusDate,
       start_shift: entity.start_shift,
       end_shift: entity.end_shift,
       reason: entity.reason,

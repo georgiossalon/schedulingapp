@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/employee/screens/employee_availability.dart';
+import 'package:snapshot_test/employee/screens/employee_status.dart';
 
 //!! Maybe stateful?
 class EmployeeContainer extends StatelessWidget {

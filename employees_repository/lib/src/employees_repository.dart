@@ -15,14 +15,14 @@ abstract class EmployeesRepository {
 
   // create a stream for a given employee
   //todo only give id instead of the whole object
-  Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks);
+  Stream<List<Status>> statuses(Employee employee, int numOfWeeks);
 
-  Future<void> updateUnavailability(Unavailability unavailability, Employee employee);
+  Future<void> updateStatus(Status status, Employee employee);
 
-  Future<void> deleteUnavailability(Unavailability unavailability, Employee employee);
+  Future<void> deleteStatus(Status status, Employee employee);
   
-  Future<void> addNewUnavailability(Unavailability unavailability, Employee employee);
+  Future<void> addNewStatus(Status status, Employee employee);
   
-  Future<void> redoUnavailability(Unavailability unavailability, Employee employee);
+  Future<void> redoStatus(Status status, Employee employee);
 
 }

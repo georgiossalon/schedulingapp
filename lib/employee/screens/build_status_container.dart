@@ -6,14 +6,14 @@ import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
 import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 
 class BuildUnavailabilityContainer extends StatelessWidget {
-  final Unavailability unavailability;
+  final Status status;
   final BuildContext scaffoldContext;
 
-  const BuildUnavailabilityContainer({Key key, this.unavailability, this.scaffoldContext}) : super(key: key);
+  const BuildUnavailabilityContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
 
   showSnackBar(context, deletedUnavailability) {
     Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('Unavailability Deleted!'),
+      content: Text('status Deleted!'),
       duration: Duration(seconds: 3),
       action: SnackBarAction(
         label: 'UNDO',
@@ -37,14 +37,14 @@ class BuildUnavailabilityContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Reason ${unavailability.reason}',
+                'Reason ${status.reason}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
                 ),
               ),
               Text(
-                'Description ${unavailability.description}',
+                'Description ${status.description}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
@@ -63,7 +63,7 @@ class BuildUnavailabilityContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  //todo need unavailability Bloc
+                  //todo need status Bloc
                   // BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(shift));
                   // // hide previous snackbars and show only the current one
                   // Scaffold.of(context).hideCurrentSnackBar();
@@ -79,13 +79,13 @@ class BuildUnavailabilityContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  //todo create unavailability add/edit screen
+                  //todo create status add/edit screen
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return AddEditEmployeeUnavailability(
                       onSave: (reason, description, selectedDay,
                           ) {
-                            //todo use the unavailability bloc
+                            //todo use the status bloc
                         // BlocProvider.of<ShiftsBloc>(context)
                         //     .add(UpdateShift(shift.copyWith(
                         //   designation: designation,
@@ -96,7 +96,7 @@ class BuildUnavailabilityContainer extends StatelessWidget {
                       },
                       daySelected: ShiftCalendarWidget.selectedDay,
                       isEditing: true,
-                      unavailability: unavailability,
+                      status: status,
                     );
                   }));
                 },

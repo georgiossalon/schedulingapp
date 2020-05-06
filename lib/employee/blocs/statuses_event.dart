@@ -2,84 +2,84 @@ import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:snapshot_test/employee/blocs/statuses.dart';
 
-abstract class UnavailabilitiesEvent extends Equatable {
-  const UnavailabilitiesEvent();
+abstract class StatusesEvent extends Equatable {
+  const StatusesEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadUnavailabilities extends UnavailabilitiesEvent {
+class LoadStatuses extends StatusesEvent {
   final Employee employee;
   final int numOfWeeks;
 
-  const LoadUnavailabilities(this.employee, this.numOfWeeks);
+  const LoadStatuses(this.employee, this.numOfWeeks);
 
   @override
   List<Object> get props => [employee, numOfWeeks];
 
   @override
-  String toString() => 'LoadUnavailabilities for employee: $employee for numOfWeeks: $numOfWeeks';
+  String toString() => 'LoadStatuses for employee: $employee for numOfWeeks: $numOfWeeks';
 }
 
-class AddUnavailability extends UnavailabilitiesEvent {
-  final Unavailability unavailability;
+class AddStatus extends StatusesEvent {
+  final Status status;
   final Employee employee;
 
-  const AddUnavailability(this.unavailability, this.employee);
+  const AddStatus(this.status, this.employee);
 
   @override
-  List<Object> get props => [unavailability, employee];
+  List<Object> get props => [status, employee];
 
   @override
-  String toString() => 'AddUnavailability { unavailability: $unavailability for employee: $employee }';
+  String toString() => 'AddStatus { status: $status for employee: $employee }';
 }
 
-class UpdateUnavailability extends UnavailabilitiesEvent {
-  final Unavailability unavailability;
+class UpdateStatus extends StatusesEvent {
+  final Status status;
   final Employee employee;
 
-  const UpdateUnavailability(this.unavailability, this.employee);
+  const UpdateStatus(this.status, this.employee);
 
   @override
-  List<Object> get props => [unavailability, employee];
+  List<Object> get props => [status, employee];
 
   @override
-  String toString() => 'UpdateUnavailability { updateUnavailability: $unavailability for employee: $employee }';
+  String toString() => 'UpdateStatus { updateStatus: $status for employee: $employee }';
 }
 
-class RedoUnavailability extends UnavailabilitiesEvent {
-  final Unavailability unavailability;
+class RedoStatus extends StatusesEvent {
+  final Status status;
   final Employee employee;
 
-  const RedoUnavailability(this.unavailability, this.employee);
+  const RedoStatus(this.status, this.employee);
 
   @override
-  List<Object> get props => [unavailability, employee];
+  List<Object> get props => [status, employee];
 
   @override
-  String toString() => 'RedoUnavailability { redoUnavailability: $unavailability for employee: $employee }';
+  String toString() => 'RedoStatus { redoStatus: $status for employee: $employee }';
 }
 
-class DeleteUnavailability extends UnavailabilitiesEvent {
-  final Unavailability unavailability;
+class DeleteStatus extends StatusesEvent {
+  final Status status;
   final Employee employee;
 
-  const DeleteUnavailability(this.unavailability, this.employee);
+  const DeleteStatus(this.status, this.employee);
 
   @override
-  List<Object> get props => [unavailability, employee];
+  List<Object> get props => [status, employee];
 
   @override
-  String toString() => 'DeleteUnavailability { deleteUnavailability: $unavailability for employee: $employee }';
+  String toString() => 'DeleteStatus { deleteStatus: $status for employee: $employee }';
 }
 
-class UnavailabilitiesUpdated extends UnavailabilitiesEvent {
-  final List<Unavailability> unavailabilities;
+class StatusesesUpdated extends StatusesEvent {
+  final List<Status> statuses;
   
-  const UnavailabilitiesUpdated(this.unavailabilities);
+  const StatusesesUpdated(this.statuses);
 
   @override
-  List<Object> get props => [unavailabilities];
+  List<Object> get props => [statuses];
 }
 

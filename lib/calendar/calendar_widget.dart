@@ -1,6 +1,6 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/employee/screens/build_unavailability_container.dart';
+import 'package:snapshot_test/employee/screens/build_status_container.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
@@ -75,11 +75,11 @@ class _CalendarState extends State<CalendarWidget> {
       }
     } else {
       // if the list _events[_calendarController.selectedDay] contains as
-      // the first element a string, then I have an unavailability entry
+      // the first element a string, then I have an status entry
       // if it is not a string it is probably a shift object
       // employee unavailable then the color is red
-      Unavailability unavailability = widget.map[DateInfo.utcTo12oclock(dateTime)][0];
-      if (unavailability.reason == 'shift') {
+      Status status = widget.map[DateInfo.utcTo12oclock(dateTime)][0];
+      if (status.reason == 'shift') {
         return Colors.green;
       } else {
         // employee has a shift
@@ -208,10 +208,10 @@ class _CalendarState extends State<CalendarWidget> {
                 final event = widget
                     .map[utcTo12oclock(_calendarController.selectedDay)][index];
                 //todo if I want to reuse this Widget I have to specify 
-                //todo... if I have a shift or an other unavailability
+                //todo... if I have a shift or an other status
                 return widget.isShift 
                     ? BuildShiftContainer(shift: event, scaffoldContext: context,) 
-                    : BuildUnavailabilityContainer(unavailability: event, scaffoldContext: context,);
+                    : BuildUnavailabilityContainer(status: event, scaffoldContext: context,);
               },
             ),
           ),

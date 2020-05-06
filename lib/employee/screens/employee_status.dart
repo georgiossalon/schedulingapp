@@ -19,13 +19,13 @@ class EmployeeAvailability extends StatelessWidget {
   const EmployeeAvailability({Key key, this.employee}) : super(key: key);
 
   static Map<DateTime, List<dynamic>> unavailabilityListToCalendarMap(
-      List<Unavailability> currentWeekUnavailability) {
+      List<Status> currentWeekUnavailability) {
     Map<DateTime, List<dynamic>> hMap = new Map<DateTime, List<dynamic>>();
     if (currentWeekUnavailability != null) {
-      for (Unavailability unavailability in currentWeekUnavailability) {
+      for (Status status in currentWeekUnavailability) {
         //!! only one event is allowed for the availability calendar
         //!! still I use a List. Change this in the future?
-        hMap[unavailability.unavailabilityDate] = [unavailability];
+        hMap[status.statusDate] = [status];
       }
     }
     return hMap;
@@ -82,21 +82,21 @@ class EmployeeAvailability extends StatelessWidget {
                 }),
             SpeedDialChild(
                 child: Icon(FontAwesomeIcons.couch),
-                label: 'Add Unavailability',
+                label: 'Add status',
                 backgroundColor: Colors.grey,
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return AddEditEmployeeUnavailability(
                       onSave: (reason, description, selectedDay) {
-                        //todo add unavailability bloc
+                        //todo add status bloc
                         // BlocProvider.of<Employee(context)
                         BlocProvider.of<UnavailabilitiesBloc>(context).add(
-                            AddUnavailability(
-                                Unavailability(
+                            AddStatus(
+                                Status(
                                     reason: reason,
                                     description: description,
-                                    unavailabilityDate: selectedDay),
+                                    statusDate: selectedDay),
                                 employee));
                       },
                       daySelected: selectedDay,

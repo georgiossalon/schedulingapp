@@ -5,7 +5,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'entities/entities.dart';
 
 class FirebaseEmployeesRepository implements EmployeesRepository {
-  final String unavailabilitiesCollectionName = 'unavailabilities';
+  final String statusesCollectionName = 'statuses';
 // todo --
   static final _firestore = Firestore.instance;
 
@@ -45,44 +45,44 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<void> addNewUnavailability(Unavailability unavailability, Employee employee) {
+  Future<void> addNewStatus(Status status, Employee employee) {
     return _employeeCollection
         .document(employee.id)
-        .collection(unavailabilitiesCollectionName)
-        .add(unavailability.toEntity().toDocument());
+        .collection(statusesCollectionName)
+        .add(status.toEntity().toDocument());
   }
 
   @override
-  Future<void> deleteUnavailability(Unavailability unavailability, Employee employee) {
+  Future<void> deleteStatus(Status status, Employee employee) {
     return _employeeCollection
             .document(employee.id)
-            .collection(unavailabilitiesCollectionName)
-            .document(unavailability.id)
+            .collection(statusesCollectionName)
+            .document(status.id)
             .delete();
   }
 
   @override
-  Future<void> updateUnavailability(Unavailability unavailability, Employee employee) {
+  Future<void> updateStatus(Status status, Employee employee) {
     return _employeeCollection
             .document(employee.id)
-            .collection(unavailabilitiesCollectionName)
-            .document(unavailability.id)
-            .updateData(unavailability.toEntity().toDocument());
+            .collection(statusesCollectionName)
+            .document(status.id)
+            .updateData(status.toEntity().toDocument());
   }
 
   @override
-  Future<void> redoUnavailability(Unavailability unavailability, Employee employee) {
+  Future<void> redoStatus(Status status, Employee employee) {
     return _employeeCollection
             .document(employee.id)
-            .collection(unavailabilitiesCollectionName)
-            .document(unavailability.id)
-            .setData(unavailability.toEntity().toDocument());
+            .collection(statusesCollectionName)
+            .document(status.id)
+            .setData(status.toEntity().toDocument());
   }
 
   @override
-  Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks) {
+  Stream<List<Status>> statuses(Employee employee, int numOfWeeks) {
     // TODO: implement unavailabilities
-//    return _employeeCollection.document('${employee.id}').collection('unavailabilities').snapshots().map((snapshot) => snapshots.map((doc) =>Unavailability.fromJson(doc.data)));
+//    return _employeeCollection.document('${employee.id}').collection('unavailabilities').snapshots().map((snapshot) => snapshots.map((doc) =>status.fromJson(doc.data)));
   }
 
 

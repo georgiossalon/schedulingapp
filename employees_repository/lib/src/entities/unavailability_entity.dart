@@ -4,16 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:equatable/equatable.dart';
 
-class UnavailabilityEntity extends Equatable {
-  final DateTime unavailabilityDate;
+class StatusEntity extends Equatable {
+  final DateTime statusDate;
   final String start_shift;
   final String end_shift;
   final String reason;
   final String description;
   final String id;
   
-  const UnavailabilityEntity({
-    this.unavailabilityDate,
+  const StatusEntity({
+    this.statusDate,
     this.start_shift,
     this.end_shift,
     this.reason,
@@ -24,7 +24,7 @@ class UnavailabilityEntity extends Equatable {
   @override
   Map<String,Object> toJson() {
     return {
-      'unavailability_date': unavailabilityDate,
+      'unavailability_date': statusDate,
       'start_shift': start_shift,
       'end_shift': end_shift,
       'reason': reason,
@@ -34,7 +34,7 @@ class UnavailabilityEntity extends Equatable {
   }
 
   List<Object> get props => [
-    unavailabilityDate,
+    statusDate,
     start_shift,
     end_shift,
     reason,
@@ -44,14 +44,14 @@ class UnavailabilityEntity extends Equatable {
 
   @override
   String toString() {
-    return 'UnavailabilityEntity(unavailabilityDate: $unavailabilityDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
+    return 'StatusEntity { statusDate: $statusDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
   }
   
-  static UnavailabilityEntity fromJson(Map<String, Object> json, DateTime date) {
+  static StatusEntity fromJson(Map<String, Object> json, DateTime date) {
     if (json == null) return null;
   
-    return UnavailabilityEntity(
-      unavailabilityDate: date,
+    return StatusEntity(
+        statusDate: date,
       start_shift: json['start_shift'] as String,
       end_shift: json['end_shift'] as String,
       reason: json['reason'] as String,
@@ -60,9 +60,9 @@ class UnavailabilityEntity extends Equatable {
     );
   }
 
-  static UnavailabilityEntity fromSnapshot (DocumentSnapshot snap) {
-    return UnavailabilityEntity(
-      unavailabilityDate: snap.data['unavailability_date'],
+  static StatusEntity fromSnapshot (DocumentSnapshot snap) {
+    return StatusEntity(
+        statusDate: snap.data['status_date'],
       start_shift: snap.data['start_shift'],
       end_shift: snap.data['end_shift'],
       reason: snap.data['reason'],
@@ -73,7 +73,7 @@ class UnavailabilityEntity extends Equatable {
 
   Map<String, Object> toDocument() {
     return {
-      'unavailabilityDate': unavailabilityDate?.millisecondsSinceEpoch,
+      'statusDate': statusDate?.millisecondsSinceEpoch,
       'start_shift': start_shift,
       'end_shift': end_shift,
       'reason': reason,

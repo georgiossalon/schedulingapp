@@ -1,25 +1,25 @@
 import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
 
-abstract class UnavailabilitiesState extends Equatable {
-  const UnavailabilitiesState();
+abstract class StatusesState extends Equatable {
+  const StatusesState();
 
   @override
   List<Object> get props => [];
 }
 
-class UnavailabilitiesLoading extends UnavailabilitiesState {}
+class StatusesLoading extends StatusesState {}
 
-class UnavailabilitiesLoaded extends UnavailabilitiesState {
-  final List<Unavailability> unavailabilities;
+class StatusesLoaded extends StatusesState {
+  final List<Status> statuses;
 
-  const UnavailabilitiesLoaded([this.unavailabilities = const[]]);
-
-  @override
-  List<Object> get props => [unavailabilities];
+  const StatusesLoaded([this.statuses = const[]]);
 
   @override
-  String toString() => 'Unavailabilities {unavailabilities $unavailabilities }';
+  List<Object> get props => [statuses];
+
+  @override
+  String toString() => 'Statuses {statuses $statuses }';
 }
 
-class UnavailabilitiesNotLoaded extends UnavailabilitiesState {}
+class StatusesNotLoaded extends StatusesState {}

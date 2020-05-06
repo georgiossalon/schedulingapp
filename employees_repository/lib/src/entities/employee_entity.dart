@@ -15,7 +15,7 @@ class EmployeeEntity extends Equatable {
   final String name;
   final double salary;
   final double weeklyHours;
-  final List<Unavailability> currentWeekUnavailability;
+  final List<Status> currentWeekStatus;
 
   const EmployeeEntity(
       this.designation,
@@ -25,7 +25,7 @@ class EmployeeEntity extends Equatable {
       this.name,
       this.salary,
       this.weeklyHours,
-      this.currentWeekUnavailability //todo map the parameters
+      this.currentWeekStatus //todo map the parameters
       );
 
   // @override
@@ -53,7 +53,7 @@ class EmployeeEntity extends Equatable {
 
   @override
   String toString() {
-    return 'EmployeeEntity(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekUnavailability: $currentWeekUnavailability)';
+    return 'EmployeeEntity(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekStatus: $currentWeekStatus)';
   }
 
   // static EmployeeEntity fromJson(Map<String,Object> json) {
@@ -79,17 +79,17 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  static List<Unavailability> snapMapToList(var snapMap) {
+  static List<Status> snapMapToList(var snapMap) {
     if (snapMap != null) {
-      List<Unavailability> hList = new List<Unavailability>();
+      List<Status> hList = new List<Status>();
       snapMap.forEach((k, v) {
-        //fixme: the unavailability keys are of type String.
+        //fixme: the status keys are of type String.
         //fixme... make the keys to have the same format example 2020-05-31
         var dateTime = DateTime.parse(k);
         DateTime updatedDateTime = utcTo12oclock(dateTime);
-        Unavailability unavailability = Unavailability.fromEntity(
-            UnavailabilityEntity.fromJson(v, updatedDateTime));
-        hList.add(unavailability);
+        Status status = Status.fromEntity(
+            StatusEntity.fromJson(v, updatedDateTime));
+        hList.add(status);
       });
       return hList;
     }
@@ -105,28 +105,28 @@ class EmployeeEntity extends Equatable {
         snap.data['salary'],
         snap.data['weeklyHours'],
         snapMapToList(snap.data[
-            'currentWeekUnavailability']) // converting the Firebase Map to a List<Unavailability>
+            'currentWeekStatus']) // converting the Firebase Map to a List<status>
         );
   }
 
-  static Map unavailabilityListToMap(
-      List<Unavailability> currentWeekUnavailability) {
-    if (currentWeekUnavailability != null) {
+  static Map statusListToMap(
+      List<Status> currentWeekStatus) {
+    if (currentWeekStatus != null) {
       Map<String, Map<String, String>> hMap =
           new Map<String, Map<String, String>>();
-      for (Unavailability unavailability in currentWeekUnavailability) {
+      for (Status status in currentWeekStatus) {
         Map<String, String> hhMap = new Map<String, String>();
-        hhMap['start_shift'] = unavailability.start_shift;
-        hhMap['end_shift'] = unavailability.end_shift;
-        hhMap['reason'] = unavailability.reason;
-        hhMap['description'] = unavailability.description;
+        hhMap['start_shift'] = status.start_shift;
+        hhMap['end_shift'] = status.end_shift;
+        hhMap['reason'] = status.reason;
+        hhMap['description'] = status.description;
         // Firestore keys (map) have to be of type String
         // key: date ->
         // val: Map (keys: start_shift, end_shift, reason, description)
         var formatter = new DateFormat('yyyy-MM-dd');
         String formatedDate =
-            formatter.format(unavailability.unavailabilityDate);
-        // connecting the unavailability details with the date
+            formatter.format(status.statusDate);
+        // connecting the status details with the date
         hMap[formatedDate] = hhMap;
       }
       return hMap;
@@ -141,8 +141,8 @@ class EmployeeEntity extends Equatable {
       'name': name,
       'salary': salary,
       'weeklyHours': weeklyHours,
-      'currentWeekUnavailability':
-          unavailabilityListToMap(currentWeekUnavailability),
+      'currentWeekStatus':
+          statusListToMap(currentWeekStatus),
     };
   }
 }
