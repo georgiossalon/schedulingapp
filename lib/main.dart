@@ -19,7 +19,8 @@ import 'blocs/login/login.dart';
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   initializeDateFormatting().then((_) => runApp(ShiftsApp()));
-  
+  // todo -- runZoned -- set up uncaught exception logging with firebase crashlytics
+  // todo -- move all global blocs into a MultiBlocProvider here - eg auth bloc + child ShiftsApp
 }
 
 class ShiftsApp extends StatelessWidget {

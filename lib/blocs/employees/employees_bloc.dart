@@ -30,6 +30,9 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     } else if (event is EmployeesUpdated) {
       yield* _mapEmployeesUpdateToState(event);
     }
+    } else if (event is EmployeeUnavailabilityRequested) {
+      yield* _mapEmployeeUnavailabilityRequestedToState(event);
+    }
   }
 
   Stream<EmployeesState> _mapLoadEmployeesToState() async* {
@@ -57,6 +60,13 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Stream<EmployeesState> _mapEmployeesUpdateToState(EmployeesUpdated event) async* {
     yield EmployeesLoaded(event.employees);
+  }
+ 
+  Stream<EmployeesState> _mapEmployeeUnavailabilityRequestedToState(EmployeeUnavailabilityRequested event) async* {
+    // todo -- yield proper state
+    // cancel sub
+    _employeesRepository.unavailabilities().listen((data) => add(EmployeeUnavailabilitiesReceived(data)));
+    // yield EmployeesLoaded(event.employees);
   }
 
   @override

@@ -14,6 +14,7 @@ abstract class EmployeesRepository {
   Future<void> redoEmployee(Employee employee);
 
   // create a stream for a given employee
+  //todo only give id instead of the whole object
   Stream<List<Unavailability>> unavailabilities(Employee employee, int numOfWeeks);
 
   Future<void> updateUnavailability(Unavailability unavailability, Employee employee);
