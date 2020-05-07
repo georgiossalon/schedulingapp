@@ -5,7 +5,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'entities/entities.dart';
 
 class FirebaseEmployeesRepository implements EmployeesRepository {
-  final String statusesCollectionName = 'statuses';
+  final String statusesCollectionName = 'Statuses';
 // todo --
   static final _firestore = Firestore.instance;
 
@@ -45,44 +45,55 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<void> addNewStatus(Status status, Employee employee) {
+  Future<void> addNewStatus(Status status, String employeeId) {
     return _employeeCollection
-        .document(employee.id)
+        .document(employeeId)
         .collection(statusesCollectionName)
         .add(status.toEntity().toDocument());
   }
 
   @override
-  Future<void> deleteStatus(Status status, Employee employee) {
+  Future<void> deleteStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employee.id)
+            .document(employeeId)
             .collection(statusesCollectionName)
             .document(status.id)
             .delete();
   }
 
   @override
-  Future<void> updateStatus(Status status, Employee employee) {
+  Future<void> updateStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employee.id)
+            .document(employeeId)
             .collection(statusesCollectionName)
             .document(status.id)
             .updateData(status.toEntity().toDocument());
   }
 
   @override
-  Future<void> redoStatus(Status status, Employee employee) {
+  Future<void> redoStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employee.id)
+            .document(employeeId)
             .collection(statusesCollectionName)
             .document(status.id)
             .setData(status.toEntity().toDocument());
   }
 
   @override
-  Stream<List<Status>> statuses(Employee employee, int numOfWeeks) {
-    // TODO: implement statuses
-//    return _employeeCollection.document('${employee.id}').collection('statuses').snapshots().map((snapshot) => snapshots.map((doc) =>status.fromJson(doc.data)));
+  Stream<List<Status>> statuses(String employeeId, int numOfWeeks, DateTime currentDate) {
+      // todo implement the numOfWeeks currently it only searches upto 2 weeks
+      DateTime currentDateMinusOneWeek = currentDate.subtract(new Duration(days: 7));
+      DateTime currentDatePlusOneWeek = currentDate.add(new Duration(days: 7));
+      //todo add the default number of weeks to read
+      return _employeeCollection
+          .document(employeeId).collection(statusesCollectionName)
+          .where('status_date', isGreaterThanOrEqualTo: currentDateMinusOneWeek)
+          .where('status_date', isLessThanOrEqualTo: currentDatePlusOneWeek)
+          .snapshots().map((snapshot) {
+            return snapshot.documents
+                .map((doc) {
+                  return Status.fromEntity(StatusEntity.fromSnapshot(doc));}).toList();
+          });
   }
 
 

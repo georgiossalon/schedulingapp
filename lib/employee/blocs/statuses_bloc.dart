@@ -35,26 +35,27 @@ class StatusesBloc extends Bloc<StatusesEvent, StatusesState> {
   // ! Load only when I ask. For this case I have to use an employee and the number of weeks
   Stream<StatusesState> _mapLoadStatusesToState(LoadStatuses event) async* {
     _statusesSubscription?.cancel();
-    _statusesSubscription = _employeesRepository.statuses(event.employee, event.numOfWeeks).listen(
-      (statuses) => add(StatusesesUpdated(statuses)));
+    _statusesSubscription = _employeesRepository
+        .statuses(event.employeeId, event.numOfWeeks, DateTime.now()).listen(
+          (statuses) => add(StatusesesUpdated(statuses)));
   }
   // ! This will only add an status to the already started stream for the given employee.
   // ! Use Future or a Stream ?
   //todo: implement a method that pushes for a given employee
   Stream <StatusesState> _mapAddStatusToState(AddStatus event) async* {
-    _employeesRepository.addNewStatus(event.status, event.employee);
+    _employeesRepository.addNewStatus(event.status, event.employeeId);
   }
 
   Stream<StatusesState> _mapUpdateStatus(UpdateStatus event) async* {
-    _employeesRepository.updateStatus(event.status, event.employee);
+    _employeesRepository.updateStatus(event.status, event.employeeId);
   }
 
   Stream<StatusesState> _mapDeleteStatusToState(DeleteStatus event) async* {
-    _employeesRepository.deleteStatus(event.status, event.employee);
+    _employeesRepository.deleteStatus(event.status, event.employeeId);
   }
 
   Stream<StatusesState> _mapStatusesRedoToState (RedoStatus event) async* {
-    _employeesRepository.redoStatus(event.status, event.employee);
+    _employeesRepository.redoStatus(event.status, event.employeeId);
   }
 
   Stream<StatusesState> _mapStatusesUpdateToState (StatusesesUpdated event) async* {

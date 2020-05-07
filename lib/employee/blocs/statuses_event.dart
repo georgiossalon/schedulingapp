@@ -10,68 +10,68 @@ abstract class StatusesEvent extends Equatable {
 }
 
 class LoadStatuses extends StatusesEvent {
-  final Employee employee;
+  final String employeeId;
   final int numOfWeeks;
 
-  const LoadStatuses(this.employee, this.numOfWeeks);
+  const LoadStatuses(this.employeeId, this.numOfWeeks);
 
   @override
-  List<Object> get props => [employee, numOfWeeks];
+  List<Object> get props => [employeeId, numOfWeeks];
 
   @override
-  String toString() => 'LoadStatuses for employee: $employee for numOfWeeks: $numOfWeeks';
+  String toString() => 'LoadStatuses for employeeId: $employeeId for numOfWeeks: $numOfWeeks';
 }
 
 class AddStatus extends StatusesEvent {
   final Status status;
-  final Employee employee;
+  final String employeeId;
 
-  const AddStatus(this.status, this.employee);
-
-  @override
-  List<Object> get props => [status, employee];
+  const AddStatus(this.status, this.employeeId);
 
   @override
-  String toString() => 'AddStatus { status: $status for employee: $employee }';
+  List<Object> get props => [status, employeeId];
+
+  @override
+  String toString() => 'AddStatus { status: $status for employeeId: $employeeId }';
 }
 
 class UpdateStatus extends StatusesEvent {
   final Status status;
-  final Employee employee;
+  final String employeeId;
 
-  const UpdateStatus(this.status, this.employee);
-
-  @override
-  List<Object> get props => [status, employee];
+  const UpdateStatus(this.status, this.employeeId);
 
   @override
-  String toString() => 'UpdateStatus { updateStatus: $status for employee: $employee }';
+  List<Object> get props => [status, employeeId];
+
+  @override
+  String toString() => 'UpdateStatus { updateStatus: $status for employeeId: $employeeId }';
 }
 
 class RedoStatus extends StatusesEvent {
   final Status status;
-  final Employee employee;
+  final String employeeId;
 
-  const RedoStatus(this.status, this.employee);
-
-  @override
-  List<Object> get props => [status, employee];
+  const RedoStatus(this.status, this.employeeId);
 
   @override
-  String toString() => 'RedoStatus { redoStatus: $status for employee: $employee }';
+  List<Object> get props => [status, employeeId];
+
+  @override
+  String toString() => 'RedoStatus { redoStatus: $status for employeeId: $employeeId }';
 }
 
 class DeleteStatus extends StatusesEvent {
   final Status status;
-  final Employee employee;
+  final String employeeId;
 
-  const DeleteStatus(this.status, this.employee);
-
-  @override
-  List<Object> get props => [status, employee];
+  const DeleteStatus(this.status, this.employeeId);
 
   @override
-  String toString() => 'DeleteStatus { deleteStatus: $status for employee: $employee }';
+  List<Object> get props => [status, employeeId];
+
+  @override
+  String toString() => 'DeleteStatus { deleteStatus: $status for employeeId: $employeeId }';
 }
 
 class StatusesesUpdated extends StatusesEvent {

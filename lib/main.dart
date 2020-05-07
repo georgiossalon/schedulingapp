@@ -27,6 +27,7 @@ void main() {
 }
 
 class ShiftsApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
+import 'package:snapshot_test/employee/blocs/statuses.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/employee_status.dart';
@@ -82,6 +83,8 @@ class EmployeeContainer extends StatelessWidget {
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
+                          // ! is this the right way to use the StatusBloc Here??
+                          BlocProvider.of<StatusesBloc>(context).add(LoadStatuses(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                                 return EmployeeAvailability(employee: employee,);

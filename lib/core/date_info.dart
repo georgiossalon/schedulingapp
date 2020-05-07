@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DateInfo {
 
@@ -10,5 +11,12 @@ class DateInfo {
       return new DateTime(
           dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 12);
     }
+  }
+
+  static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
+    DateTime dateTimeHiringDate =
+        DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+    return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
+        dateTimeHiringDate.day, 12);
   }
 }

@@ -125,7 +125,7 @@ class EmployeeEntity extends Equatable {
         // val: Map (keys: start_shift, end_shift, reason, description)
         var formatter = new DateFormat('yyyy-MM-dd');
         String formatedDate =
-            formatter.format(status.statusDate);
+            formatter.format(status.status_date);
         // connecting the status details with the date
         hMap[formatedDate] = hhMap;
       }

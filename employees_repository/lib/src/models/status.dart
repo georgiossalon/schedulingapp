@@ -6,7 +6,7 @@ import '../entities/entities.dart';
 
 @immutable
 class Status {
-  final DateTime statusDate;
+  final DateTime status_date;
   final String start_shift;
   final String end_shift;
   final String reason;
@@ -14,7 +14,7 @@ class Status {
   final String id;
   
   Status({
-    this.statusDate,
+    this.status_date,
     this.start_shift,
     this.end_shift,
     this.reason,
@@ -40,7 +40,7 @@ class Status {
     int id,
   }) {
     return Status(
-      statusDate: statusDate ?? this.statusDate,
+      status_date: statusDate ?? this.status_date,
       start_shift: start_shift ?? this.start_shift,
       end_shift: end_shift ?? this.end_shift,
       reason: reason ?? this.reason,
@@ -51,7 +51,7 @@ class Status {
 
   @override
   int get hashCode {
-    return statusDate.hashCode ^
+    return status_date.hashCode ^
       start_shift.hashCode ^
       end_shift.hashCode ^
       reason.hashCode ^
@@ -64,7 +64,7 @@ class Status {
     if (identical(this, o)) return true;
   
     return o is Status &&
-      o.statusDate == statusDate &&
+      o.status_date == status_date &&
       o.start_shift == start_shift &&
       o.end_shift == end_shift &&
       o.reason == reason &&
@@ -74,12 +74,12 @@ class Status {
   
   @override
   String toString() {
-    return 'Status( statusDate: $statusDate, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
+    return 'Status( statusDate: $status_date, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
   }
 
   StatusEntity toEntity() {
     return StatusEntity(
-      statusDate: statusDate,
+      status_date: status_date,
       start_shift: start_shift, 
       end_shift: end_shift,
       reason: reason, 
@@ -90,7 +90,7 @@ class Status {
 
   static Status fromEntity(StatusEntity entity) {
     return Status(
-        statusDate: entity.statusDate,
+        status_date: entity.status_date,
       start_shift: entity.start_shift,
       end_shift: entity.end_shift,
       reason: entity.reason,
