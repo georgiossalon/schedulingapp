@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 
-class BuildShiftContainer extends StatelessWidget {
+class ShiftCalendarContainer extends StatelessWidget {
   final Shift shift;
   final BuildContext scaffoldContext;
 
-  const BuildShiftContainer({Key key,this.shift,this.scaffoldContext}) : super(key: key);
+  const ShiftCalendarContainer({Key key,this.shift,this.scaffoldContext}) : super(key: key);
 
   showSnackBar(context, deletedShift) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -122,7 +122,7 @@ class BuildShiftContainer extends StatelessWidget {
                           end_shift: end_shift,
                         )));
                       },
-                      daySelected: ShiftCalendarWidget.selectedDay,
+                      daySelected: ShiftCalendarWidget.shiftCalendarSelectedDay,
                       isEditing: true,
                       shift: shift,
                     );

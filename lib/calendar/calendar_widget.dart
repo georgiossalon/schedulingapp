@@ -1,17 +1,18 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
+import 'package:snapshot_test/employee/screens/employee_status.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
-import 'build_shift_calendar_container.dart';
-import 'build_status_calendar_container.dart';
+import 'shift_calendar_container.dart';
+import 'status_calendar_container.dart';
 
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;
-  DateTime selectedDay;
   bool isShift;
 
-  CalendarWidget({Key key, this.map, this.selectedDay, this.isShift}) : super(key: key);
+  CalendarWidget({Key key, this.map, this.isShift}) : super(key: key);
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -108,7 +109,9 @@ class _CalendarState extends State<CalendarWidget> {
       initialSelectedDay: DateTime.now(),
       onDaySelected: (date, events) {
         setState(() {
-          widget.selectedDay = _calendarController.selectedDay;
+          widget.isShift 
+          ? ShiftCalendarWidget.shiftCalendarSelectedDay = _calendarController.selectedDay
+          : EmployeeStatus.employeeStatusSelectedDay = _calendarController.selectedDay;
         });
       },
       builders: CalendarBuilders(
@@ -210,8 +213,8 @@ class _CalendarState extends State<CalendarWidget> {
                 //todo if I want to reuse this Widget I have to specify 
                 //todo... if I have a shift or an other status
                 return widget.isShift 
-                    ? BuildShiftContainer(shift: event, scaffoldContext: context,) 
-                    : BuildStatusContainer(status: event, scaffoldContext: context,);
+                    ? ShiftCalendarContainer(shift: event, scaffoldContext: context,) 
+                    : StatusCalendarContainer(status: event, scaffoldContext: context,);
               },
             ),
           ),

@@ -12,12 +12,15 @@ import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeAvailability extends StatelessWidget {
+class EmployeeStatus extends StatelessWidget {
+  //todo cancel the subscription for the employees status when clicking on the 
+  //todo... arrow of the top left corner of the screen
+
   static const String screenId = 'employee_availability';
   final Employee employee;
-  static DateTime selectedDay = DateTime.now();
+  static DateTime employeeStatusSelectedDay = DateTime.now();
 
-  const EmployeeAvailability({Key key, this.employee}) : super(key: key);
+  const EmployeeStatus({Key key, this.employee}) : super(key: key);
 
   static Map<DateTime, List<dynamic>> statusListToCalendarMap(
       List<Status> currentWeekStatus) {
@@ -45,7 +48,6 @@ class EmployeeAvailability extends StatelessWidget {
                 title: Text('Employee Availability'),
               ),
               body: CalendarWidget(
-                selectedDay: selectedDay,
                 map: statusListToCalendarMap(currentEmployeesStatuses),
                 isShift: false,
               ),
@@ -79,8 +81,16 @@ class EmployeeAvailability extends StatelessWidget {
                                   shift_date: shift_date,
                                 ),
                               ));
+                              BlocProvider.of<StatusesBloc>(context).add(AddStatus(
+                                Status(
+                                  reason: 'shift',
+                                  description: designation,
+                                  start_shift: start_shift,
+                                  end_shift: end_shift,
+                                  status_date: shift_date
+                                ), employee.id));
                             },
-                            daySelected: selectedDay,
+                            daySelected: employeeStatusSelectedDay,
                             isEditing: false,
                           );
                         }));
@@ -94,9 +104,6 @@ class EmployeeAvailability extends StatelessWidget {
                             .push(MaterialPageRoute(builder: (context) {
                           return AddEditEmployeeStatus(
                             onSave: (reason, description, selectedDay) {
-                              //todo fix the statusDate it is displayed as a number
-                              //! also this is not displayed at the status calendar!
-                              // BlocProvider.of<Employee(context)
                               BlocProvider.of<StatusesBloc>(context).add(
                                   AddStatus(
                                       Status(
@@ -105,7 +112,7 @@ class EmployeeAvailability extends StatelessWidget {
                                           status_date: selectedDay),
                                       employee.id));
                             },
-                            daySelected: selectedDay,
+                            daySelected: employeeStatusSelectedDay,
                             isEditing: false,
                           );
                         }));

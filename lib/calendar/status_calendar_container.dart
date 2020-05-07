@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
 import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 
-class BuildStatusContainer extends StatelessWidget {
+class StatusCalendarContainer extends StatelessWidget {
   final Status status;
   final BuildContext scaffoldContext;
 
-  const BuildStatusContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
+  const StatusCalendarContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
 
   showSnackBar(context, deletedStatus) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -50,6 +50,29 @@ class BuildStatusContainer extends StatelessWidget {
                   fontSize: 17.0,
                 ),
               ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    status.start_shift != null 
+                        ? 'start_shift ${status.start_shift}'
+                        : '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
+                   SizedBox(width: 20.0,),
+                  Text(
+                    status.end_shift != null 
+                        ? 'end_shift ${status.end_shift}'
+                        : '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           Row(
@@ -64,6 +87,7 @@ class BuildStatusContainer extends StatelessWidget {
                 ),
                 onTap: () {
                   //todo need status Bloc
+                  //todo also at the shift calendar page, I should link the status
                   // BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(shift));
                   // // hide previous snackbars and show only the current one
                   // Scaffold.of(context).hideCurrentSnackBar();
@@ -94,7 +118,7 @@ class BuildStatusContainer extends StatelessWidget {
                         //   end_shift: end_shift,
                         // )));
                       },
-                      daySelected: ShiftCalendarWidget.selectedDay,
+                      daySelected: ShiftCalendarWidget.shiftCalendarSelectedDay,
                       isEditing: true,
                       status: status,
                     );

@@ -7,7 +7,7 @@ import 'package:snapshot_test/calendar/calendar_widget.dart';
 
 class ShiftCalendarWidget extends StatelessWidget {
   static const String screenId = 'shift_calendar_screen';
-  static DateTime selectedDay = DateTime.now();
+  static DateTime shiftCalendarSelectedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class ShiftCalendarWidget extends StatelessWidget {
             ),
             body: CalendarWidget(
               map: map,
-              selectedDay: selectedDay,
               isShift: true,
             ),
             floatingActionButton: FloatingActionButton(
@@ -59,7 +58,7 @@ class ShiftCalendarWidget extends StatelessWidget {
                             shift_date: shift_date),
                       ));
                     },
-                    daySelected: selectedDay,
+                    daySelected: shiftCalendarSelectedDay,
                     isEditing: false,
                   );
                 }));

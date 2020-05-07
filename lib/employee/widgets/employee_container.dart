@@ -84,10 +84,11 @@ class EmployeeContainer extends StatelessWidget {
                       child: FlatButton(
                         onPressed: () {
                           // ! is this the right way to use the StatusBloc Here??
+                          //! also the number 2 is the default and should be changed
                           BlocProvider.of<StatusesBloc>(context).add(LoadStatuses(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                                return EmployeeAvailability(employee: employee,);
+                                return EmployeeStatus(employee: employee,);
                               }));
                         },
                         color: Colors.blueGrey.shade400,

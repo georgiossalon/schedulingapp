@@ -81,14 +81,13 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   @override
   Stream<List<Status>> statuses(String employeeId, int numOfWeeks, DateTime currentDate) {
-      // todo implement the numOfWeeks currently it only searches upto 2 weeks
-      DateTime currentDateMinusOneWeek = currentDate.subtract(new Duration(days: 7));
-      DateTime currentDatePlusOneWeek = currentDate.add(new Duration(days: 7));
-      //todo add the default number of weeks to read
+      // !at the moment I get events from current week upto the numOfWeeks
+      DateTime mondayOfCurrentWeek = currentDate.subtract(new Duration(days: currentDate.weekday - 1));
+      DateTime dateOfSundayForXthWeek = mondayOfCurrentWeek.add(new Duration(days: numOfWeeks*7 -1));
       return _employeeCollection
           .document(employeeId).collection(statusesCollectionName)
-          .where('status_date', isGreaterThanOrEqualTo: currentDateMinusOneWeek)
-          .where('status_date', isLessThanOrEqualTo: currentDatePlusOneWeek)
+          .where('status_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
+          .where('status_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
           .snapshots().map((snapshot) {
             return snapshot.documents
                 .map((doc) {
