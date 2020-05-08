@@ -4,7 +4,7 @@ import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/blocs/shifts_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
-import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
+import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 
 class ShiftCalendarContainer extends StatelessWidget {
   final Shift shift;
@@ -122,7 +122,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                           end_shift: end_shift,
                         )));
                       },
-                      daySelected: ShiftCalendarWidget.shiftCalendarSelectedDay,
+                      daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
                       shift: shift,
                     );

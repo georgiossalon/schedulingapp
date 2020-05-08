@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
-import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
+import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 
 class StatusCalendarContainer extends StatelessWidget {
   final Status status;
@@ -118,7 +118,7 @@ class StatusCalendarContainer extends StatelessWidget {
                         //   end_shift: end_shift,
                         // )));
                       },
-                      daySelected: ShiftCalendarWidget.shiftCalendarSelectedDay,
+                      daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
                       status: status,
                     );

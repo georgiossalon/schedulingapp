@@ -5,8 +5,8 @@ import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
 
-class ShiftCalendarWidget extends StatelessWidget {
-  static const String screenId = 'shift_calendar_screen';
+class ShiftsView extends StatelessWidget {
+  static const String screenId = 'shifts_view';
   static DateTime shiftCalendarSelectedDay = DateTime.now();
 
   @override
@@ -25,7 +25,7 @@ class ShiftCalendarWidget extends StatelessWidget {
         } else if (state is ShiftsLoaded) {
           final shiftsList = state.shifts;
           Map<DateTime, List<Shift>> map =
-              ShiftCalendarWidget.shiftListToCalendarEventMap(shiftsList);
+              ShiftsView.shiftListToCalendarEventMap(shiftsList);
           return Scaffold(
             appBar: AppBar(
               title: Text('Shifts'),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
+import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:snapshot_test/current_day/current_day.dart';
 import 'package:snapshot_test/employee/widgets/employees_list.dart';
 import 'package:snapshot_test/tabs/app_tab.dart';
@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget setBody(AppTab activeTab) {
     if (activeTab == AppTab.calendar) {
-      return ShiftCalendarWidget();
+      return ShiftsView();
     } else if( activeTab == AppTab.currentDay) {
       return CurrentDay();
     } else if (activeTab == AppTab.user) {

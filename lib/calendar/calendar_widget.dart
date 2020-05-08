@@ -1,7 +1,7 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/calendar/shift_calendar_widget.dart';
 import 'package:snapshot_test/employee/screens/employee_status.dart';
+import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
@@ -110,7 +110,7 @@ class _CalendarState extends State<CalendarWidget> {
       onDaySelected: (date, events) {
         setState(() {
           widget.isShift 
-          ? ShiftCalendarWidget.shiftCalendarSelectedDay = _calendarController.selectedDay
+          ? ShiftsView.shiftCalendarSelectedDay = _calendarController.selectedDay
           : EmployeeStatus.employeeStatusSelectedDay = _calendarController.selectedDay;
         });
       },
