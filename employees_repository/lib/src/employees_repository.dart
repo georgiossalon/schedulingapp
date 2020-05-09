@@ -15,7 +15,9 @@ abstract class EmployeesRepository {
 
   // create a stream for a given employee
   //todo only give id instead of the whole object
-  Stream<List<Status>> statuses(String employeeId, int numOfWeeks, DateTime currentDate);
+  Stream<List<Status>> allStatusesForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
+  
+  Stream<List<Status>> allShiftStatuses(int numOfWeeks, DateTime currentDate);
 
   Future<void> updateStatus(Status status, String employeeId);
 

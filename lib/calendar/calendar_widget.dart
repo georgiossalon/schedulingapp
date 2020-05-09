@@ -192,6 +192,19 @@ class _CalendarState extends State<CalendarWidget> {
     }
   }
 
+  int searchOnlyIfMapNotNull(Map<DateTime, List<dynamic>> map) {
+    if (map == null) {
+      return 0;
+    } else {
+      widget.map[utcTo12oclock(_calendarController.selectedDay)] !=
+                          null
+                      ? widget
+                          .map[utcTo12oclock(_calendarController.selectedDay)]
+                          .length
+                      : 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -200,16 +213,12 @@ class _CalendarState extends State<CalendarWidget> {
           _buildTableCalendarWithBuilders(),
           Expanded(
             child: ListView.builder(
-              itemCount:
-                  widget.map[utcTo12oclock(_calendarController.selectedDay)] !=
-                          null
-                      ? widget
-                          .map[utcTo12oclock(_calendarController.selectedDay)]
-                          .length
-                      : 0,
+              itemCount: searchOnlyIfMapNotNull(widget.map),
               itemBuilder: (context, index) {
                 final event = widget
-                    .map[utcTo12oclock(_calendarController.selectedDay)][index];
+                    .map[utcTo12oclock(_calendarController.selectedDay)] != null 
+                        ? widget.map[utcTo12oclock(_calendarController.selectedDay)][index]
+                        : null;
                 //todo if I want to reuse this Widget I have to specify 
                 //todo... if I have a shift or an other status
                 return widget.isShift 

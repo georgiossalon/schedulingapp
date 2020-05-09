@@ -1,6 +1,8 @@
+import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
+import 'package:snapshot_test/employee/blocs/statuses.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
@@ -11,9 +13,9 @@ class ShiftsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ShiftsBloc, ShiftsState>(
+    return BlocBuilder<StatusesBloc, StatusesState>(
       builder: (context, state) {
-        if (state is ShiftsLoading) {
+        if (state is StatusesLoading) {
           return Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
@@ -22,10 +24,10 @@ class ShiftsView extends StatelessWidget {
                   style: TextStyle(fontSize: 20.0),
                 ),
               ));
-        } else if (state is ShiftsLoaded) {
-          final shiftsList = state.shifts;
-          Map<DateTime, List<Shift>> map =
-              ShiftsView.shiftListToCalendarEventMap(shiftsList);
+        } else if (state is ShiftStatusesLoaded) {
+          //todo this should only load after the shift statuses are read from firestore
+          final shiftsList = state.statuses;
+          Map<DateTime, List<Status>> map = ShiftsView.shiftListToCalendarEventMap(shiftsList);
           return Scaffold(
             appBar: AppBar(
               title: Text('Shifts'),
@@ -74,17 +76,19 @@ class ShiftsView extends StatelessWidget {
     );
   }
 
-  static Map<DateTime, List<Shift>> shiftListToCalendarEventMap(
-      List<Shift> shiftList) {
-    Map<DateTime, List<Shift>> map = {};
+  static Map<DateTime, List<Status>> shiftListToCalendarEventMap(
+      List<Status> shiftList) {
+    Map<DateTime, List<Status>> map = {};
     for (int i = 0; i < shiftList.length; i++) {
-      Shift shift = shiftList[i];
-      DateTime shiftDateTime = shift.shift_date;
+      //todo maybe map status to a shift object?
+      //todo... it maybe though to much hustle to put it back to the StatusBloc (add/edit/delete/)
+      Status shift = shiftList[i];
+      DateTime shiftDateTime = shift.status_date;
       if (map[shiftDateTime] == null) {
         // creating a new List and passing a widget
         map[shiftDateTime] = [shift];
       } else {
-        List<Shift> helpList = map[shiftDateTime];
+        List<Status> helpList = map[shiftDateTime];
         helpList.add(shift);
       }
     }

@@ -37,11 +37,11 @@ class ShiftsApp extends StatelessWidget {
             userRepository: FirebaseUserRepository(),
           )..add(AppStarted());
         }),
-        BlocProvider<ShiftsBloc>(create: (context) {
-          return ShiftsBloc(
-            shiftsRepository: FirebaseShiftsRepository(),
-          )..add(LoadShifts());
-        }),
+        // BlocProvider<ShiftsBloc>(create: (context) {
+        //   return ShiftsBloc(
+        //     shiftsRepository: FirebaseShiftsRepository(),
+        //   )..add(LoadShifts());
+        // }),
         //fixme: why not load after the Authenticated state?
         BlocProvider<EmployeesBloc>(create: (context) {
           return EmployeesBloc(
@@ -52,7 +52,7 @@ class ShiftsApp extends StatelessWidget {
         BlocProvider<StatusesBloc>(create: (context) {
           return StatusesBloc(
             employeesRepository: FirebaseEmployeesRepository()
-            );
+            )..add(LoadAllShiftsForXWeeks(4));
         },)
       ],
       // fixme: after restarting the app the user is still loged in

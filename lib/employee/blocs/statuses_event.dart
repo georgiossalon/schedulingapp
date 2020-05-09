@@ -9,11 +9,11 @@ abstract class StatusesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadStatuses extends StatusesEvent {
+class LoadAllStatusesForEmployeeForXWeeks extends StatusesEvent {
   final String employeeId;
   final int numOfWeeks;
 
-  const LoadStatuses(this.employeeId, this.numOfWeeks);
+  const LoadAllStatusesForEmployeeForXWeeks(this.employeeId, this.numOfWeeks);
 
   @override
   List<Object> get props => [employeeId, numOfWeeks];
@@ -22,9 +22,22 @@ class LoadStatuses extends StatusesEvent {
   String toString() => 'LoadStatuses for employeeId: $employeeId for numOfWeeks: $numOfWeeks';
 }
 
+class LoadAllShiftsForXWeeks extends StatusesEvent {
+  final int numOfWeeks;
+
+  const LoadAllShiftsForXWeeks(this.numOfWeeks);
+
+  @override
+  List<Object> get props => [numOfWeeks];
+
+  @override
+  String toString() => 'LoadAllShifts for numOfWeeks: $numOfWeeks';
+}
+
 class AddStatus extends StatusesEvent {
   final Status status;
   final String employeeId;
+  // I can still assign shifts to the "employee" 'Open'
 
   const AddStatus(this.status, this.employeeId);
 
@@ -74,10 +87,19 @@ class DeleteStatus extends StatusesEvent {
   String toString() => 'DeleteStatus { deleteStatus: $status for employeeId: $employeeId }';
 }
 
-class StatusesesUpdated extends StatusesEvent {
+class StatusesUpdated extends StatusesEvent {
   final List<Status> statuses;
   
-  const StatusesesUpdated(this.statuses);
+  const StatusesUpdated(this.statuses);
+
+  @override
+  List<Object> get props => [statuses];
+}
+
+class ShiftStatusesUpdated extends StatusesEvent {
+  final List<Status> statuses;
+  
+  const ShiftStatusesUpdated(this.statuses);
 
   @override
   List<Object> get props => [statuses];

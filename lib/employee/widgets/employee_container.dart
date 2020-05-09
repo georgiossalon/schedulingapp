@@ -85,7 +85,7 @@ class EmployeeContainer extends StatelessWidget {
                         onPressed: () {
                           // ! is this the right way to use the StatusBloc Here??
                           //! also the number 2 is the default and should be changed
-                          BlocProvider.of<StatusesBloc>(context).add(LoadStatuses(employee.id, 2));
+                          BlocProvider.of<StatusesBloc>(context).add(LoadAllStatusesForEmployeeForXWeeks(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                                 return EmployeeStatus(employee: employee,);

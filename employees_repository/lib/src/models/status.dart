@@ -6,97 +6,112 @@ import '../entities/entities.dart';
 
 @immutable
 class Status {
-  final DateTime status_date;
-  final String start_shift;
-  final String end_shift;
-  final String reason;
   final String description;
+  final String designation;
+  final String employee;
+  final String end_shift;
   final String id;
-  
+  final String reason;
+  final String start_shift;
+  final DateTime status_date;
+
   Status({
-    this.status_date,
-    this.start_shift,
-    this.end_shift,
-    this.reason,
     this.description,
-    this.id
+    this.designation,
+    this.employee,
+    this.end_shift,
+    this.id,
+    this.reason,
+    this.start_shift,
+    this.status_date,
   });
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
     if (timestamp != null) {
-    DateTime dateTimeHiringDate =
-        DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
-    return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
-        dateTimeHiringDate.day, 12);
+      DateTime dateTimeHiringDate =
+          DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+      return DateTime(dateTimeHiringDate.year, dateTimeHiringDate.month,
+          dateTimeHiringDate.day, 12);
     }
   }
 
   Status copyWith({
-    DateTime statusDate,
-    String start_shift,
-    String end_shift,
-    String reason,
     String description,
-    int id,
+    String designation,
+    String employee,
+    String end_shift,
+    String id,
+    String reason,
+    String start_shift,
+    DateTime status_date,
   }) {
     return Status(
-      status_date: statusDate ?? this.status_date,
-      start_shift: start_shift ?? this.start_shift,
-      end_shift: end_shift ?? this.end_shift,
-      reason: reason ?? this.reason,
       description: description ?? this.description,
+      designation: designation ?? this.designation,
+      employee: employee ?? this.employee,
+      end_shift: end_shift ?? this.end_shift,
       id: id ?? this.id,
+      reason: reason ?? this.reason,
+      start_shift: start_shift ?? this.start_shift,
+      status_date: status_date ?? this.status_date,
     );
   }
 
   @override
   int get hashCode {
-    return status_date.hashCode ^
-      start_shift.hashCode ^
-      end_shift.hashCode ^
-      reason.hashCode ^
-      description.hashCode ^
-      id.hashCode;
+    return description.hashCode ^
+        designation.hashCode ^
+        employee.hashCode ^
+        end_shift.hashCode ^
+        id.hashCode ^
+        reason.hashCode ^
+        start_shift.hashCode ^
+        status_date.hashCode;
   }
- 
+
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
+
     return o is Status &&
-      o.status_date == status_date &&
-      o.start_shift == start_shift &&
-      o.end_shift == end_shift &&
-      o.reason == reason &&
-      o.description == description &&
-      o.id == id;
+        o.description == description &&
+        o.designation == designation &&
+        o.employee == employee &&
+        o.end_shift == end_shift &&
+        o.id == id &&
+        o.reason == reason &&
+        o.start_shift == start_shift &&
+        o.status_date == status_date;
   }
-  
+
   @override
   String toString() {
-    return 'Status( statusDate: $status_date, start_shift: $start_shift, end_shift: $end_shift, reason: $reason, description: $description, id: $id)';
+    return 'Status {description: $description, designation: $designation, employee: $employee, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, statusDate: $status_date }';
   }
 
   StatusEntity toEntity() {
     return StatusEntity(
-      status_date: status_date,
-      start_shift: start_shift, 
-      end_shift: end_shift,
-      reason: reason, 
       description: description,
+      designation: designation,
+      employee: employee,
+      end_shift: end_shift,
       id: id,
+      reason: reason,
+      start_shift: start_shift,
+      status_date: status_date,
     );
   }
 
   static Status fromEntity(StatusEntity entity) {
     return Status(
-        status_date: entity.status_date,
-      start_shift: entity.start_shift,
-      end_shift: entity.end_shift,
-      reason: entity.reason,
       description: entity.description,
-      id: entity.id
+      designation: entity.designation,
+      employee: entity.employee,
+      end_shift: entity.end_shift,
+      id: entity.id,
+      reason: entity.reason,
+      start_shift: entity.start_shift,
+      status_date: entity.status_date,
     );
   }
-
 }

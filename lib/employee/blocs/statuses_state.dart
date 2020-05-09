@@ -22,6 +22,18 @@ class StatusesLoaded extends StatusesState {
   String toString() => 'Statuses {statuses $statuses }';
 }
 
+class ShiftStatusesLoaded extends StatusesState {
+  final List<Status> statuses;
+
+  const ShiftStatusesLoaded([this.statuses = const[]]);
+
+  @override
+  List<Object> get props => [statuses];
+
+  @override
+  String toString() => 'Statuses {statuses $statuses }';
+}
+
 // class StatusesForGivenEmployeeLoaded extends StatusesState {
 //   final List<Status> statuses;
 //   final String employeeId;

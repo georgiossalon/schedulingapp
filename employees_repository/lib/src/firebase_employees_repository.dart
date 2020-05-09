@@ -9,7 +9,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 // todo --
   static final _firestore = Firestore.instance;
 
-  final CollectionReference _employeeCollection = _firestore.collection('Employees');
+  final CollectionReference _employeeCollection =
+      _firestore.collection('Employees');
 
   @override
   Future<void> addNewEmployee(Employee employee) {
@@ -29,7 +30,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
           .toList();
     });
   }
-    
+
   @override
   Future<void> updateEmployee(Employee update) {
     return _employeeCollection
@@ -55,45 +56,68 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   @override
   Future<void> deleteStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employeeId)
-            .collection(statusesCollectionName)
-            .document(status.id)
-            .delete();
+        .document(employeeId)
+        .collection(statusesCollectionName)
+        .document(status.id)
+        .delete();
   }
 
   @override
   Future<void> updateStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employeeId)
-            .collection(statusesCollectionName)
-            .document(status.id)
-            .updateData(status.toEntity().toDocument());
+        .document(employeeId)
+        .collection(statusesCollectionName)
+        .document(status.id)
+        .updateData(status.toEntity().toDocument());
   }
 
   @override
   Future<void> redoStatus(Status status, String employeeId) {
     return _employeeCollection
-            .document(employeeId)
-            .collection(statusesCollectionName)
-            .document(status.id)
-            .setData(status.toEntity().toDocument());
+        .document(employeeId)
+        .collection(statusesCollectionName)
+        .document(status.id)
+        .setData(status.toEntity().toDocument());
   }
 
   @override
-  Stream<List<Status>> statuses(String employeeId, int numOfWeeks, DateTime currentDate) {
-      // !at the moment I get events from current week upto the numOfWeeks
-      DateTime mondayOfCurrentWeek = currentDate.subtract(new Duration(days: currentDate.weekday - 1));
-      DateTime dateOfSundayForXthWeek = mondayOfCurrentWeek.add(new Duration(days: numOfWeeks*7 -1));
-      return _employeeCollection
-          .document(employeeId).collection(statusesCollectionName)
-          .where('status_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
-          .where('status_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
-          .snapshots().map((snapshot) {
-            return snapshot.documents
-                .map((doc) {
-                  return Status.fromEntity(StatusEntity.fromSnapshot(doc));}).toList();
-          });
+  Stream<List<Status>> allStatusesForGivenEmployee(
+      String employeeId, int numOfWeeks, DateTime currentDate) {
+    // !at the moment I get events from current week upto the numOfWeeks
+    DateTime mondayOfCurrentWeek =
+        currentDate.subtract(new Duration(days: currentDate.weekday - 1));
+    DateTime dateOfSundayForXthWeek =
+        mondayOfCurrentWeek.add(new Duration(days: numOfWeeks * 7 - 1));
+    return _employeeCollection
+        .document(employeeId)
+        .collection(statusesCollectionName)
+        .where('status_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
+        .where('status_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.documents.map((doc) {
+        return Status.fromEntity(StatusEntity.fromSnapshot(doc));
+      }).toList();
+    });
   }
 
-
+  // todo check if this is working properly!
+  @override
+  Stream<List<Status>> allShiftStatuses(int numOfWeeks, DateTime currentDate) {
+    DateTime mondayOfCurrentWeek =
+        currentDate.subtract(new Duration(days: currentDate.weekday - 1));
+    DateTime dateOfSundayForXthWeek =
+        mondayOfCurrentWeek.add(new Duration(days: numOfWeeks * 7 - 1));
+    return _firestore
+        .collectionGroup('Statuses')
+        .where('reason', isEqualTo: 'shift')
+        .where('status_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
+        .where('status_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.documents.map((doc) {
+        return Status.fromEntity(StatusEntity.fromSnapshot(doc));
+      }).toList();
+    });
+  }
 }
