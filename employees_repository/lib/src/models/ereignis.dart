@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../entities/entities.dart';
 
 @immutable
-class Status {
+class Ereignis {
   final String description;
   final String designation;
   final String employee;
@@ -13,9 +13,10 @@ class Status {
   final String id;
   final String reason;
   final String start_shift;
-  final DateTime status_date;
+  final DateTime ereignis_date;
+  final String parentId;
 
-  Status({
+  Ereignis({
     this.description,
     this.designation,
     this.employee,
@@ -23,7 +24,8 @@ class Status {
     this.id,
     this.reason,
     this.start_shift,
-    this.status_date,
+    this.ereignis_date,
+    this.parentId
   });
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
@@ -35,7 +37,7 @@ class Status {
     }
   }
 
-  Status copyWith({
+  Ereignis copyWith({
     String description,
     String designation,
     String employee,
@@ -43,9 +45,10 @@ class Status {
     String id,
     String reason,
     String start_shift,
-    DateTime status_date,
+    DateTime ereignis_date,
+    String parentId
   }) {
-    return Status(
+    return Ereignis(
       description: description ?? this.description,
       designation: designation ?? this.designation,
       employee: employee ?? this.employee,
@@ -53,7 +56,8 @@ class Status {
       id: id ?? this.id,
       reason: reason ?? this.reason,
       start_shift: start_shift ?? this.start_shift,
-      status_date: status_date ?? this.status_date,
+      ereignis_date: ereignis_date ?? this.ereignis_date,
+      parentId: parentId ?? this.parentId
     );
   }
 
@@ -66,14 +70,15 @@ class Status {
         id.hashCode ^
         reason.hashCode ^
         start_shift.hashCode ^
-        status_date.hashCode;
+        ereignis_date.hashCode ^
+        parentId.hashCode;
   }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is Status &&
+    return o is Ereignis &&
         o.description == description &&
         o.designation == designation &&
         o.employee == employee &&
@@ -81,16 +86,17 @@ class Status {
         o.id == id &&
         o.reason == reason &&
         o.start_shift == start_shift &&
-        o.status_date == status_date;
+        o.ereignis_date == ereignis_date &&
+        o.parentId == parentId;
   }
 
   @override
   String toString() {
-    return 'Status {description: $description, designation: $designation, employee: $employee, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, statusDate: $status_date }';
+    return 'Ereignis {description: $description, designation: $designation, employee: $employee, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId }';
   }
 
-  StatusEntity toEntity() {
-    return StatusEntity(
+  EreignisEntity toEntity() {
+    return EreignisEntity(
       description: description,
       designation: designation,
       employee: employee,
@@ -98,12 +104,13 @@ class Status {
       id: id,
       reason: reason,
       start_shift: start_shift,
-      status_date: status_date,
+      ereignis_date: ereignis_date,
+      parentId: parentId
     );
   }
 
-  static Status fromEntity(StatusEntity entity) {
-    return Status(
+  static Ereignis fromEntity(EreignisEntity entity) {
+    return Ereignis(
       description: entity.description,
       designation: entity.designation,
       employee: entity.employee,
@@ -111,7 +118,8 @@ class Status {
       id: entity.id,
       reason: entity.reason,
       start_shift: entity.start_shift,
-      status_date: entity.status_date,
+      ereignis_date: entity.ereignis_date,
+      parentId: entity.parentId
     );
   }
 }

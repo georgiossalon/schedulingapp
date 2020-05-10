@@ -9,6 +9,7 @@ typedef OnSaveCallback = Function(
   double salary,
   String email,
   DateTime hiringDate,
+  Map<DateTime,bool> busyMap,
 );
 
 class AddEditEmployee extends StatefulWidget {
@@ -35,6 +36,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   double _salary;
   String _email;
   DateTime _hiringDate;
+  Map<DateTime, bool> _busyMap;
 
   bool get isEditing => widget.isEditing;
 
@@ -170,6 +172,20 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
+  Map<DateTime,bool> setEmployeeBusy() {
+   DateTime mondayOfCurrentWeek =
+        DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
+    // DateTime dateOfSundayForXthWeek =
+    //     mondayOfCurrentWeek.add(new Duration(days: 7 - 1));
+    Map<DateTime, bool> hMap = new Map<DateTime,bool>();
+    DateTime hDate = mondayOfCurrentWeek;
+    for (var i = 0; i < 7; i++) {
+      hMap[hDate] = false;
+      hDate = hDate.add(new Duration(days: 1));
+    }
+    return hMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -209,7 +225,8 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                 _weeklyHours,
                 _salary,
                 _email,
-                _hiringDate
+                _hiringDate,
+                _busyMap == null ? setEmployeeBusy() : widget.employee.busyMap
               );
               Navigator.pop(context);
             }

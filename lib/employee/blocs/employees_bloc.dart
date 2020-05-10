@@ -13,7 +13,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       _employeesRepository = employeesRepository;
 
   @override
-  EmployeesState get initialState => EmployeesLoaded();
+  EmployeesState get initialState => EmployeesLoading();
 
   @override
   Stream<EmployeesState> mapEventToState(EmployeesEvent event) async* {
@@ -29,15 +29,25 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapEmployeesRedoToState(event);
     } else if (event is EmployeesUpdated) {
       yield* _mapEmployeesUpdateToState(event);
+    } else if (event is LoadEmployeesWithGivenDesignation) {
+      yield* _mapLoadEmployeesWithGivenDesignation(event);
     }
-//    else if (event is EmployeeStatusRequested) {
-//      yield* _mapEmployeeStatusRequestedToState(event);
+//    else if (event is EmployeeEreignisRequested) {
+//      yield* _mapEmployeeEreignisRequestedToState(event);
 //    }
   }
 
   Stream<EmployeesState> _mapLoadEmployeesToState() async* {
     _employeesSubscription?.cancel();
     _employeesSubscription = _employeesRepository.employees().listen(
+      (employees) => add(EmployeesUpdated(employees)),
+    );
+  }
+  
+  // ! do I need a stream for the designations??
+  Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(LoadEmployeesWithGivenDesignation event) async* {
+    _employeesSubscription?.cancel();
+    _employeesSubscription = _employeesRepository.availableEmployeesForGivenDesignation(event.designation, event.date).listen(
       (employees) => add(EmployeesUpdated(employees)),
     );
   }
@@ -62,10 +72,10 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     yield EmployeesLoaded(event.employees);
   }
  
-//  Stream<EmployeesState> _mapEmployeeStatusRequestedToState(EmployeeStatusRequested event) async* {
+//  Stream<EmployeesState> _mapEmployeeEreignisRequestedToState(EmployeeEreignisRequested event) async* {
 //    // todo -- yield proper state
 //    // cancel sub
-//    _employeesRepository.statuses().listen((data) => add(EmployeestatusesReceived(data)));
+//    _employeesRepository.ereignises().listen((data) => add(EmployeeereignisesReceived(data)));
 //    // yield EmployeesLoaded(event.employees);
 //  }
 

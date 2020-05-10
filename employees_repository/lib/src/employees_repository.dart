@@ -9,22 +9,24 @@ abstract class EmployeesRepository {
 
   Stream<List<Employee>> employees();
   
+  Stream<List<Employee>> availableEmployeesForGivenDesignation(String designation, DateTime date);
+  
   Future<void> updateEmployee(Employee employee);
 
   Future<void> redoEmployee(Employee employee);
 
   // create a stream for a given employee
   //todo only give id instead of the whole object
-  Stream<List<Status>> allStatusesForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
+  Stream<List<Ereignis>> allEreignisesForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
   
-  Stream<List<Status>> allShiftStatuses(int numOfWeeks, DateTime currentDate);
+  Stream<List<Ereignis>> allShiftEreignises(int numOfWeeks, DateTime currentDate);
 
-  Future<void> updateStatus(Status status, String employeeId);
+  Future<void> updateEreignis(Ereignis ereignis);
 
-  Future<void> deleteStatus(Status status, String employeeId);
+  Future<void> deleteEreignis(Ereignis ereignis);
   
-  Future<void> addNewStatus(Status status, String employeeId);
+  Future<void> addNewEreignis(Ereignis ereignis);
   
-  Future<void> redoStatus(Status status, String employeeId);
+  Future<void> redoEreignis(Ereignis ereignis);
 
 }

@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/statuses.dart';
+import 'package:snapshot_test/employee/blocs/ereignises.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/employee/screens/employee_status.dart';
+import 'package:snapshot_test/employee/screens/employee_ereignis.dart';
 
 //!! Maybe stateful?
 class EmployeeContainer extends StatelessWidget {
@@ -28,6 +28,8 @@ class EmployeeContainer extends StatelessWidget {
     ));
   }
 
+  // todo implement the busyMap so it is visible in the employee_list (employees tab)
+  //todo also update this busyMap every week
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -83,12 +85,12 @@ class EmployeeContainer extends StatelessWidget {
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
-                          // ! is this the right way to use the StatusBloc Here??
+                          // ! is this the right way to use the EreignisBloc Here??
                           //! also the number 2 is the default and should be changed
-                          BlocProvider.of<StatusesBloc>(context).add(LoadAllStatusesForEmployeeForXWeeks(employee.id, 2));
+                          BlocProvider.of<EreignisesBloc>(context).add(LoadAllEreignisesForEmployeeForXWeeks(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                                return EmployeeStatus(employee: employee,);
+                                return EmployeeEreignis(employee: employee,);
                               }));
                         },
                         color: Colors.blueGrey.shade400,
@@ -118,6 +120,7 @@ class EmployeeContainer extends StatelessWidget {
                                 salary,
                                 email,
                                 hiringDate,
+                                busyMap,
                               ) {
                                 BlocProvider.of<EmployeesBloc>(context)
                                     .add(UpdateEmployee(employee.copyWith(

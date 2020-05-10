@@ -2,8 +2,8 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shifts_repository/shifts_repository.dart';
-import 'package:snapshot_test/employee/blocs/statuses.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
+import 'package:snapshot_test/employee/blocs/ereignises.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
 import 'package:snapshot_test/main.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
@@ -12,24 +12,24 @@ import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeStatus extends StatelessWidget {
-  //todo cancel the subscription for the employees status when clicking on the 
+class EmployeeEreignis extends StatelessWidget {
+  //todo cancel the subscription for the employees ereignis when clicking on the 
   //todo... arrow of the top left corner of the screen
 
   static const String screenId = 'employee_availability';
   final Employee employee;
-  static DateTime employeeStatusSelectedDay = DateTime.now();
+  static DateTime employeeEreignisSelectedDay = DateTime.now();
 
-  const EmployeeStatus({Key key, this.employee}) : super(key: key);
+  const EmployeeEreignis({Key key, this.employee}) : super(key: key);
 
-  static Map<DateTime, List<dynamic>> statusListToCalendarMap(
-      List<Status> currentWeekStatus) {
+  static Map<DateTime, List<dynamic>> ereignisListToCalendarMap(
+      List<Ereignis> currentWeekEreignis) {
     Map<DateTime, List<dynamic>> hMap = new Map<DateTime, List<dynamic>>();
-    if (currentWeekStatus != null) {
-      for (Status status in currentWeekStatus) {
+    if (currentWeekEreignis != null) {
+      for (Ereignis ereignis in currentWeekEreignis) {
         //!! only one event is allowed for the availability calendar
         //!! still I use a List. Change this in the future?
-        hMap[status.status_date] = [status];
+        hMap[ereignis.ereignis_date] = [ereignis];
       }
     }
     return hMap;
@@ -37,10 +37,10 @@ class EmployeeStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StatusesBloc, StatusesState>(
+    return BlocBuilder<EreignisesBloc, EreignisesState>(
       builder: (context, state) {
-        if (state is StatusesLoaded) {
-          List<Status> currentEmployeesStatuses = state.statuses;
+        if (state is EreignisesLoaded) {
+          List<Ereignis> currentEmployeesEreignises = state.ereignises;
           //todo take only the info for the given employee
           return SafeArea(
             child: Scaffold(
@@ -48,7 +48,7 @@ class EmployeeStatus extends StatelessWidget {
                 title: Text('Employee Availability'),
               ),
               body: CalendarWidget(
-                map: statusListToCalendarMap(currentEmployeesStatuses),
+                map: ereignisListToCalendarMap(currentEmployeesEreignises),
                 isShift: false,
               ),
               floatingActionButton: SpeedDial(
@@ -71,7 +71,7 @@ class EmployeeStatus extends StatelessWidget {
                               end_shift,
                               shift_date,
                             ) {
-                              //todo: add the shift to the employees statuses (Bloc)
+                              //todo: add the shift to the employees ereignises (Bloc)
                               BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                                 Shift(
                                   designation: designation,
@@ -81,40 +81,40 @@ class EmployeeStatus extends StatelessWidget {
                                   shift_date: shift_date,
                                 ),
                               ));
-                              BlocProvider.of<StatusesBloc>(context).add(AddStatus(
-                                Status(
+                              BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
+                                Ereignis(
                                   reason: 'shift',
                                   description: designation,
                                   start_shift: start_shift,
                                   end_shift: end_shift,
-                                  status_date: shift_date
-                                ), employee.id));
+                                  ereignis_date: shift_date
+                                )));
                             },
-                            daySelected: employeeStatusSelectedDay,
+                            daySelected: employeeEreignisSelectedDay,
                             isEditing: false,
                           );
                         }));
                       }),
                   SpeedDialChild(
                       child: Icon(FontAwesomeIcons.couch),
-                      label: 'Add status',
+                      label: 'Add ereignis',
                       backgroundColor: Colors.grey,
                       onTap: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return AddEditEmployeeStatus(
-                            onSave: (reason, description, selectedDay) {
-                              BlocProvider.of<StatusesBloc>(context).add(
-                                  AddStatus(
-                                      Status(
-                                          reason: reason,
-                                          description: description,
-                                          status_date: selectedDay),
-                                      employee.id));
-                            },
-                            daySelected: employeeStatusSelectedDay,
-                            isEditing: false,
-                          );
+                          // return AddEditEmployeeEreignis(
+                          //   onSave: (reason, description, selectedDay) {
+                          //     BlocProvider.of<EreignisesBloc>(context).add(
+                          //         AddEreignis(
+                          //             Ereignis(
+                          //                 reason: reason,
+                          //                 description: description,
+                          //                 ereignis_date: selectedDay),
+                          //             employee.id));
+                          //   },
+                          //   daySelected: employeeEreignisSelectedDay,
+                          //   isEditing: false,
+                          // );
                         }));
                       })
                 ],

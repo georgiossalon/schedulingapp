@@ -1,12 +1,12 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/employee/screens/employee_status.dart';
+import 'package:snapshot_test/employee/screens/employee_ereignis.dart';
 import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
 import 'shift_calendar_container.dart';
-import 'status_calendar_container.dart';
+import 'ereignis_calendar_container.dart';
 
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;
@@ -79,8 +79,8 @@ class _CalendarState extends State<CalendarWidget> {
       // the first element a string, then I have an status entry
       // if it is not a string it is probably a shift object
       // employee unavailable then the color is red
-      Status status = widget.map[DateInfo.utcTo12oclock(dateTime)][0];
-      if (status.reason == 'shift') {
+      Ereignis ereignis = widget.map[DateInfo.utcTo12oclock(dateTime)][0];
+      if (ereignis.reason == 'shift') {
         return Colors.green;
       } else {
         // employee has a shift
@@ -111,7 +111,7 @@ class _CalendarState extends State<CalendarWidget> {
         setState(() {
           widget.isShift 
           ? ShiftsView.shiftCalendarSelectedDay = _calendarController.selectedDay
-          : EmployeeStatus.employeeStatusSelectedDay = _calendarController.selectedDay;
+          : EmployeeEreignis.employeeEreignisSelectedDay = _calendarController.selectedDay;
         });
       },
       builders: CalendarBuilders(
@@ -215,15 +215,15 @@ class _CalendarState extends State<CalendarWidget> {
             child: ListView.builder(
               itemCount: searchOnlyIfMapNotNull(widget.map),
               itemBuilder: (context, index) {
-                final event = widget
+                final Ereignis event = widget
                     .map[utcTo12oclock(_calendarController.selectedDay)] != null 
                         ? widget.map[utcTo12oclock(_calendarController.selectedDay)][index]
                         : null;
                 //todo if I want to reuse this Widget I have to specify 
                 //todo... if I have a shift or an other status
                 return widget.isShift 
-                    ? ShiftCalendarContainer(shift: event, scaffoldContext: context,) 
-                    : StatusCalendarContainer(status: event, scaffoldContext: context,);
+                    ? ShiftCalendarContainer(ereignis: event, scaffoldContext: context,) 
+                    : EreignisCalendarContainer(ereignis: event, scaffoldContext: context,);
               },
             ),
           ),

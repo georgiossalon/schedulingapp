@@ -15,17 +15,17 @@ class EmployeeEntity extends Equatable {
   final String name;
   final double salary;
   final double weeklyHours;
-  final List<Status> currentWeekStatus;
+  final Map<DateTime, bool> busyMap;
 
   const EmployeeEntity(
-      this.designation,
+      {this.designation,
       this.email,
       this.hiringDate,
       this.id,
       this.name,
       this.salary,
       this.weeklyHours,
-      this.currentWeekStatus //todo map the parameters
+      this.busyMap} //todo map the parameters
       );
 
   // @override
@@ -53,7 +53,7 @@ class EmployeeEntity extends Equatable {
 
   @override
   String toString() {
-    return 'EmployeeEntity(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekStatus: $currentWeekStatus)';
+    return 'EmployeeEntity(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, busyMap: $busyMap)';
   }
 
   // static EmployeeEntity fromJson(Map<String,Object> json) {
@@ -65,7 +65,7 @@ class EmployeeEntity extends Equatable {
   //     json['name'] as String,
   //     json['salary'] as double,
   //     json['weeklyHours'] as double,
-  //     // json['currentWeekStatus'] as Map
+  //     // json['currentWeekEreignis'] as Map
   //   );
   // }
 
@@ -79,58 +79,80 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  static List<Status> snapMapToList(var snapMap) {
+  static List<Ereignis> snapMapToList(var snapMap) {
     if (snapMap != null) {
-      List<Status> hList = new List<Status>();
+      List<Ereignis> hList = new List<Ereignis>();
       snapMap.forEach((k, v) {
-        //fixme: the status keys are of type String.
+        //fixme: the ereignis keys are of type String.
         //fixme... make the keys to have the same format example 2020-05-31
         var dateTime = DateTime.parse(k);
         DateTime updatedDateTime = utcTo12oclock(dateTime);
-        Status status = Status.fromEntity(
-            StatusEntity.fromJson(v, updatedDateTime));
-        hList.add(status);
+        Ereignis ereignis =
+            Ereignis.fromEntity(EreignisEntity.fromJson(v, updatedDateTime));
+        hList.add(ereignis);
       });
       return hList;
     }
   }
 
-  static EmployeeEntity fromSnapshot(DocumentSnapshot snap) {
-    return EmployeeEntity(
-        snap.data['designation'],
-        snap.data['email'],
-        Employee.convertingFirestoreDateToDateTime(snap.data['hiringDate']),
-        snap.documentID,
-        snap.data['name'],
-        snap.data['salary'],
-        snap.data['weeklyHours'],
-        snapMapToList(snap.data[
-            'currentWeekStatus']) // converting the Firebase Map to a List<status>
-        );
-  }
-
-  static Map statusListToMap(
-      List<Status> currentWeekStatus) {
-    if (currentWeekStatus != null) {
+  static Map ereignisListToMap(List<Ereignis> currentWeekEreignis) {
+    if (currentWeekEreignis != null) {
       Map<String, Map<String, String>> hMap =
           new Map<String, Map<String, String>>();
-      for (Status status in currentWeekStatus) {
+      for (Ereignis ereignis in currentWeekEreignis) {
         Map<String, String> hhMap = new Map<String, String>();
-        hhMap['start_shift'] = status.start_shift;
-        hhMap['end_shift'] = status.end_shift;
-        hhMap['reason'] = status.reason;
-        hhMap['description'] = status.description;
+        hhMap['start_shift'] = ereignis.start_shift;
+        hhMap['end_shift'] = ereignis.end_shift;
+        hhMap['reason'] = ereignis.reason;
+        hhMap['description'] = ereignis.description;
         // Firestore keys (map) have to be of type String
         // key: date ->
         // val: Map (keys: start_shift, end_shift, reason, description)
         var formatter = new DateFormat('yyyy-MM-dd');
-        String formatedDate =
-            formatter.format(status.status_date);
-        // connecting the status details with the date
+        String formatedDate = formatter.format(ereignis.ereignis_date);
+        // connecting the ereignis details with the date
         hMap[formatedDate] = hhMap;
       }
       return hMap;
     }
+  }
+
+  Map<String, bool> changeMapKeyForDocument(Map<DateTime, bool> busyMap) {
+    if (busyMap != null) {
+      Map<String, bool> hMap = new Map<String, bool>();
+      busyMap.forEach((k, v) {
+        var formatter = new DateFormat('yyyy-MM-dd');
+        String formatedDate = formatter.format(k);
+        hMap[formatedDate] = v;
+      });
+      return hMap;
+    }
+  }
+
+  static Map<DateTime, bool> changeMapKeyForObject(Map<String,dynamic> snapMap) {
+    if (snapMap != null) {
+      Map<DateTime, bool> hMap = new Map<DateTime,bool>();
+      snapMap.forEach((k,v) {
+         var dateTime = DateTime.parse(k);
+        DateTime updatedDateTime = utcTo12oclock(dateTime);
+        hMap[updatedDateTime] = v;
+      });
+      return hMap;
+    }
+  }
+
+  static EmployeeEntity fromSnapshot(DocumentSnapshot snap) {
+    return EmployeeEntity(
+        designation: snap.data['designation'],
+        email: snap.data['email'],
+        hiringDate:
+            Employee.convertingFirestoreDateToDateTime(snap.data['hiringDate']),
+        id: snap.documentID,
+        name: snap.data['name'],
+        salary: snap.data['salary'],
+        weeklyHours: snap.data['weeklyHours'],
+        busyMap: changeMapKeyForObject(snap.data['busy_map']) //todo probably have to transform the keys String to DateTime
+        );
   }
 
   Map<String, Object> toDocument() {
@@ -141,8 +163,7 @@ class EmployeeEntity extends Equatable {
       'name': name,
       'salary': salary,
       'weeklyHours': weeklyHours,
-      'currentWeekStatus':
-          statusListToMap(currentWeekStatus),
+      'busy_map': changeMapKeyForDocument(busyMap),
     };
   }
 }

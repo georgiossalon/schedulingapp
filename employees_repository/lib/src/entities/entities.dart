@@ -1,2 +1,2 @@
 export 'employee_entity.dart';
-export 'status_entity.dart';
+export 'ereignis_entity.dart';

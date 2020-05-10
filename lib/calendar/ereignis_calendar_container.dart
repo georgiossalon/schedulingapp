@@ -2,23 +2,23 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_status.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
 import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 
-class StatusCalendarContainer extends StatelessWidget {
-  final Status status;
+class EreignisCalendarContainer extends StatelessWidget {
+  final Ereignis ereignis;
   final BuildContext scaffoldContext;
 
-  const StatusCalendarContainer({Key key, this.status, this.scaffoldContext}) : super(key: key);
+  const EreignisCalendarContainer({Key key, this.ereignis, this.scaffoldContext}) : super(key: key);
 
-  showSnackBar(context, deletedStatus) {
+  showSnackBar(context, deletedEreignis) {
     Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('status Deleted!'),
+      content: Text('ereignis Deleted!'),
       duration: Duration(seconds: 3),
       action: SnackBarAction(
         label: 'UNDO',
         onPressed: () {
-          BlocProvider.of<EmployeesBloc>(context).add(RedoEmployee(deletedStatus));
+          BlocProvider.of<EmployeesBloc>(context).add(RedoEmployee(deletedEreignis));
         },
       ),
     ));
@@ -37,14 +37,14 @@ class StatusCalendarContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Reason ${status.reason}',
+                'Reason ${ereignis.reason}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
                 ),
               ),
               Text(
-                'Description ${status.description}',
+                'Description ${ereignis.description}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
@@ -53,8 +53,8 @@ class StatusCalendarContainer extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                    status.start_shift != null 
-                        ? 'start_shift ${status.start_shift}'
+                    ereignis.start_shift != null 
+                        ? 'start_shift ${ereignis.start_shift}'
                         : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -63,8 +63,8 @@ class StatusCalendarContainer extends StatelessWidget {
                   ),
                    SizedBox(width: 20.0,),
                   Text(
-                    status.end_shift != null 
-                        ? 'end_shift ${status.end_shift}'
+                    ereignis.end_shift != null 
+                        ? 'end_shift ${ereignis.end_shift}'
                         : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -86,8 +86,8 @@ class StatusCalendarContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  //todo need status Bloc
-                  //todo also at the shift calendar page, I should link the status
+                  //todo need ereignis Bloc
+                  //todo also at the shift calendar page, I should link the ereignis
                   // BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(shift));
                   // // hide previous snackbars and show only the current one
                   // Scaffold.of(context).hideCurrentSnackBar();
@@ -103,25 +103,25 @@ class StatusCalendarContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  //todo create status add/edit screen
+                  //todo create ereignis add/edit screen
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditEmployeeStatus(
-                      onSave: (reason, description, selectedDay,
-                          ) {
-                            //todo use the status bloc
-                        // BlocProvider.of<ShiftsBloc>(context)
-                        //     .add(UpdateShift(shift.copyWith(
-                        //   designation: designation,
-                        //   employee: employeeName,
-                        //   start_shift: start_shift,
-                        //   end_shift: end_shift,
-                        // )));
-                      },
-                      daySelected: ShiftsView.shiftCalendarSelectedDay,
-                      isEditing: true,
-                      status: status,
-                    );
+                    // return AddEditEmployeeEreignis(
+                    //   onSave: (reason, description, selectedDay,
+                    //       ) {
+                    //         //todo use the ereignis bloc
+                    //     // BlocProvider.of<ShiftsBloc>(context)
+                    //     //     .add(UpdateShift(shift.copyWith(
+                    //     //   designation: designation,
+                    //     //   employee: employeeName,
+                    //     //   start_shift: start_shift,
+                    //     //   end_shift: end_shift,
+                    //     // )));
+                    //   },
+                    //   daySelected: ShiftsView.shiftCalendarSelectedDay,
+                    //   isEditing: true,
+                    //   ereignis: ereignis,
+                    // );
                   }));
                 },
               )

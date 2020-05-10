@@ -18,7 +18,10 @@ class _EmployeesListState extends State<EmployeesList> {
   Widget build(BuildContext context) {
     return BlocBuilder<EmployeesBloc, EmployeesState>(
         builder: (context, state) {
-      if (state is EmployeesLoaded) {
+          if (state is EmployeesLoading) {
+            return Container(child: Text('loading'),);
+          }
+      else if (state is EmployeesLoaded) {
         return Scaffold(
           appBar: AppBar(
             title: Text('Employees'),
@@ -44,6 +47,7 @@ class _EmployeesListState extends State<EmployeesList> {
                     salary,
                     email,
                     hiringDate,
+                    busyMap,
                   ) {
                     // * context.bloc<EmployeesBloc>().add ...
                     BlocProvider.of<EmployeesBloc>(context).add(AddEmployee(
@@ -53,7 +57,8 @@ class _EmployeesListState extends State<EmployeesList> {
                             weeklyHours: weeklyHours,
                             salary: salary,
                             email: email,
-                            hiringDate: hiringDate)));
+                            hiringDate: hiringDate,
+                            busyMap: busyMap)));
                   },
                   isEditing: false,
                 );

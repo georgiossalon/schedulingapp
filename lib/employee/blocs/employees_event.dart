@@ -67,11 +67,15 @@ class EmployeesUpdated extends EmployeesEvent {
   List<Object> get props => [employees];
 }
 
-// class EmployeeStatusRequested {
-//   final String employeeId;
+class LoadEmployeesWithGivenDesignation extends EmployeesEvent {
+  final String designation;
+  final DateTime date;
 
-//   @override
-//   List<Object> get props => [employeeId];
-// }
+  const LoadEmployeesWithGivenDesignation(this.designation, this.date);
+
+  @override
+  List<Object> get props => [designation, date];
+}
+
 
 

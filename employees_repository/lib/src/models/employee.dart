@@ -12,7 +12,7 @@ class Employee {
   final String name;
   final double salary;
   final double weeklyHours;
-  final List<Status> currentWeekStatus;
+  final Map<DateTime,bool> busyMap;
   Employee(
       {this.designation,
       this.email,
@@ -21,7 +21,7 @@ class Employee {
       this.name,
       this.salary,
       this.weeklyHours,
-      this.currentWeekStatus});
+      this.busyMap});
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
     if (timestamp != null) {
@@ -40,7 +40,7 @@ class Employee {
       String name,
       double salary,
       double weeklyHours,
-      List<Status> currentWeekStatus}) {
+      List<Ereignis> currentWeekEreignis}) {
     return Employee(
       designation: designation ?? this.designation,
       email: email ?? this.email,
@@ -49,7 +49,7 @@ class Employee {
       name: name ?? this.name,
       salary: salary ?? this.salary,
       weeklyHours: weeklyHours ?? this.weeklyHours,
-      currentWeekStatus: currentWeekStatus ?? this.currentWeekStatus
+      busyMap: currentWeekEreignis ?? this.busyMap
     );
   }
 
@@ -62,7 +62,7 @@ class Employee {
         name.hashCode ^
         salary.hashCode ^
         weeklyHours.hashCode ^
-        currentWeekStatus.hashCode;
+        busyMap.hashCode;
   }
 
   @override
@@ -77,17 +77,24 @@ class Employee {
         o.name == name &&
         o.salary == salary &&
         o.weeklyHours == weeklyHours &&
-        o.currentWeekStatus == currentWeekStatus;
+        o.busyMap == busyMap;
   }
 
   @override
   String toString() {
-    return 'Employee(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekStatus: $currentWeekStatus)';
+    return 'Employee(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekEreignis: $busyMap)';
   }
 
   EmployeeEntity toEntity() {
     return EmployeeEntity(
-        designation, email, hiringDate, id, name, salary, weeklyHours,currentWeekStatus);
+        designation:designation, 
+        email: email,
+        hiringDate: hiringDate, 
+        id: id, 
+        name: name, 
+        salary: salary,
+        weeklyHours: weeklyHours,
+        busyMap: busyMap);
   }
 
   static Employee fromEntity(EmployeeEntity entity) {
@@ -99,6 +106,6 @@ class Employee {
         name: entity.name,
         salary: entity.salary,
         weeklyHours: entity.weeklyHours,
-        currentWeekStatus: entity.currentWeekStatus);
+        busyMap: entity.busyMap);
   }
 }

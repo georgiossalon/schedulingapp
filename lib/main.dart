@@ -13,7 +13,7 @@ import 'package:snapshot_test/core/screens/home_screen.dart';
 import 'package:snapshot_test/core/screens/splash_screen.dart';
 import 'package:snapshot_test/tabs/blocs/tab.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:snapshot_test/employee/blocs/statuses.dart';
+import 'package:snapshot_test/employee/blocs/ereignises.dart';
 
 import 'authentication/blocs/authentication.dart';
 import 'employee/blocs/employees_bloc.dart';
@@ -47,10 +47,11 @@ class ShiftsApp extends StatelessWidget {
           return EmployeesBloc(
             employeesRepository: FirebaseEmployeesRepository(),
           )..add(LoadEmployees());
+          // )..add(LoadEmployeesWithGivenDesignation('5',DateTime.now()));
         }
         ,),
-        BlocProvider<StatusesBloc>(create: (context) {
-          return StatusesBloc(
+        BlocProvider<EreignisesBloc>(create: (context) {
+          return EreignisesBloc(
             employeesRepository: FirebaseEmployeesRepository()
             )..add(LoadAllShiftsForXWeeks(4));
         },)
@@ -111,6 +112,7 @@ class ShiftsApp extends StatelessWidget {
                 salary,
                 email,
                 hiringDate,
+                busyMap
               ) {
                 BlocProvider.of<EmployeesBloc>(context).add(AddEmployee(
                   Employee(
@@ -119,7 +121,8 @@ class ShiftsApp extends StatelessWidget {
                     weeklyHours: weeklyHours,
                     salary: salary,
                     email: email,
-                    hiringDate: hiringDate
+                    hiringDate: hiringDate,
+                    busyMap: busyMap
                   )
                 )
                 );
