@@ -193,7 +193,7 @@ class _CalendarState extends State<CalendarWidget> {
   }
 
   int searchOnlyIfMapNotNull(Map<DateTime, List<dynamic>> map) {
-    if (map == null) {
+    if (map == null || map.isEmpty) {
       return 0;
     } else {
       widget.map[utcTo12oclock(_calendarController.selectedDay)] !=
@@ -204,6 +204,7 @@ class _CalendarState extends State<CalendarWidget> {
                       : 0;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

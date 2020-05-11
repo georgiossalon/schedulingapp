@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:snapshot_test/core/validators.dart';
+import 'package:snapshot_test/employee/blocs/designations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 typedef OnSaveCallback = Function(
   String designation,
@@ -9,7 +12,7 @@ typedef OnSaveCallback = Function(
   double salary,
   String email,
   DateTime hiringDate,
-  Map<DateTime,bool> busyMap,
+  Map<DateTime, bool> busyMap,
 );
 
 class AddEditEmployee extends StatefulWidget {
@@ -45,9 +48,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
       firstDate: DateTime(1980),
       lastDate: DateTime.now().add((Duration(days: 60))),
       context: context,
-      initialDate: _hiringDate == null
-                        ? DateTime.now()
-                        : _hiringDate,
+      initialDate: _hiringDate == null ? DateTime.now() : _hiringDate,
     );
     if (_picked != null) {
       return _picked;
@@ -59,18 +60,23 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   @override
   void initState() {
     super.initState();
-    isEditing ? _hiringDate = widget.employee.hiringDate : '';
+    if (isEditing) {
+      _designation = widget.employee.designation;
+      _employeeName = widget.employee.name;
+      _weeklyHours = widget.employee.weeklyHours;
+      _salary = widget.employee.salary;
+      _email = widget.employee.email;
+      _hiringDate = widget.employee.hiringDate;
+    }
   }
 
   Widget _buildNameField() {
     return TextFormField(
-      initialValue: isEditing ? widget.employee.name : '',
+      initialValue: _employeeName,
       autofocus: !isEditing,
       decoration: InputDecoration(labelText: 'Employee Name'),
       validator: (String value) {
-        return value.trim().isEmpty
-            ? 'Please give a Employee Name'
-            : null;
+        return value.trim().isEmpty ? 'Please give a Employee Name' : null;
       },
       onSaved: (String value) {
         _employeeName = value.trim();
@@ -78,17 +84,38 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
+  //todo build a dropdown with the designations already inserted
   Widget _buildDesignationField() {
-    return TextFormField(
-      initialValue: isEditing ? widget.employee.designation : '',
-      decoration: InputDecoration(labelText: 'Designation'),
-      validator: (String value) {
-        return value.trim().isEmpty
-        ? 'Please set a Designation for the Employee'
-        : null;
-      },
-      onSaved: (String value) {
-        _designation = value.trim();
+    return BlocBuilder<DesignationsBloc, DesignationsState>(
+      builder: (context, state) {
+        if (state is DesignationsLoading) {
+          return Container(
+            child: Text('Loading'),
+          );
+        } else if (state is DesignationsLoaded) {
+          return InputDecorator(
+            decoration: InputDecoration(
+              icon: Icon(FontAwesomeIcons.tasks),
+              labelText: 'Designation',
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                items: state.designations.map((Designation designation) {
+                  return new DropdownMenuItem<String>(
+                    value: designation.designation,
+                    child: Text(designation.designation),
+                  );
+                }).toList(),
+                onChanged: (String newValue) {
+                  setState(() {
+                    _designation = newValue;
+                  });
+                },
+                value: _designation == null ? 'open' : _designation,
+              ),
+            ),
+          );
+        }
       },
     );
   }
@@ -134,7 +161,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildEmailField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Email'),
-      initialValue: isEditing ? widget.employee.email : '',
+      initialValue: _email,
       keyboardType: TextInputType.emailAddress,
       validator: (String value) {
         if (value.isEmpty) {
@@ -156,28 +183,26 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   //todo add validator?
   Widget _hiringDateButton() {
     return RaisedButton(
-      child: Text(
-        _hiringDate == null 
-            ? 'Pick Hiring Date' 
-            : 'Hiring Date: ${_hiringDate.day}.${_hiringDate.month}.${_hiringDate.year}'
-      ),
+      child: Text(_hiringDate == null
+          ? 'Pick Hiring Date'
+          : 'Hiring Date: ${_hiringDate.day}.${_hiringDate.month}.${_hiringDate.year}'),
       onPressed: () async {
         DateTime dateTimeOfHiring = await selectDate(context);
         setState(() {
-        if (dateTimeOfHiring != null) {
-          _hiringDate = dateTimeOfHiring;
-        }    
+          if (dateTimeOfHiring != null) {
+            _hiringDate = dateTimeOfHiring;
+          }
         });
       },
     );
   }
 
-  Map<DateTime,bool> setEmployeeBusy() {
-   DateTime mondayOfCurrentWeek =
+  Map<DateTime, bool> setEmployeeBusy() {
+    DateTime mondayOfCurrentWeek =
         DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
     // DateTime dateOfSundayForXthWeek =
     //     mondayOfCurrentWeek.add(new Duration(days: 7 - 1));
-    Map<DateTime, bool> hMap = new Map<DateTime,bool>();
+    Map<DateTime, bool> hMap = new Map<DateTime, bool>();
     DateTime hDate = mondayOfCurrentWeek;
     for (var i = 0; i < 7; i++) {
       hMap[hDate] = false;
@@ -220,14 +245,15 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
             if (_formKey.currentState.validate()) {
               _formKey.currentState.save();
               widget.onSave(
-                _designation,
-                _employeeName,
-                _weeklyHours,
-                _salary,
-                _email,
-                _hiringDate,
-                _busyMap == null ? setEmployeeBusy() : widget.employee.busyMap
-              );
+                  _designation,
+                  _employeeName,
+                  _weeklyHours,
+                  _salary,
+                  _email,
+                  _hiringDate,
+                  _busyMap == null
+                      ? setEmployeeBusy()
+                      : widget.employee.busyMap);
               Navigator.pop(context);
             }
           },

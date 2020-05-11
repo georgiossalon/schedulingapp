@@ -54,7 +54,7 @@ class ShiftsView extends StatelessWidget {
                       ereignis_date,
                       parentId
                     ) {
-                      //todo add this also to the ereignis of the chosen employee
+                      //todo add this also to the busy_map of the chosen employee
                       BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
                         Ereignis(
                           description: description,
@@ -68,6 +68,7 @@ class ShiftsView extends StatelessWidget {
                       ));
                     },
                     daySelected: shiftCalendarSelectedDay,
+                    isShift: true,
                     isEditing: false,
                   );
                 }));

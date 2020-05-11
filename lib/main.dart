@@ -16,6 +16,7 @@ import 'package:user_repository/user_repository.dart';
 import 'package:snapshot_test/employee/blocs/ereignises.dart';
 
 import 'authentication/blocs/authentication.dart';
+import 'employee/blocs/designations.dart';
 import 'employee/blocs/employees_bloc.dart';
 import 'login/login.dart';
 
@@ -37,11 +38,6 @@ class ShiftsApp extends StatelessWidget {
             userRepository: FirebaseUserRepository(),
           )..add(AppStarted());
         }),
-        // BlocProvider<ShiftsBloc>(create: (context) {
-        //   return ShiftsBloc(
-        //     shiftsRepository: FirebaseShiftsRepository(),
-        //   )..add(LoadShifts());
-        // }),
         //fixme: why not load after the Authenticated state?
         BlocProvider<EmployeesBloc>(create: (context) {
           return EmployeesBloc(
@@ -54,7 +50,11 @@ class ShiftsApp extends StatelessWidget {
           return EreignisesBloc(
             employeesRepository: FirebaseEmployeesRepository()
             )..add(LoadAllShiftsForXWeeks(4));
-        },)
+        },),
+        BlocProvider<DesignationsBloc>(create: (context) {
+          return DesignationsBloc(employeesRepository: FirebaseEmployeesRepository()
+          )..add(LoadDesignations());
+        })
       ],
       // fixme: after restarting the app the user is still loged in
       child: MaterialApp(

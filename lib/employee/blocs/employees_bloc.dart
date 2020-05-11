@@ -72,13 +72,6 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     yield EmployeesLoaded(event.employees);
   }
  
-//  Stream<EmployeesState> _mapEmployeeEreignisRequestedToState(EmployeeEreignisRequested event) async* {
-//    // todo -- yield proper state
-//    // cancel sub
-//    _employeesRepository.ereignises().listen((data) => add(EmployeeereignisesReceived(data)));
-//    // yield EmployeesLoaded(event.employees);
-//  }
-
   @override
   Future<void> close() {
     _employeesSubscription?.cancel();

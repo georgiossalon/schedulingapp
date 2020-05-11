@@ -19,6 +19,7 @@ class AddEditEmployeeEreignis extends StatefulWidget {
 
   final DateTime daySelected;
   final bool isEditing;
+  final bool isShift;
   final OnSaveCallback onSave;
   final Ereignis ereignis;
 
@@ -26,6 +27,7 @@ class AddEditEmployeeEreignis extends StatefulWidget {
     Key key,
     this.daySelected,
     this.isEditing,
+    this.isShift,
     this.onSave,
     this.ereignis,
   }) : super(key: key);
@@ -49,6 +51,8 @@ class _AddEditEmployeeEreignisState
 
 
   bool get isEditing => widget.isEditing;
+  
+  bool get isShift => widget.isShift;
 
   //todo: When editing time the initial time is always the current Time!
   //todo... I might have to change _start/_end time data type from String
@@ -90,6 +94,8 @@ class _AddEditEmployeeEreignisState
 
   }
 
+  // build dropdown with all possible designations
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -97,9 +103,15 @@ class _AddEditEmployeeEreignisState
         appBar: AppBar(
           backgroundColor: Colors.pink,
           title: Text(
+            //check if editing first
             isEditing
-                ? 'Edit ereignis on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                : 'Add ereignis on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}',
+                  // then check if it is a shift or another event
+                ? isShift
+                    ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                    : 'Edit Event on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                : isShift
+                    ? 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                    : 'Add Event on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
           ),
         ),
         body: Padding(
@@ -109,8 +121,27 @@ class _AddEditEmployeeEreignisState
               child: ListView(
                 children: <Widget>[
                   TextFormField(
+                    enabled: isShift ? false : true,
+                    initialValue: isEditing
+                                      ? isShift
+                                          ? 'shift'
+                                          : widget.ereignis.reason
+                                       : isShift
+                                          ? 'shift'
+                                          : '',
+                    autofocus: !isEditing,
+                    decoration: InputDecoration(
+                        hintText: 'Reason for the Event'),
+                      validator: (val) {
+                        return val.trim().isEmpty
+                            ? 'Please give a Reason'
+                            : null;
+                      },
+                      onSaved: (value) => _reason = value,
+                  ),
+                  TextFormField(
                     initialValue: isEditing ? widget.ereignis.description : '',   
-                    decoration: InputDecoration(hintText: 'ereignis Description'),
+                    decoration: InputDecoration(hintText: 'Description'),
                     validator: (val) {
                       return val.trim().isEmpty
                           ? 'Please give a description'
@@ -139,18 +170,6 @@ class _AddEditEmployeeEreignisState
                         : null;
                   },
                   onSaved: (value) => _employee = value,
-                  ),
-                  TextFormField(
-                    initialValue: isEditing ? widget.ereignis.reason : '',
-                    autofocus: !isEditing,
-                    decoration: InputDecoration(
-                        hintText: 'Reason for the ereignis'),
-                      validator: (val) {
-                        return val.trim().isEmpty
-                            ? 'Please give a Reason'
-                            : null;
-                      },
-                      onSaved: (value) => _reason = value,
                   ),
                   RaisedButton(
                   child: Text(

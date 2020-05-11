@@ -47,7 +47,7 @@ class EreignisesBloc extends Bloc<EreignisesEvent, EreignisesState> {
   Stream<EreignisesState> _mapEreignisesLoadAllShiftsForXWeeksToState(LoadAllShiftsForXWeeks event) async* {
     _ereignisesSubscription?.cancel();
     _ereignisesSubscription = _employeesRepository
-        .allShiftEreignises(event.numOfWeeks, DateTime.now()).listen(
+        .allShiftEreignisesForXWeeks(event.numOfWeeks, DateTime.now()).listen(
           (ereignises) => add(ShiftEreignisesUpdated(ereignises))
         );
   }

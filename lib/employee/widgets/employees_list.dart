@@ -4,6 +4,7 @@ import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/employee/blocs/employees_bloc.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapshot_test/employee/screens/designation_list.dart';
 import 'package:snapshot_test/employee/widgets/employee_container.dart';
 
 class EmployeesList extends StatefulWidget {
@@ -18,22 +19,39 @@ class _EmployeesListState extends State<EmployeesList> {
   Widget build(BuildContext context) {
     return BlocBuilder<EmployeesBloc, EmployeesState>(
         builder: (context, state) {
-          if (state is EmployeesLoading) {
-            return Container(child: Text('loading'),);
-          }
-      else if (state is EmployeesLoaded) {
+      if (state is EmployeesLoading) {
+        return Container(
+          child: Text('loading'),
+        );
+      } else if (state is EmployeesLoaded) {
         return Scaffold(
           appBar: AppBar(
             title: Text('Employees'),
             actions: <Widget>[
-              // IconButton(icon: FontsAwesome.users,)
+              //todo change this latter to be something like a menu button
+              //todo... so that the user can choose to add a designation
+              IconButton(
+                icon: Icon(
+                  Icons.list,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  //todo add a screen for adding designations
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    return DesignationList();
+                  }));
+                },
+              )
             ],
           ),
           body: ListView.builder(
-            itemCount: state.employees.length,
-            itemBuilder: (context, index){
-              return EmployeeContainer(employee: state.employees[index], scaffoldContext: context,);
-            }),
+              itemCount: state.employees.length,
+              itemBuilder: (context, index) {
+                return EmployeeContainer(
+                  employee: state.employees[index],
+                  scaffoldContext: context,
+                );
+              }),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             backgroundColor: Colors.pink,

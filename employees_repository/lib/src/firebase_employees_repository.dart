@@ -13,6 +13,9 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   final CollectionReference _employeeCollection =
       _firestore.collection('Employees');
 
+  final CollectionReference _designationCollection =
+      _firestore.collection('Designations');
+
   @override
   Future<void> addNewEmployee(Employee employee) {
     return _employeeCollection.add(employee.toEntity().toDocument());
@@ -102,9 +105,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     });
   }
 
-  // todo check if this is working properly!
   @override
-  Stream<List<Ereignis>> allShiftEreignises(
+  Stream<List<Ereignis>> allShiftEreignisesForXWeeks(
       int numOfWeeks, DateTime currentDate) {
     DateTime mondayOfCurrentWeek =
         currentDate.subtract(new Duration(days: currentDate.weekday - 1));
@@ -139,5 +141,30 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
           .map((doc) => Employee.fromEntity(EmployeeEntity.fromSnapshot(doc)))
           .toList();
     });
+  }
+
+  @override
+  Stream<List<Designation>> designations() {
+    return _designationCollection.snapshots().map((snapshot) {
+      return snapshot.documents
+          .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
+          .toList();
+    });
+  }
+
+  @override
+  Future<void> addNewDesignation(Designation designation) {
+    return _designationCollection.add(designation.toEntity().toDocument());
+  }
+
+  @override
+  Future<void> deleteDesignation(Designation designation) {
+    return _designationCollection.document(designation.id).delete();
+  }
+
+  @override
+  Future<void> updateDesignation(Designation designation) {
+    return _designationCollection.document(designation.id)
+        .updateData(designation.toEntity().toDocument());
   }
 }

@@ -13,7 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeeEreignis extends StatelessWidget {
-  //todo cancel the subscription for the employees ereignis when clicking on the 
+  //todo cancel the subscription for the employees ereignis when clicking on the
   //todo... arrow of the top left corner of the screen
 
   static const String screenId = 'employee_availability';
@@ -39,7 +39,11 @@ class EmployeeEreignis extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EreignisesBloc, EreignisesState>(
       builder: (context, state) {
-        if (state is EreignisesLoaded) {
+        if (state is EreignisesLoading) {
+          return Container(
+            child: Text('Loading'),
+          );
+        } else if (state is EreignisesLoaded) {
           List<Ereignis> currentEmployeesEreignises = state.ereignises;
           //todo take only the info for the given employee
           return SafeArea(
@@ -81,14 +85,13 @@ class EmployeeEreignis extends StatelessWidget {
                                   shift_date: shift_date,
                                 ),
                               ));
-                              BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
-                                Ereignis(
-                                  reason: 'shift',
-                                  description: designation,
-                                  start_shift: start_shift,
-                                  end_shift: end_shift,
-                                  ereignis_date: shift_date
-                                )));
+                              BlocProvider.of<EreignisesBloc>(context).add(
+                                  AddEreignis(Ereignis(
+                                      reason: 'shift',
+                                      description: designation,
+                                      start_shift: start_shift,
+                                      end_shift: end_shift,
+                                      ereignis_date: shift_date)));
                             },
                             daySelected: employeeEreignisSelectedDay,
                             isEditing: false,
