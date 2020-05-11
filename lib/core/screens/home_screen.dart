@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
+import 'package:snapshot_test/employee/blocs/ereignises.dart';
+import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:snapshot_test/current_day/current_day.dart';
 import 'package:snapshot_test/employee/widgets/employees_list.dart';
@@ -14,15 +17,17 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen({Key key, @required this.userEmail}) : super(key: key);
 
-  Widget setBody(AppTab activeTab) {
+  Widget setBody(AppTab activeTab, BuildContext context) {
     if (activeTab == AppTab.calendar) {
+      BlocProvider.of<EreignisesBloc>(context).add(LoadAllShiftsForXWeeks(4));
       return ShiftsView();
     } else if( activeTab == AppTab.currentDay) {
       return CurrentDay();
     } else if (activeTab == AppTab.user) {
       return UserWidget(userEmail: userEmail,);
     } else if (activeTab == AppTab.employees) {
-  //todo: need an employees tab
+      //todo where should I add the cancel sream subscription?
+      BlocProvider.of<EmployeesBloc>(context).add(LoadEmployees());
       return EmployeesList();
     }
   }
@@ -33,7 +38,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, activeTab) {
         return SafeArea(
                   child: Scaffold(
-            body: setBody(activeTab),
+            body: setBody(activeTab, context),
             bottomNavigationBar: CustomTabSelector(
               activeTab: activeTab,
               onTabSelected: (tab) =>

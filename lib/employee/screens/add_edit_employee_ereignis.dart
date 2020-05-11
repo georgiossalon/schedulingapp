@@ -1,7 +1,9 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 typedef OnSaveCallback = Function(
   String description,
@@ -43,11 +45,12 @@ class _AddEditEmployeeEreignisState
 
   String _description;
   String _designation;
-  String _employee;
+  String _employeeName;
   String _end_shift;
   String _reason;
   String _start_shift;
   String _parentId;
+  Employee _employeeObj;
 
 
   bool get isEditing => widget.isEditing;
@@ -91,7 +94,85 @@ class _AddEditEmployeeEreignisState
   }
 
   Widget _buildEmployeeDropdown() {
+    //todo: I should probably wait for the user to choose designation before 
+    //todo... fetching the capable employees
+    return BlocBuilder<EmployeesBloc, EmployeesState>(
+      builder: (context, state) {
+        if (state is EmployeesLoading) {
+          //todo let the user know that after choosing the designation
+          //todo... the employee dropdown will be available
+          return Container(child: Text('Loading'),);
+        } else if (state is EmployeesLoaded) {
+          return InputDecorator(
+            decoration: InputDecoration(
+              icon: Icon(FontAwesomeIcons.user),
+              labelText: 'Employee',
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Employee>(
+                items: state.employees.map((Employee employee) {
+                  return new DropdownMenuItem<Employee>(
+                    value: employee,
+                    child: Text(employee.name),
+                  );
+                }).toList(),
+                onChanged: (Employee newEmployee) {
+                  setState(() {
+                    _employeeName = newEmployee.name;
+                    _parentId = newEmployee.id;
+                    _employeeObj = newEmployee;
+                  });
+                },
+                value:_employeeObj,
+              ),
+            ),
+          ); 
+        }
+      },
+    );
+  }
 
+   Widget _buildDesignationField() {
+    return BlocBuilder<DesignationsBloc, DesignationsState>(
+      builder: (context, state) {
+        if (state is DesignationsLoading) {
+          return Container(
+            child: Text('Loading'),
+          );
+        } else if (state is DesignationsLoaded) {
+          return InputDecorator(
+            decoration: InputDecoration(
+              icon: Icon(FontAwesomeIcons.tasks),
+              labelText: 'Designation',
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                items: state.designations.map((Designation designation) {
+                  return new DropdownMenuItem<String>(
+                    value: designation.designation,
+                    child: Text(designation.designation),
+                  );
+                }).toList(),
+                onChanged: (String newDesignation) {
+                  // call only the capable employees for this designation
+                  BlocProvider.of<EmployeesBloc>(context)
+                      .add(LoadEmployeesWithGivenDesignation(designation: newDesignation,date: widget.daySelected,));
+                  setState(() {
+                    _designation = newDesignation;
+                    // After changing the designation, I have to set the employeeName
+                    // to null, otherwise I will be getting errors, since my 
+                    // employee dropdown does not contain the name for the new designation
+                    _employeeName = null;
+                    _employeeObj = null;
+                  });
+                },
+                value: _designation == null ? 'open' : _designation,
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   // build dropdown with all possible designations
@@ -149,28 +230,19 @@ class _AddEditEmployeeEreignisState
                     },
                     onSaved: (value) => _description = value,
                   ),
-                  TextFormField(
-                    initialValue: isEditing ? widget.ereignis.designation : '',
-                  decoration:
-                      InputDecoration(hintText: 'Designation for the Shift'),
-                  validator: (val) {
-                    return val.trim().isEmpty
-                        ? 'Please give a Designation'
-                        : null;
-                  },
-                  onSaved: (value) => _designation = value,
-                  ),
-                  TextFormField(
-                    initialValue: isEditing ? widget.ereignis.employee : '',
-                  decoration:
-                      InputDecoration(hintText: 'Employee Name for the Shift'),
-                  validator: (val) {
-                    return val.trim().isEmpty
-                        ? 'Please give a Employee Name'
-                        : null;
-                  },
-                  onSaved: (value) => _employee = value,
-                  ),
+                  _buildDesignationField(),
+                  _buildEmployeeDropdown(),
+                  // TextFormField(
+                  //   initialValue: isEditing ? widget.ereignis.employee : '',
+                  // decoration:
+                  //     InputDecoration(hintText: 'Employee Name for the Shift'),
+                  // validator: (val) {
+                  //   return val.trim().isEmpty
+                  //       ? 'Please give a Employee Name'
+                  //       : null;
+                  // },
+                  // onSaved: (value) => _employee = value,
+                  // ),
                   RaisedButton(
                   child: Text(
                       _start_shift == null ? 'Select Start' : _start_shift),
@@ -207,7 +279,7 @@ class _AddEditEmployeeEreignisState
               widget.onSave(
                 _description,
                 _designation,
-                _employee,
+                _employeeName,
                 _end_shift,
                 _reason,
                 _start_shift,

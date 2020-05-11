@@ -71,7 +71,7 @@ class LoadEmployeesWithGivenDesignation extends EmployeesEvent {
   final String designation;
   final DateTime date;
 
-  const LoadEmployeesWithGivenDesignation(this.designation, this.date);
+  const LoadEmployeesWithGivenDesignation({this.designation, this.date});
 
   @override
   List<Object> get props => [designation, date];

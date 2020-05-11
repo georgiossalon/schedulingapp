@@ -15,6 +15,7 @@ class EmployeesList extends StatefulWidget {
 }
 
 class _EmployeesListState extends State<EmployeesList> {
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EmployeesBloc, EmployeesState>(
@@ -44,6 +45,7 @@ class _EmployeesListState extends State<EmployeesList> {
               )
             ],
           ),
+          // todo: hide the 'open' employee from the list
           body: ListView.builder(
               itemCount: state.employees.length,
               itemBuilder: (context, index) {

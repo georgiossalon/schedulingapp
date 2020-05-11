@@ -67,6 +67,8 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
       _salary = widget.employee.salary;
       _email = widget.employee.email;
       _hiringDate = widget.employee.hiringDate;
+    } else {
+      _designation = 'open';
     }
   }
 
@@ -84,7 +86,6 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
-  //todo build a dropdown with the designations already inserted
   Widget _buildDesignationField() {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
@@ -111,7 +112,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                     _designation = newValue;
                   });
                 },
-                value: _designation == null ? 'open' : _designation,
+                value: _designation,
               ),
             ),
           );

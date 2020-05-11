@@ -55,6 +55,8 @@ class ShiftsView extends StatelessWidget {
                       parentId
                     ) {
                       //todo add this also to the busy_map of the chosen employee
+                      //todo also add the new 'Ereignis' to a Container to show 
+                      //todo... under the calendar
                       BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
                         Ereignis(
                           description: description,

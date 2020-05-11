@@ -48,7 +48,6 @@ class EreignisEntity extends Equatable {
       'employee': employee,
       'end_shift': end_shift,
       'ereignis_date': ereignis_date,
-      'id': id,
       'start_shift': start_shift,
       'reason': reason,
       'parent_id': parentId,

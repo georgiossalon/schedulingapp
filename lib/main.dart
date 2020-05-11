@@ -42,14 +42,16 @@ class ShiftsApp extends StatelessWidget {
         BlocProvider<EmployeesBloc>(create: (context) {
           return EmployeesBloc(
             employeesRepository: FirebaseEmployeesRepository(),
-          )..add(LoadEmployees());
+          );
+          // )..add(LoadEmployees());
           // )..add(LoadEmployeesWithGivenDesignation('5',DateTime.now()));
         }
         ,),
         BlocProvider<EreignisesBloc>(create: (context) {
           return EreignisesBloc(
             employeesRepository: FirebaseEmployeesRepository()
-            )..add(LoadAllShiftsForXWeeks(4));
+            );
+            // )..add(LoadAllShiftsForXWeeks(4));
         },),
         BlocProvider<DesignationsBloc>(create: (context) {
           return DesignationsBloc(employeesRepository: FirebaseEmployeesRepository()
