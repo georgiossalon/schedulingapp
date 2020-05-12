@@ -1,5 +1,6 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/employee/blocs/ereignises.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
@@ -7,6 +8,7 @@ import 'package:snapshot_test/shifts/blocs/shifts_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShiftCalendarContainer extends StatelessWidget {
   final Ereignis ereignis;
@@ -44,7 +46,9 @@ class ShiftCalendarContainer extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                    'Start ${ereignis.start_shift}',
+                    ereignis.start_shift != null
+                        ? 'Start ${ereignis.start_shift}'
+                        : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17.0,
@@ -54,7 +58,9 @@ class ShiftCalendarContainer extends StatelessWidget {
                     width: 20.0,
                   ),
                   Text(
-                    'End ${ereignis.end_shift}',
+                    ereignis.end_shift != null
+                        ? 'End ${ereignis.end_shift}'
+                        : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17.0,
@@ -114,33 +120,73 @@ class ShiftCalendarContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ! the following snapshot, employee are there for the dropdown
+                  // DocumentSnapshot snapshot = await Firestore.instance
+                  //     .collection('Employees')
+                  //     .document(ereignis.parentId)
+                  //     .get();
+                  // Employee employee = Employee.fromEntity(
+                  //     EmployeeEntity.fromSnapshot(snapshot));
+                  // BlocProvider.of<EmployeesBloc>(context).add(LoadEmployees());
+                  // ! end
+
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return AddEditEmployeeEreignis(
-                      onSave: (
-                        description,
-                        designation,
-                        employee,
-                        end_shift,
-                        reason,
-                        start_shift,
-                        shift_date,
-                        parentId,
-                      ) {
-                        BlocProvider.of<EreignisesBloc>(context).add(UpdateEreignis(
-                          //todo might have to add the parentId field
-                          ereignis.copyWith(
-                            description: description,
-                            designation: designation,
-                            employee: employee,
-                            end_shift: end_shift,
-                            reason: reason,
-                            start_shift: start_shift,
-                          ),
-                        ));
+                      onSave: (description,
+                          designation,
+                          employee,
+                          end_shift,
+                          reason,
+                          start_shift,
+                          shift_date,
+                          parentId,
+                          oldParentId,
+                          changedEmployee) {
+                        // if I change the employee then delete and add to 
+                        // the sub-collection of the new employee
+                        if (changedEmployee) {
+                          BlocProvider.of<EreignisesBloc>(context)
+                              .add(DeleteEreignis(
+                                ereignis.copyWith(
+                                description: description,
+                                designation: designation,
+                                employee: employee,
+                                end_shift: end_shift,
+                                reason: reason,
+                                start_shift: start_shift,
+                                parentId: oldParentId),
+                              ));
+                              BlocProvider.of<EreignisesBloc>(context)
+                                  .add(AddEreignis(
+                                    ereignis.copyWith(
+                                description: description,
+                                designation: designation,
+                                employee: employee,
+                                end_shift: end_shift,
+                                reason: reason,
+                                start_shift: start_shift,
+                                parentId: parentId),
+                                  ));
+                        } else {
+                          //if I only update the values of the shift then update
+                          BlocProvider.of<EreignisesBloc>(context)
+                              .add(UpdateEreignis(
+                            //todo might have to add the parentId field
+                            ereignis.copyWith(
+                                description: description,
+                                designation: designation,
+                                employee: employee,
+                                end_shift: end_shift,
+                                reason: reason,
+                                start_shift: start_shift,
+                                parentId: parentId),
+                          ));
+                        }
                       },
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
+                      isShift: true,
                       ereignis: ereignis,
                     );
                   }));

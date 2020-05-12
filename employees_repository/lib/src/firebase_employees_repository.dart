@@ -21,6 +21,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     return _employeeCollection.add(employee.toEntity().toDocument());
   }
 
+  // todo: Pass only the id as a String insted of the whole object
   @override
   Future<void> deleteEmployee(Employee employee) {
     return _employeeCollection.document(employee.id).delete();

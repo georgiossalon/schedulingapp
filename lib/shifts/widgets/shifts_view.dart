@@ -7,6 +7,7 @@ import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShiftsView extends StatelessWidget {
   static const String screenId = 'shifts_view';
@@ -41,6 +42,7 @@ class ShiftsView extends StatelessWidget {
               child: Icon(Icons.add),
               backgroundColor: Colors.pink,
               onPressed: () {
+                      
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return AddEditEmployeeEreignis(
@@ -52,7 +54,9 @@ class ShiftsView extends StatelessWidget {
                       reason,
                       start_shift,
                       ereignis_date,
-                      parentId
+                      parentId,
+                      oldParentId,
+                      changedEmployee,
                     ) {
                       //todo add this also to the busy_map of the chosen employee
                       //todo also add the new 'Ereignis' to a Container to show 

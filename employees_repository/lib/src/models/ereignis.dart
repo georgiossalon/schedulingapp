@@ -46,7 +46,7 @@ class Ereignis {
     String reason,
     String start_shift,
     DateTime ereignis_date,
-    String parentId
+    String parentId,
   }) {
     return Ereignis(
       description: description ?? this.description,

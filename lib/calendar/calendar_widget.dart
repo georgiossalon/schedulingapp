@@ -89,7 +89,6 @@ class _CalendarState extends State<CalendarWidget> {
     }
   }
 
-
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
       locale: 'de_DE',
@@ -109,9 +108,11 @@ class _CalendarState extends State<CalendarWidget> {
       initialSelectedDay: DateTime.now(),
       onDaySelected: (date, events) {
         setState(() {
-          widget.isShift 
-          ? ShiftsView.shiftCalendarSelectedDay = _calendarController.selectedDay
-          : EmployeeEreignis.employeeEreignisSelectedDay = _calendarController.selectedDay;
+          widget.isShift
+              ? ShiftsView.shiftCalendarSelectedDay =
+                  _calendarController.selectedDay
+              : EmployeeEreignis.employeeEreignisSelectedDay =
+                  _calendarController.selectedDay;
         });
       },
       builders: CalendarBuilders(
@@ -126,16 +127,20 @@ class _CalendarState extends State<CalendarWidget> {
           todayDayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: widget.isShift ? Colors.teal.shade100 : dateColorAccordingToAction(date,true),
+                color: widget.isShift
+                    ? Colors.teal.shade100
+                    : dateColorAccordingToAction(date, true),
                 child: Text(
                   date.day.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
               ),
-               dayBuilder: (context, date, events) => Container(
+          dayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: widget.isShift ? Colors.white24 : dateColorAccordingToAction(date, false),
+                color: widget.isShift
+                    ? Colors.white24
+                    : dateColorAccordingToAction(date, false),
                 child: Text(
                   date.day.toString(),
                 ),
@@ -196,15 +201,14 @@ class _CalendarState extends State<CalendarWidget> {
     if (map == null || map.isEmpty) {
       return 0;
     } else {
-      widget.map[utcTo12oclock(_calendarController.selectedDay)] !=
-                          null
-                      ? widget
-                          .map[utcTo12oclock(_calendarController.selectedDay)]
-                          .length
-                      : 0;
+      if (widget.map[utcTo12oclock(_calendarController.selectedDay)] != null) {
+        return widget
+            .map[utcTo12oclock(_calendarController.selectedDay)].length;
+      } else {
+        return 0;
+      }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -216,15 +220,23 @@ class _CalendarState extends State<CalendarWidget> {
             child: ListView.builder(
               itemCount: searchOnlyIfMapNotNull(widget.map),
               itemBuilder: (context, index) {
-                final Ereignis event = widget
-                    .map[utcTo12oclock(_calendarController.selectedDay)] != null 
-                        ? widget.map[utcTo12oclock(_calendarController.selectedDay)][index]
-                        : null;
-                //todo if I want to reuse this Widget I have to specify 
+                final Ereignis event = widget.map[
+                            utcTo12oclock(_calendarController.selectedDay)] !=
+                        null
+                    ? widget.map[utcTo12oclock(_calendarController.selectedDay)]
+                        [index]
+                    : null;
+                //todo if I want to reuse this Widget I have to specify
                 //todo... if I have a shift or an other status
-                return widget.isShift 
-                    ? ShiftCalendarContainer(ereignis: event, scaffoldContext: context,) 
-                    : EreignisCalendarContainer(ereignis: event, scaffoldContext: context,);
+                return widget.isShift
+                    ? ShiftCalendarContainer(
+                        ereignis: event,
+                        scaffoldContext: context,
+                      )
+                    : EreignisCalendarContainer(
+                        ereignis: event,
+                        scaffoldContext: context,
+                      );
               },
             ),
           ),
