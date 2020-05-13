@@ -31,6 +31,10 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapEmployeesUpdateToState(event);
     } else if (event is LoadEmployeesWithGivenDesignation) {
       yield* _mapLoadEmployeesWithGivenDesignation(event);
+    } else if (event is UpdateEmployeeBusyMap) {
+      yield* _mapUpdateEmployeeBusyMapToState(event);
+    } else if (event is EmployeesEmpty) {
+      yield* _mapEmployeesNotLoadedMapToState();
     }
 //    else if (event is EmployeeEreignisRequested) {
 //      yield* _mapEmployeeEreignisRequestedToState(event);
@@ -45,11 +49,23 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   }
   
   // ! do I need a stream for the designations??
-  Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(LoadEmployeesWithGivenDesignation event) async* {
+    Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(LoadEmployeesWithGivenDesignation event) async* {
     _employeesSubscription?.cancel();
     _employeesSubscription = _employeesRepository.availableEmployeesForGivenDesignation(event.designation, event.date).listen(
-      (employees) => add(EmployeesUpdated(employees)),
+      // (employees) => add(EmployeesUpdated(employees)),
+      (employees) {
+        if ( employees.isNotEmpty) {
+          return add(EmployeesUpdated(employees));
+        } else {
+          return add(EmployeesEmpty());
+        }
+      }
     );
+  }
+  
+
+  Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(UpdateEmployeeBusyMap event) async* {
+    _employeesRepository.updateEmployeesBusyMap(event.employeeId, event.busyMap);
   }
 
   Stream<EmployeesState> _mapAddEmployeeToState(AddEmployee event) async* {
@@ -70,6 +86,10 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Stream<EmployeesState> _mapEmployeesUpdateToState(EmployeesUpdated event) async* {
     yield EmployeesLoaded(event.employees);
+  }
+
+  Stream<EmployeesState> _mapEmployeesNotLoadedMapToState() async* {
+    yield EmployeesNotLoaded();
   }
  
   @override

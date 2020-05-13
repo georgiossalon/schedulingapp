@@ -5,7 +5,7 @@ import '../entities/entities.dart';
 
 @immutable
 class Employee {
-  final String designation;
+  final List<String> designations;
   final String email;
   final DateTime hiringDate;
   final String id;
@@ -14,7 +14,7 @@ class Employee {
   final double weeklyHours;
   final Map<DateTime,bool> busyMap;
   Employee(
-      {this.designation,
+      {this.designations,
       this.email,
       this.hiringDate,
       this.id,
@@ -33,7 +33,7 @@ class Employee {
   }
 
   Employee copyWith(
-      {String designation,
+      {List<String> designations,
       String email,
       DateTime hiringDate,
       int id,
@@ -42,7 +42,7 @@ class Employee {
       double weeklyHours,
       List<Ereignis> currentWeekEreignis}) {
     return Employee(
-      designation: designation ?? this.designation,
+      designations: designations ?? this.designations,
       email: email ?? this.email,
       hiringDate: hiringDate ?? this.hiringDate,
       id: id ?? this.id,
@@ -55,7 +55,7 @@ class Employee {
 
   @override
   int get hashCode {
-    return designation.hashCode ^
+    return designations.hashCode ^
         email.hashCode ^
         hiringDate.hashCode ^
         id.hashCode ^
@@ -70,7 +70,7 @@ class Employee {
     if (identical(this, o)) return true;
 
     return o is Employee &&
-        o.designation == designation &&
+        o.designations == designations &&
         o.email == email &&
         o.hiringDate == hiringDate &&
         o.id == id &&
@@ -82,12 +82,12 @@ class Employee {
 
   @override
   String toString() {
-    return 'Employee(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekEreignis: $busyMap)';
+    return 'Employee ( designations: $designations, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekEreignis: $busyMap)';
   }
 
   EmployeeEntity toEntity() {
     return EmployeeEntity(
-        designation:designation, 
+        designations:designations, 
         email: email,
         hiringDate: hiringDate, 
         id: id, 
@@ -99,7 +99,7 @@ class Employee {
 
   static Employee fromEntity(EmployeeEntity entity) {
     return Employee(
-        designation: entity.designation,
+        designations: entity.designations,
         email: entity.email,
         hiringDate: entity.hiringDate,
         id: entity.id,

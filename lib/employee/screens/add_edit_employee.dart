@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 typedef OnSaveCallback = Function(
-  String designation,
+  List<String> designation,
   String employeeName,
   double weeklyHours,
   double salary,
@@ -33,7 +33,7 @@ class AddEditEmployee extends StatefulWidget {
 class _AddEditEmployeeState extends State<AddEditEmployee> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _designation;
+  List<String> _designations;
   String _employeeName;
   double _weeklyHours;
   double _salary;
@@ -61,14 +61,14 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   void initState() {
     super.initState();
     if (isEditing) {
-      _designation = widget.employee.designation;
+      _designations = widget.employee.designations;
       _employeeName = widget.employee.name;
       _weeklyHours = widget.employee.weeklyHours;
       _salary = widget.employee.salary;
       _email = widget.employee.email;
       _hiringDate = widget.employee.hiringDate;
     } else {
-      _designation = 'open';
+      _designations = new List();
     }
   }
 
@@ -86,7 +86,90 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
-  Widget _buildDesignationField() {
+  // Widget buildChooseDesignations(
+  //     BuildContext context, List<Designation> hDesignations) {
+  //   return Dialog(
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadiusDirectional.circular(8.0),
+  //     ),
+  //     child: _buildDialogChild(context, hDesignations),
+  //   );
+  // }
+
+  // _buildDialogChild(BuildContext context, List<Designation> hDesignations) {
+  //   //todo: when editing an employee I need the chosen designations (have to pass a list)
+  //   Map<String, bool> hEnabled = new Map<String, bool>();
+  //   for (var i = 0; i < hDesignations.length; i++) {
+  //     hEnabled[hDesignations[i].designation] = false;
+  //   }
+  //   return Container(
+  //     height: 200.0,
+  //     //todo: width not working properly
+  //     width: 50,
+  //     child: Column(
+  //       children: <Widget>[
+  //         Expanded(
+  //           child: ListView.builder(
+  //               itemCount: hDesignations.length,
+  //               itemBuilder: (context, index) {
+  //                 return Row(
+  //                   children: <Widget>[
+  //                     Expanded(
+  //                       child: Container(
+  //                         width: 10,
+  //                         color: hEnabled[hDesignations[index].designation]
+  //                             ? Colors.green
+  //                             : Colors.grey,
+  //                         padding: EdgeInsets.only(left: 80),
+  //                         child: Text(hDesignations[index].designation,
+  //                         style: TextStyle(fontWeight: FontWeight.bold),),
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                       child: SwitchListTile(
+  //                           value: hEnabled[hDesignations[index].designation],
+  //                           onChanged: (bool value) {
+  //                             setState(() {
+  //                               hEnabled[hDesignations[index].designation] =
+  //                                   value;
+  //                             });
+  //                           }),
+  //                     )
+  //                   ],
+  //                 );
+  //               }),
+  //         ),
+  //         SizedBox(
+  //           height: 15.0,
+  //         ),
+  //         RaisedButton(
+  //           color: Colors.blueGrey,
+  //           child: Text(
+  //             'set',
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //           onPressed: () {
+  //             //todo: save the 'newly' selected designations in a list on set click
+  //           },
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  String listToString(List<String> designationsList) {
+    String hString = '';
+    for (String designation in designationsList) {
+      if (hString.isEmpty) {
+        hString = designation;
+      } else {
+        hString = hString + ', ' + designation;
+      }
+    }
+    return hString;
+  }
+
+  Widget _buildDesignationField(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
         if (state is DesignationsLoading) {
@@ -94,28 +177,108 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
             child: Text('Loading'),
           );
         } else if (state is DesignationsLoaded) {
-          return InputDecorator(
-            decoration: InputDecoration(
-              icon: Icon(FontAwesomeIcons.tasks),
-              labelText: 'Designation',
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                items: state.designations.map((Designation designation) {
-                  return new DropdownMenuItem<String>(
-                    value: designation.designation,
-                    child: Text(designation.designation),
-                  );
-                }).toList(),
-                onChanged: (String newValue) {
-                  setState(() {
-                    _designation = newValue;
-                  });
-                },
-                value: _designation,
+          return Container(
+            height: 70.0,
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey))),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 6.0),
+                            child: Text(
+                              'Designations:',
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        child: Container(
+                            width: 250.0,
+                            height: 25.0,
+                            child: Text(
+                              '${listToString(_designations)} ',
+                            )),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: ButtonTheme(
+                      height: 30.0,
+                      // child: Container(),
+                      child: FlatButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        color: Colors.blueGrey.shade200,
+                        onPressed: () {
+                          // I need this map to see which designations are
+                          // assigned to an employee
+                          Map<String, bool> hCheck = new Map<String, bool>();
+                          for (var i = 0; i < state.designations.length; i++) {
+                            hCheck[state.designations[i].designation] = false;
+                          }
+                          if (_designations.isNotEmpty) {
+                            // this means I am editing an employee and I have
+                            // to take his old designations into consideration
+                            for (String designation in _designations) {
+                              hCheck[designation] = true;
+                            }
+                          }
+                          showDialog(
+                              context: context,
+                              builder: (context) => DesignationDialog(
+                                    allDesignations: state.designations,
+                                    hChecked: hCheck,
+                                    employeesDesignations: _designations,
+                                  ));
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Text(
+                          'Add +',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           );
+          // return InputDecorator(
+          //   decoration: InputDecoration(
+          //     icon: Icon(FontAwesomeIcons.tasks),
+          //     labelText: 'Designation',
+          //   ),
+          //   child: DropdownButtonHideUnderline(
+          //     child: DropdownButton<String>(
+          //       items: state.designations.map((Designation designation) {
+          //         return new DropdownMenuItem<String>(
+          //           value: designation.designation,
+          //           child: Text(designation.designation),
+          //         );
+          //       }).toList(),
+          //       onChanged: (String newValue) {
+          //         setState(() {
+          //           _designation = newValue;
+          //         });
+          //       },
+          //       value: _designation,
+          //     ),
+          //   ),
+          // );
+
         }
       },
     );
@@ -229,7 +392,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
             child: ListView(
               children: <Widget>[
                 _buildNameField(),
-                _buildDesignationField(),
+                _buildDesignationField(context),
                 _buildWeeklyHoursField(),
                 _buildSalaryField(),
                 _buildEmailField(),
@@ -246,7 +409,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
             if (_formKey.currentState.validate()) {
               _formKey.currentState.save();
               widget.onSave(
-                  _designation,
+                  _designations,
                   _employeeName,
                   _weeklyHours,
                   _salary,
@@ -258,6 +421,139 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
               Navigator.pop(context);
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class DesignationDialog extends StatefulWidget {
+  final List<Designation> allDesignations;
+  final List<String> employeesDesignations;
+  final Map<String, bool> hChecked;
+
+  DesignationDialog(
+      {Key key,
+      this.allDesignations,
+      this.hChecked,
+      this.employeesDesignations})
+      : super(key: key);
+
+  @override
+  _DesignationDialogState createState() => _DesignationDialogState();
+}
+
+class _DesignationDialogState extends State<DesignationDialog> {
+  _buildDialogChild(BuildContext context, List<Designation> allDesignations) {
+    return Container(
+      height: 200.0,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+                itemCount: allDesignations.length,
+                itemBuilder: (context, index) {
+                  // -- With Switch
+                  return Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          height: 20.0,
+                          child: Text(
+                            allDesignations[index].designation,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 90.0,
+                          color: widget
+                                  .hChecked[allDesignations[index].designation]
+                              ? Colors.green
+                              : Colors.grey,
+                        ),
+                      )),
+                      Expanded(
+                        child: SwitchListTile(
+                            value: widget
+                                .hChecked[allDesignations[index].designation],
+                            onChanged: (bool value) {
+                              setState(() {
+                                widget.hChecked[
+                                    allDesignations[index].designation] = value;
+                              });
+                            }),
+                      )
+                    ],
+                  );
+                  // -- end
+
+                  // return ButtonTheme(
+                  //   //todo: fix the width of the buttons is not working
+                  //   minWidth: 20,
+                  //   child: RaisedButton(
+                  //     color: widget.hChecked[hDesignations[index].designation]
+                  //         ? Colors.green
+                  //         : Colors.grey,
+                  //     child: Text(hDesignations[index].designation),
+                  //     onPressed: () {
+                  //       //todo mark designation and add to an array
+                  //       setState(() {
+                  //         widget.hChecked[hDesignations[index].designation] =
+                  //             !widget
+                  //                 .hChecked[hDesignations[index].designation];
+                  //       });
+                  //     },
+                  //   ),
+                  // );
+                }),
+          ),
+          SizedBox(
+            height: 15.0,
+          ),
+          RaisedButton(
+            color: Colors.blueGrey,
+            child: Text(
+              'set',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              widget.hChecked.forEach((k, v) {
+                if (v == true) {
+                  // The chosen designations have to get added to the employees
+                  // designations set
+                  if (!widget.employeesDesignations.contains(k)) {
+                    widget.employeesDesignations.add(k);
+                  }
+                } else {
+                  // remove the values if existant from the designation list
+                  if (widget.employeesDesignations.contains(k)) {
+                    widget.employeesDesignations.remove(k);
+                  }
+                  
+                }
+              });
+              Navigator.of(context).pop();
+              //todo when clicking on set also the main widget should get rebuild
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // -- I need the Align to contain the Container.
+    // so that I can choose a custom width
+    return Align(
+      child: Container(
+        width: 300.0,
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusDirectional.circular(8.0),
+          ),
+          child: _buildDialogChild(context, widget.allDesignations),
         ),
       ),
     );

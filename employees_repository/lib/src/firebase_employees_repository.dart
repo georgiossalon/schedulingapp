@@ -44,6 +44,13 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
+  Future<void> updateEmployeesBusyMap(String employeeId, Map<String,bool> busy_map) {
+    return _employeeCollection
+        .document(employeeId)
+        .updateData({'busy_map': busy_map});
+  }
+
+  @override
   Future<void> redoEmployee(Employee redo) {
     return _employeeCollection
         .document(redo.id)
@@ -133,7 +140,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     var formatter = new DateFormat('yyyy-MM-dd');
     String formatedDate = formatter.format(date);
     return _employeeCollection
-        .where('designation', isEqualTo: designation)
+        .where('designation', arrayContains: designation)
         .where('busy_map.$formatedDate',
             isEqualTo: false) 
         .snapshots()
@@ -168,4 +175,6 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     return _designationCollection.document(designation.id)
         .updateData(designation.toEntity().toDocument());
   }
+
+  
 }

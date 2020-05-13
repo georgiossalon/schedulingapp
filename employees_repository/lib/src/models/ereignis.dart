@@ -8,7 +8,7 @@ import '../entities/entities.dart';
 class Ereignis {
   final String description;
   final String designation;
-  final String employee;
+  final String employeeName;
   final String end_shift;
   final String id;
   final String reason;
@@ -19,7 +19,7 @@ class Ereignis {
   Ereignis({
     this.description,
     this.designation,
-    this.employee,
+    this.employeeName,
     this.end_shift,
     this.id,
     this.reason,
@@ -40,7 +40,7 @@ class Ereignis {
   Ereignis copyWith({
     String description,
     String designation,
-    String employee,
+    String employeeName,
     String end_shift,
     String id,
     String reason,
@@ -51,7 +51,7 @@ class Ereignis {
     return Ereignis(
       description: description ?? this.description,
       designation: designation ?? this.designation,
-      employee: employee ?? this.employee,
+      employeeName: employeeName ?? this.employeeName,
       end_shift: end_shift ?? this.end_shift,
       id: id ?? this.id,
       reason: reason ?? this.reason,
@@ -65,7 +65,7 @@ class Ereignis {
   int get hashCode {
     return description.hashCode ^
         designation.hashCode ^
-        employee.hashCode ^
+        employeeName.hashCode ^
         end_shift.hashCode ^
         id.hashCode ^
         reason.hashCode ^
@@ -81,7 +81,7 @@ class Ereignis {
     return o is Ereignis &&
         o.description == description &&
         o.designation == designation &&
-        o.employee == employee &&
+        o.employeeName == employeeName &&
         o.end_shift == end_shift &&
         o.id == id &&
         o.reason == reason &&
@@ -92,14 +92,14 @@ class Ereignis {
 
   @override
   String toString() {
-    return 'Ereignis {description: $description, designation: $designation, employee: $employee, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId }';
+    return 'Ereignis {description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId }';
   }
 
   EreignisEntity toEntity() {
     return EreignisEntity(
       description: description,
       designation: designation,
-      employee: employee,
+      employeeName: employeeName,
       end_shift: end_shift,
       id: id,
       reason: reason,
@@ -113,7 +113,7 @@ class Ereignis {
     return Ereignis(
       description: entity.description,
       designation: entity.designation,
-      employee: entity.employee,
+      employeeName: entity.employeeName,
       end_shift: entity.end_shift,
       id: entity.id,
       reason: entity.reason,

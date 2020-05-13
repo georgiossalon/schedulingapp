@@ -2,6 +2,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/employee/blocs/ereignises.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
@@ -57,21 +58,26 @@ class ShiftsView extends StatelessWidget {
                       parentId,
                       oldParentId,
                       changedEmployee,
+                      employeeObj
                     ) {
-                      //todo add this also to the busy_map of the chosen employee
-                      //todo also add the new 'Ereignis' to a Container to show 
-                      //todo... under the calendar
                       BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
                         Ereignis(
                           description: description,
                             designation: designation,
-                            employee: employee,
+                            employeeName: employee,
                             end_shift: end_shift,
                             reason: reason,
                             start_shift: start_shift,
                             ereignis_date: ereignis_date,
                             parentId: parentId),
                       ));
+                      // -- adding the new event into the busy map
+                      Map<DateTime,bool> hbusyMap = employeeObj.busyMap;
+                      hbusyMap[ereignis_date] = true;
+                      var hMap = EmployeeEntity.changeMapKeyForDocument(hbusyMap);
+                      BlocProvider.of<EmployeesBloc>(context).add(UpdateEmployeeBusyMap(
+                        employeeObj.id,hMap));
+                      // -- end
                     },
                     daySelected: shiftCalendarSelectedDay,
                     isShift: true,

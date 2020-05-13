@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 class EmployeeEntity extends Equatable {
-  final String designation;
+  final List<String> designations;
   final String email;
   final DateTime hiringDate;
   final String id;
@@ -18,7 +18,7 @@ class EmployeeEntity extends Equatable {
   final Map<DateTime, bool> busyMap;
 
   const EmployeeEntity(
-      {this.designation,
+      {this.designations,
       this.email,
       this.hiringDate,
       this.id,
@@ -42,7 +42,7 @@ class EmployeeEntity extends Equatable {
   // }
 
   List<Object> get props => [
-        designation,
+        designations,
         email,
         hiringDate,
         id,
@@ -53,7 +53,7 @@ class EmployeeEntity extends Equatable {
 
   @override
   String toString() {
-    return 'EmployeeEntity(designation: $designation, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, busyMap: $busyMap)';
+    return 'EmployeeEntity(designations: $designations, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, busyMap: $busyMap)';
   }
 
   // static EmployeeEntity fromJson(Map<String,Object> json) {
@@ -117,7 +117,7 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  Map<String, bool> changeMapKeyForDocument(Map<DateTime, bool> busyMap) {
+  static Map<String, bool> changeMapKeyForDocument(Map<DateTime, bool> busyMap) {
     if (busyMap != null) {
       Map<String, bool> hMap = new Map<String, bool>();
       busyMap.forEach((k, v) {
@@ -142,8 +142,9 @@ class EmployeeEntity extends Equatable {
   }
 
   static EmployeeEntity fromSnapshot(DocumentSnapshot snap) {
+
     return EmployeeEntity(
-        designation: snap.data['designation'],
+        designations: List.from(snap.data['designations']),
         email: snap.data['email'],
         hiringDate:
             Employee.convertingFirestoreDateToDateTime(snap.data['hiringDate']),
@@ -157,7 +158,7 @@ class EmployeeEntity extends Equatable {
 
   Map<String, Object> toDocument() {
     return {
-      'designation': designation,
+      'designations': designations,
       'email': email,
       'hiringDate': hiringDate,
       'name': name,

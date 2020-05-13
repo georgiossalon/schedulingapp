@@ -72,7 +72,7 @@ class _EmployeesListState extends State<EmployeesList> {
                     // * context.bloc<EmployeesBloc>().add ...
                     BlocProvider.of<EmployeesBloc>(context).add(AddEmployee(
                         Employee(
-                            designation: designation,
+                            designations: designation,
                             name: employeeName,
                             weeklyHours: weeklyHours,
                             salary: salary,

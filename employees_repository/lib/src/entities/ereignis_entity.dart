@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class EreignisEntity extends Equatable {
   final String description;
   final String designation;
-  final String employee;
+  final String employeeName;
   final String end_shift;
   final String id;
   final String reason;
@@ -16,7 +16,7 @@ class EreignisEntity extends Equatable {
   const EreignisEntity({
     this.description,
     this.designation,
-    this.employee,
+    this.employeeName,
     this.end_shift,
     this.id,
     this.reason,
@@ -45,7 +45,7 @@ class EreignisEntity extends Equatable {
     return {
       'description': description,
       'designation': designation,
-      'employee': employee,
+      'employee_name': employeeName,
       'end_shift': end_shift,
       'ereignis_date': ereignis_date,
       'start_shift': start_shift,
@@ -57,7 +57,7 @@ class EreignisEntity extends Equatable {
   List<Object> get props => [
         description,
         designation,
-        employee,
+        employeeName,
         end_shift,
         id,
         reason,
@@ -68,7 +68,7 @@ class EreignisEntity extends Equatable {
 
   @override
   String toString() {
-    return 'EreignisEntity { description: $description, designation: $designation, employee: $employee, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId)';
+    return 'EreignisEntity { description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId)';
   }
 
   static EreignisEntity fromJson(Map<String, Object> json, DateTime date) {
@@ -77,7 +77,7 @@ class EreignisEntity extends Equatable {
     return EreignisEntity(
       designation: json['designation'] as String,
       description: json['description'] as String,
-      employee: json['employee'] as String,
+      employeeName: json['employee_name'] as String,
       end_shift: json['end_shift'] as String,
       id: json['id'] as String,
       reason: json['reason'] as String,
@@ -91,7 +91,7 @@ class EreignisEntity extends Equatable {
     return EreignisEntity(
       designation: snap.data['designation'],
       description: snap.data['description'],
-      employee: snap.data['employee'],
+      employeeName: snap.data['employee_name'],
       end_shift: snap.data['end_shift'],
       id: snap.documentID,
       reason: snap.data['reason'],

@@ -9,14 +9,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 typedef OnSaveCallback = Function(
     String description,
     String designation,
-    String employee,
+    String employeeName,
     String end_shift,
     String reason,
     String start_shift,
     DateTime ereignis_date,
     String parentId,
     String oldParentId,
-    bool changedEmployee);
+    bool changedEmployee,
+    Employee employeeObj);
 
 class AddEditEmployeeEreignis extends StatefulWidget {
   static const String screenId = 'add_edit_employee_ereignis';
@@ -26,6 +27,7 @@ class AddEditEmployeeEreignis extends StatefulWidget {
   final bool isShift;
   final OnSaveCallback onSave;
   final Ereignis ereignis;
+  final Employee employee;
 
   AddEditEmployeeEreignis({
     Key key,
@@ -34,6 +36,7 @@ class AddEditEmployeeEreignis extends StatefulWidget {
     this.isShift,
     this.onSave,
     this.ereignis,
+    this.employee,
   }) : super(key: key);
 
   @override
@@ -54,6 +57,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   String _oldParentId;
   Employee _employeeObj;
   bool _changedEmployee;
+  Set<Employee> _hSet = new Set();
 
   bool get isEditing => widget.isEditing;
 
@@ -81,17 +85,18 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
     if (isEditing) {
       _description = widget.ereignis.description;
       _designation = widget.ereignis.designation;
-      _employeeName = widget.ereignis.employee;
+      _employeeName = widget.ereignis.employeeName;
       _reason = widget.ereignis.reason;
       _start_shift = widget.ereignis.start_shift;
       _end_shift = widget.ereignis.end_shift;
       _parentId = widget.ereignis.parentId;
-      // _employeeObj = widget.employee;
+      // _employeeObj = widget.employee; // todo probably need this when editing
       BlocProvider.of<EmployeesBloc>(context)
           .add(LoadEmployeesWithGivenDesignation(
         designation: _designation,
         date: widget.daySelected,
       ));
+      _hSet.add(widget.employee);
     } else {
       _designation = 'open';
       BlocProvider.of<EmployeesBloc>(context)
@@ -102,6 +107,10 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
     }
   }
 
+  //todo: for each designation I need the employee option 'open'
+  //todo... at the moment I only have one designation per employee
+  //todo... in the future create a designation list/array for each employee document
+  //todo... I also need to be able to choose and save multiple values from the dropdown
   Widget _buildEmployeeDropdown() {
     //todo: I should probably wait for the user to choose designation before
     //todo... fetching the capable employees
@@ -113,7 +122,34 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is EmployeesLoaded) {
+        } else if (state is EmployeesLoaded || state is EmployeesNotLoaded) {
+          //todo when setting the new employee for the shift, the list
+          //todo... gets updated and I will always have an error
+
+          //! the following 'method' saves the old and new assigned employee,
+          //! so that I do not have a problem with the dropdown
+          // -- adding the old employee to the list for the dropdown
+          if (state is EmployeesLoaded) {
+            for (var employee in state.employees) {
+              // if (!_hSet.contains(employee)) {
+              //   _hSet.add(employee);
+              // }
+              bool hbool = false;
+              for (var employeeInSet in _hSet) {
+                if (employeeInSet.id == employee.id) {
+                  hbool = true;
+                }
+              }
+              !hbool ? _hSet.add(employee) : null;
+            }
+            // _hSet..addAll(state.employees);
+            // widget.employee != null ? _hSet.add(widget.employee) : null;
+            // --end
+          } else {
+            // no employees for the chosen designation
+            //todo: always load the Open employee
+            _hSet = new Set();
+          }
           return InputDecorator(
             decoration: InputDecoration(
               icon: Icon(FontAwesomeIcons.user),
@@ -139,8 +175,10 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
               // ),
 
               // -- String choosing
+
               child: DropdownButton<String>(
-                items: state.employees.map((Employee employee) {
+                // items: state.employees.map((Employee employee) {
+                items: _hSet.map((Employee employee) {
                   return new DropdownMenuItem<String>(
                     value: employee.name,
                     child: Text(employee.name),
@@ -149,24 +187,32 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                 onChanged: (String newEmployeeName) {
                   setState(() {
                     _employeeName = newEmployeeName;
-                    // -- this method is prone to erros, since
-                    // -- different employees may have the same name
-                    List<Employee> hList = state.employees;
-                    for (var employee in hList) {
-                      if (employee.name == _employeeName) {
-                        _parentId = employee.id;
-                        break;
+                    if (state is EmployeesLoaded) {
+                      // -- this method is prone to erros, since
+                      // -- different employees may have the same name
+                      List<Employee> hList = state.employees;
+                      for (var employee in hList) {
+                        if (employee.name == _employeeName) {
+                          _parentId = employee.id;
+                          _employeeObj = employee;
+                          break;
+                        }
                       }
+                      // -- end
+                      // _parentId = newEmployee.id;
                     }
-                    // -- end
-                    // _parentId = newEmployee.id;
                   });
                 },
+                // value: _employeeName != null ? null : _employeeName,
                 value: _employeeName,
               ),
             ),
           );
         }
+        // } else if (state is EmployeesNotLoaded) {
+        //   //todo: perhaps build the same thing as before but only show this on the dropdown?
+        //   Container(child: Text('No Available Employee for this designation'),);
+        // }
       },
     );
   }
@@ -206,6 +252,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                     // employee dropdown does not contain the name for the new designation
                     _employeeName = null;
                     _employeeObj = null;
+                    _hSet = new Set();
                   });
                 },
                 value: _designation,
@@ -215,6 +262,27 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
         }
       },
     );
+  }
+
+  void updateValuesForWhenEditingAndChangingEmployees() {
+// -- to check if an employee got changed when editing
+    // --  this has an impact on the firebase db
+    if (isEditing) {
+      // while editing I can change multiple times the name on the dropdown
+      // but if in the end the employeeName remains the same, then nothing changes
+      // this means that this ereignis will only get updated
+      if (widget.ereignis.employeeName == _employeeName) {
+        _changedEmployee = false;
+      } else {
+        // this means that the employee was changed. The ereignis will get
+        // deleted from the sub-collection of the former employee and then
+        // added to the new one
+        _changedEmployee = true;
+        _oldParentId = widget.ereignis.parentId;
+      }
+    } else {
+      _changedEmployee = false;
+    }
   }
 
   // build dropdown with all possible designations
@@ -269,17 +337,8 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                   ),
                   _buildDesignationField(),
                   _buildEmployeeDropdown(),
-                  // TextFormField(
-                  //   initialValue: isEditing ? widget.ereignis.employee : '',
-                  // decoration:
-                  //     InputDecoration(hintText: 'Employee Name for the Shift'),
-                  // validator: (val) {
-                  //   return val.trim().isEmpty
-                  //       ? 'Please give a Employee Name'
-                  //       : null;
-                  // },
-                  // onSaved: (value) => _employee = value,
-                  // ),
+                  // todo add validator for when choosing a shift time
+                  //! this should be only a must when creating a shift and nothing else
                   RaisedButton(
                     child: Text(
                         _start_shift == null ? 'Select Start' : _start_shift),
@@ -312,41 +371,24 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
           child: Icon(isEditing ? Icons.check : Icons.add),
           backgroundColor: Colors.pink,
           onPressed: () {
-            
             // -- to check if an employee got changed when editing
             // --  this has an impact on the firebase db
-            if (isEditing) {
-              // while editing I can change multiple times the name on the dropdown
-              // but if in the end the employeeName remains the same, then nothing changes
-              // this means that this ereignis will only get updated
-              if (widget.ereignis.employee == _employeeName) {
-                _changedEmployee = false;
-              } else {
-                // this means that the employee was changed. The ereignis will get
-                // deleted from the sub-collection of the former employee and then
-                // added to the new one
-                _changedEmployee = true;
-                _oldParentId = widget.ereignis.parentId;
-              }
-            } else {
-              _changedEmployee = false;
-            }
-            // -- end
+            updateValuesForWhenEditingAndChangingEmployees();
 
             if (_formKey.currentState.validate()) {
               _formKey.currentState.save();
               widget.onSave(
-                _description,
-                _designation,
-                _employeeName,
-                _end_shift,
-                _reason,
-                _start_shift,
-                widget.daySelected,
-                _parentId,
-                _oldParentId,
-                _changedEmployee,
-              );
+                  _description,
+                  _designation,
+                  _employeeName,
+                  _end_shift,
+                  _reason,
+                  _start_shift,
+                  widget.daySelected,
+                  _parentId,
+                  _oldParentId,
+                  _changedEmployee,
+                  _employeeObj);
               Navigator.pop(context);
             }
           },

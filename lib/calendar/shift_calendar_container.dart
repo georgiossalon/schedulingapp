@@ -74,7 +74,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               Text(
-                'Employee: ${ereignis.employee}',
+                'Employee: ${ereignis.employeeName}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
                 textAlign: TextAlign.left,
               ),
@@ -119,14 +119,14 @@ class ShiftCalendarContainer extends StatelessWidget {
                     color: Colors.yellow.shade700,
                   ),
                 ),
-                onTap: () {
+                onTap: () async {
                   // ! the following snapshot, employee are there for the dropdown
-                  // DocumentSnapshot snapshot = await Firestore.instance
-                  //     .collection('Employees')
-                  //     .document(ereignis.parentId)
-                  //     .get();
-                  // Employee employee = Employee.fromEntity(
-                  //     EmployeeEntity.fromSnapshot(snapshot));
+                  DocumentSnapshot snapshot = await Firestore.instance
+                      .collection('Employees')
+                      .document(ereignis.parentId)
+                      .get();
+                  Employee oldEmployee = Employee.fromEntity(
+                      EmployeeEntity.fromSnapshot(snapshot));
                   // BlocProvider.of<EmployeesBloc>(context).add(LoadEmployees());
                   // ! end
 
@@ -135,39 +135,61 @@ class ShiftCalendarContainer extends StatelessWidget {
                     return AddEditEmployeeEreignis(
                       onSave: (description,
                           designation,
-                          employee,
+                          employeeName,
                           end_shift,
                           reason,
                           start_shift,
-                          shift_date,
+                          ereignis_date,
                           parentId,
                           oldParentId,
-                          changedEmployee) {
-                        // if I change the employee then delete and add to 
+                          changedEmployee,
+                          employeeObj) {
+                        // if I change the employee then delete and add to
                         // the sub-collection of the new employee
                         if (changedEmployee) {
                           BlocProvider.of<EreignisesBloc>(context)
                               .add(DeleteEreignis(
-                                ereignis.copyWith(
+                            ereignis.copyWith(
                                 description: description,
                                 designation: designation,
-                                employee: employee,
+                                employeeName: employeeName,
                                 end_shift: end_shift,
                                 reason: reason,
                                 start_shift: start_shift,
                                 parentId: oldParentId),
-                              ));
-                              BlocProvider.of<EreignisesBloc>(context)
-                                  .add(AddEreignis(
-                                    ereignis.copyWith(
+                          ));
+                          BlocProvider.of<EreignisesBloc>(context)
+                              .add(AddEreignis(
+                            ereignis.copyWith(
                                 description: description,
                                 designation: designation,
-                                employee: employee,
+                                employeeName: employeeName,
                                 end_shift: end_shift,
                                 reason: reason,
                                 start_shift: start_shift,
                                 parentId: parentId),
-                                  ));
+                          ));
+                          // -- update the busy_map
+                          // the employeeObj gets only initialized when I click on the dropdown
+                          // if I still choose the same employee I will not be running in here
+                          // since I am using and if-statement with the bool changedEmployee
+                          Map<DateTime, bool> hbusyMap = employeeObj.busyMap;
+                          hbusyMap[ereignis_date] = true;
+                          var hMap =
+                              EmployeeEntity.changeMapKeyForDocument(hbusyMap);
+                          BlocProvider.of<EmployeesBloc>(context)
+                              .add(UpdateEmployeeBusyMap(employeeObj.id, hMap));
+                          // -- now I have to remove the event from the old employee's busy_map
+                          Map<DateTime, bool> hbusyMapOldEmployee =
+                              oldEmployee.busyMap;
+                          hbusyMapOldEmployee[ereignis_date] = false;
+                          var hMapOldEmployee =
+                              EmployeeEntity.changeMapKeyForDocument(
+                                  hbusyMapOldEmployee);
+                          BlocProvider.of<EmployeesBloc>(context).add(
+                              UpdateEmployeeBusyMap(
+                                  oldEmployee.id, hMapOldEmployee));
+                          // -- end
                         } else {
                           //if I only update the values of the shift then update
                           BlocProvider.of<EreignisesBloc>(context)
@@ -176,7 +198,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                             ereignis.copyWith(
                                 description: description,
                                 designation: designation,
-                                employee: employee,
+                                employeeName: employeeName,
                                 end_shift: end_shift,
                                 reason: reason,
                                 start_shift: start_shift,
@@ -188,6 +210,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                       isEditing: true,
                       isShift: true,
                       ereignis: ereignis,
+                      employee: oldEmployee,
                     );
                   }));
                 },

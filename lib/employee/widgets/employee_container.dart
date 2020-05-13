@@ -68,7 +68,7 @@ class EmployeeContainer extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        employee.designation,
+                        employee.designations.toString(),
                         style: TextStyle(color: Colors.grey),
                       )
                     ],
@@ -114,7 +114,7 @@ class EmployeeContainer extends StatelessWidget {
                               .push(MaterialPageRoute(builder: (context) {
                             return AddEditEmployee(
                               onSave: (
-                                designation,
+                                designations,
                                 employeeName,
                                 weeklyHours,
                                 salary,
@@ -124,7 +124,7 @@ class EmployeeContainer extends StatelessWidget {
                               ) {
                                 BlocProvider.of<EmployeesBloc>(context)
                                     .add(UpdateEmployee(employee.copyWith(
-                                      designation: designation,
+                                      designations: designations,
                                       email: email,
                                       hiringDate: hiringDate,
                                       name: employeeName,

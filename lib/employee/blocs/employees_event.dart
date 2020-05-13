@@ -34,6 +34,19 @@ class UpdateEmployee extends EmployeesEvent {
   String toString() => 'UpdateEmployee { updatedEmployee: $updatedEmployee }';
 }
 
+class UpdateEmployeeBusyMap extends EmployeesEvent {
+  final String employeeId;
+  final Map<String,bool> busyMap;
+
+  const UpdateEmployeeBusyMap(this.employeeId, this.busyMap);
+
+  @override
+  List<Object> get props => [employeeId, busyMap];
+
+  @override
+  String toString() => 'UpdateEmployeeBusyMap { employeeId: $employeeId and busyMap: $busyMap }';
+}
+
 class RedoEmployee extends EmployeesEvent {
   final Employee redoneEmployee;
 
@@ -76,6 +89,8 @@ class LoadEmployeesWithGivenDesignation extends EmployeesEvent {
   @override
   List<Object> get props => [designation, date];
 }
+
+class EmployeesEmpty extends EmployeesEvent {}
 
 
 

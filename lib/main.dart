@@ -39,6 +39,7 @@ class ShiftsApp extends StatelessWidget {
           )..add(AppStarted());
         }),
         //fixme: why not load after the Authenticated state?
+        //todo: update the employee busy_map snippets each week (cloud functions)
         BlocProvider<EmployeesBloc>(create: (context) {
           return EmployeesBloc(
             employeesRepository: FirebaseEmployeesRepository(),
@@ -118,7 +119,7 @@ class ShiftsApp extends StatelessWidget {
               ) {
                 BlocProvider.of<EmployeesBloc>(context).add(AddEmployee(
                   Employee(
-                    designation: designation,
+                    designations: designation,
                     name: employeeName,
                     weeklyHours: weeklyHours,
                     salary: salary,
