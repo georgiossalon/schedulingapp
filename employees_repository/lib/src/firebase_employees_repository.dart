@@ -140,7 +140,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     var formatter = new DateFormat('yyyy-MM-dd');
     String formatedDate = formatter.format(date);
     return _employeeCollection
-        .where('designation', arrayContains: designation)
+        .where('designations', arrayContains: designation)
         .where('busy_map.$formatedDate',
             isEqualTo: false) 
         .snapshots()

@@ -86,77 +86,6 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
-  // Widget buildChooseDesignations(
-  //     BuildContext context, List<Designation> hDesignations) {
-  //   return Dialog(
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadiusDirectional.circular(8.0),
-  //     ),
-  //     child: _buildDialogChild(context, hDesignations),
-  //   );
-  // }
-
-  // _buildDialogChild(BuildContext context, List<Designation> hDesignations) {
-  //   //todo: when editing an employee I need the chosen designations (have to pass a list)
-  //   Map<String, bool> hEnabled = new Map<String, bool>();
-  //   for (var i = 0; i < hDesignations.length; i++) {
-  //     hEnabled[hDesignations[i].designation] = false;
-  //   }
-  //   return Container(
-  //     height: 200.0,
-  //     //todo: width not working properly
-  //     width: 50,
-  //     child: Column(
-  //       children: <Widget>[
-  //         Expanded(
-  //           child: ListView.builder(
-  //               itemCount: hDesignations.length,
-  //               itemBuilder: (context, index) {
-  //                 return Row(
-  //                   children: <Widget>[
-  //                     Expanded(
-  //                       child: Container(
-  //                         width: 10,
-  //                         color: hEnabled[hDesignations[index].designation]
-  //                             ? Colors.green
-  //                             : Colors.grey,
-  //                         padding: EdgeInsets.only(left: 80),
-  //                         child: Text(hDesignations[index].designation,
-  //                         style: TextStyle(fontWeight: FontWeight.bold),),
-  //                       ),
-  //                     ),
-  //                     Expanded(
-  //                       child: SwitchListTile(
-  //                           value: hEnabled[hDesignations[index].designation],
-  //                           onChanged: (bool value) {
-  //                             setState(() {
-  //                               hEnabled[hDesignations[index].designation] =
-  //                                   value;
-  //                             });
-  //                           }),
-  //                     )
-  //                   ],
-  //                 );
-  //               }),
-  //         ),
-  //         SizedBox(
-  //           height: 15.0,
-  //         ),
-  //         RaisedButton(
-  //           color: Colors.blueGrey,
-  //           child: Text(
-  //             'set',
-  //             style: TextStyle(color: Colors.white),
-  //           ),
-  //           onPressed: () {
-  //             //todo: save the 'newly' selected designations in a list on set click
-  //           },
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
   String listToString(List<String> designationsList) {
     String hString = '';
     for (String designation in designationsList) {
@@ -235,18 +164,20 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                               hCheck[designation] = true;
                             }
                           }
+                          
                           showDialog(
                               context: context,
                               builder: (context) => DesignationDialog(
                                     allDesignations: state.designations,
                                     hChecked: hCheck,
                                     employeesDesignations: _designations,
+                                    parent: this,
                                   ));
                         },
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0)),
                         child: Text(
-                          'Add +',
+                          'Add/Edit',
                           style: TextStyle(color: Colors.black),
                         ),
                       ),
@@ -431,12 +362,14 @@ class DesignationDialog extends StatefulWidget {
   final List<Designation> allDesignations;
   final List<String> employeesDesignations;
   final Map<String, bool> hChecked;
+  _AddEditEmployeeState parent;
 
   DesignationDialog(
       {Key key,
       this.allDesignations,
       this.hChecked,
-      this.employeesDesignations})
+      this.employeesDesignations,
+      this.parent})
       : super(key: key);
 
   @override
@@ -518,6 +451,9 @@ class _DesignationDialogState extends State<DesignationDialog> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
+              // so that I update the code in the parent widget
+              widget.parent.setState(() {
+
               widget.hChecked.forEach((k, v) {
                 if (v == true) {
                   // The chosen designations have to get added to the employees
@@ -532,6 +468,7 @@ class _DesignationDialogState extends State<DesignationDialog> {
                   }
                   
                 }
+              });
               });
               Navigator.of(context).pop();
               //todo when clicking on set also the main widget should get rebuild

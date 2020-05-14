@@ -57,11 +57,47 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   String _oldParentId;
   Employee _employeeObj;
   bool _changedEmployee;
-  Set<Employee> _hSet = new Set();
+  Set<Employee> _hSet = new Set(); //todo do I need this?
 
   bool get isEditing => widget.isEditing;
 
   bool get isShift => widget.isShift;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isEditing) {
+      _description = widget.ereignis.description;
+      _designation = widget.ereignis.designation;
+      _employeeName = widget.ereignis.employeeName;
+      _reason = widget.ereignis.reason;
+      _start_shift = widget.ereignis.start_shift;
+      _end_shift = widget.ereignis.end_shift;
+      _parentId = widget.ereignis.parentId;
+      // _employeeObj = widget.employee; // todo probably need this when editing
+
+      // when editing a shift, I should give the user the choice to choose
+      // another employee for the current designation without clicking on the
+      // designation again
+      BlocProvider.of<EmployeesBloc>(context)
+          .add(LoadEmployeesWithGivenDesignation(
+        designation: _designation,
+        date: widget.daySelected,
+      ));
+      // -- end
+      _hSet.add(widget.employee);
+    } else {
+      // when creating a new shift, the default designation is set to open
+      _designation = 'open';
+      // I chose to load the open employee for this case but I do not have to
+      // otherwise the dropdown would be set as Loading...
+      BlocProvider.of<EmployeesBloc>(context)
+          .add(LoadEmployeesWithGivenDesignation(
+        designation: _designation,
+        date: widget.daySelected,
+      ));
+    }
+  }
 
   //todo: When editing time the initial time is always the current Time!
   //todo... I might have to change _start/_end time data type from String
@@ -79,38 +115,6 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (isEditing) {
-      _description = widget.ereignis.description;
-      _designation = widget.ereignis.designation;
-      _employeeName = widget.ereignis.employeeName;
-      _reason = widget.ereignis.reason;
-      _start_shift = widget.ereignis.start_shift;
-      _end_shift = widget.ereignis.end_shift;
-      _parentId = widget.ereignis.parentId;
-      // _employeeObj = widget.employee; // todo probably need this when editing
-      BlocProvider.of<EmployeesBloc>(context)
-          .add(LoadEmployeesWithGivenDesignation(
-        designation: _designation,
-        date: widget.daySelected,
-      ));
-      _hSet.add(widget.employee);
-    } else {
-      _designation = 'open';
-      BlocProvider.of<EmployeesBloc>(context)
-          .add(LoadEmployeesWithGivenDesignation(
-        designation: _designation,
-        date: widget.daySelected,
-      ));
-    }
-  }
-
-  //todo: for each designation I need the employee option 'open'
-  //todo... at the moment I only have one designation per employee
-  //todo... in the future create a designation list/array for each employee document
-  //todo... I also need to be able to choose and save multiple values from the dropdown
   Widget _buildEmployeeDropdown() {
     //todo: I should probably wait for the user to choose designation before
     //todo... fetching the capable employees
@@ -122,34 +126,29 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is EmployeesLoaded || state is EmployeesNotLoaded) {
+        } else if (state is EmployeesLoaded) {
+          // the open employee will always be shown, when added in the employees list
+
           //todo when setting the new employee for the shift, the list
           //todo... gets updated and I will always have an error
 
           //! the following 'method' saves the old and new assigned employee,
           //! so that I do not have a problem with the dropdown
           // -- adding the old employee to the list for the dropdown
-          if (state is EmployeesLoaded) {
-            for (var employee in state.employees) {
-              // if (!_hSet.contains(employee)) {
-              //   _hSet.add(employee);
-              // }
-              bool hbool = false;
-              for (var employeeInSet in _hSet) {
-                if (employeeInSet.id == employee.id) {
-                  hbool = true;
-                }
+          for (var employee in state.employees) {
+            // if (!_hSet.contains(employee)) {
+            //   _hSet.add(employee);
+            // }
+            bool hbool = false;
+            for (var employeeInSet in _hSet) {
+              if (employeeInSet.id == employee.id) {
+                hbool = true;
               }
-              !hbool ? _hSet.add(employee) : null;
             }
-            // _hSet..addAll(state.employees);
-            // widget.employee != null ? _hSet.add(widget.employee) : null;
-            // --end
-          } else {
-            // no employees for the chosen designation
-            //todo: always load the Open employee
-            _hSet = new Set();
+            !hbool ? _hSet.add(employee) : null;
           }
+          // --end
+
           return InputDecorator(
             decoration: InputDecoration(
               icon: Icon(FontAwesomeIcons.user),
