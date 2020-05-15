@@ -16,9 +16,9 @@ class DesignationList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DesignationsBloc,DesignationsState>(
       builder: (context, state) {
-        if (state is DesignationsLoading) {
+        if (state.designations.isEmpty) {
           return Container(child: Text('Loading'),);
-        } else if (state is DesignationsLoaded) {
+        } else if (state.designations.isNotEmpty) {
           return SafeArea(
             child: Scaffold(
           appBar: AppBar(title: Text('Designation List'),),
@@ -41,6 +41,8 @@ class DesignationList extends StatelessWidget {
                           designation: designation,
                         )
                       ));
+                      //todo add the designation to the open Employee
+                      //! this must have as a pre-requisite an open employee in the list
                     },
                     isEditing: false,
                   );

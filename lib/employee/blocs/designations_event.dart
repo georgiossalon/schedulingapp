@@ -10,6 +10,15 @@ abstract class DesignationsEvent extends Equatable {
 
 class LoadDesignations extends DesignationsEvent {}
 
+class AssignDesignationsToEmployee extends DesignationsEvent {
+  final String designationsString;
+
+  const AssignDesignationsToEmployee(this.designationsString);
+
+  @override
+  List<Object> get props => [designationsString];
+}
+
 class DesignationsUpdated extends DesignationsEvent {
   final List<Designation> designations;
 

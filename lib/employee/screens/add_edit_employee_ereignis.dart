@@ -1,6 +1,7 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
+import 'package:snapshot_test/employee/blocs/designations_bloc.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -85,6 +86,9 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
         date: widget.daySelected,
       ));
       // -- end
+      // load the current designation for this shift
+      BlocProvider.of<DesignationsBloc>(context)
+          .add(AssignDesignationsToEmployee(_designation));
       _hSet.add(widget.employee);
     } else {
       // when creating a new shift, the default designation is set to open
@@ -96,6 +100,9 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
         designation: _designation,
         date: widget.daySelected,
       ));
+      // report to the DesignationsBloc, that the initial designation is open
+      BlocProvider.of<DesignationsBloc>(context)
+          .add(AssignDesignationsToEmployee(_designation));
     }
   }
 
@@ -116,13 +123,9 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   }
 
   Widget _buildEmployeeDropdown() {
-    //todo: I should probably wait for the user to choose designation before
-    //todo... fetching the capable employees
     return BlocBuilder<EmployeesBloc, EmployeesState>(
       builder: (context, state) {
         if (state is EmployeesLoading) {
-          //todo let the user know that after choosing the designation
-          //todo... the employee dropdown will be available
           return Container(
             child: Text('Loading'),
           );
@@ -130,21 +133,19 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
           // the open employee will always be shown, when added in the employees list
 
           //todo when setting the new employee for the shift, the list
-          //todo... gets updated and I will always have an error
+          //todo... gets updated and I will always have an error because of the dropdown
 
           //! the following 'method' saves the old and new assigned employee,
           //! so that I do not have a problem with the dropdown
           // -- adding the old employee to the list for the dropdown
           for (var employee in state.employees) {
-            // if (!_hSet.contains(employee)) {
-            //   _hSet.add(employee);
-            // }
             bool hbool = false;
             for (var employeeInSet in _hSet) {
               if (employeeInSet.id == employee.id) {
                 hbool = true;
               }
             }
+            // if the employee is not within the map, then add him
             !hbool ? _hSet.add(employee) : null;
           }
           // --end
@@ -155,26 +156,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
               labelText: 'Employee',
             ),
             child: DropdownButtonHideUnderline(
-              // -- object choosing
-              // child: DropdownButton<Employee>(
-              //   items: state.employees.map((Employee employee) {
-              //     return new DropdownMenuItem<Employee>(
-              //       value: employee,
-              //       child: Text(employee.name),
-              //     );
-              //   }).toList(),
-              //   onChanged: (Employee newEmployee) {
-              //     setState(() {
-              //       _employeeName = newEmployee.name;
-              //       _parentId = newEmployee.id;
-              //       _employeeObj = newEmployee;
-              //     });
-              //   },
-              //   value:_employeeObj,
-              // ),
-
               // -- String choosing
-
               child: DropdownButton<String>(
                 // items: state.employees.map((Employee employee) {
                 items: _hSet.map((Employee employee) {
@@ -198,7 +180,6 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                         }
                       }
                       // -- end
-                      // _parentId = newEmployee.id;
                     }
                   });
                 },
@@ -207,11 +188,24 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
               ),
             ),
           );
+        } else {
+          return Container(
+            padding: EdgeInsets.all(5.0),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                'No Employee for this Designation',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            height: 40.0,
+          );
         }
-        // } else if (state is EmployeesNotLoaded) {
-        //   //todo: perhaps build the same thing as before but only show this on the dropdown?
-        //   Container(child: Text('No Available Employee for this designation'),);
-        // }
       },
     );
   }
@@ -219,11 +213,12 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   Widget _buildDesignationField() {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state is DesignationsLoading) {
+        if (state.designations.isEmpty) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is DesignationsLoaded) {
+        } else if (state.designations.isNotEmpty &&
+            state.designationsChosen != null) {
           return InputDecorator(
             decoration: InputDecoration(
               icon: Icon(FontAwesomeIcons.tasks),
@@ -244,19 +239,26 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                     designation: newDesignation,
                     date: widget.daySelected,
                   ));
-                  setState(() {
-                    _designation = newDesignation;
-                    // After changing the designation, I have to set the employeeName
-                    // to null, otherwise I will be getting errors, since my
-                    // employee dropdown does not contain the name for the new designation
-                    _employeeName = null;
-                    _employeeObj = null;
-                    _hSet = new Set();
-                  });
+                  // setState(() {
+                  _designation = newDesignation;
+                  BlocProvider.of<DesignationsBloc>(context)
+                      .add(AssignDesignationsToEmployee(_designation));
+                  // After changing the designation, I have to set the employeeName
+                  // to null, otherwise I will be getting errors, since my
+                  // employee dropdown does not contain the name for the new designation
+                  _employeeName = null;
+                  _employeeObj = null;
+                  _hSet = new Set();
+                  // });
                 },
                 value: _designation,
               ),
             ),
+          );
+        } else {
+          print(state);
+          return Container(
+            child: Text('ups'),
           );
         }
       },

@@ -101,11 +101,11 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildDesignationField(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state is DesignationsLoading) {
+        if (state.designations.isEmpty) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is DesignationsLoaded) {
+        } else if (state.designations.isNotEmpty) {
           return Container(
             height: 70.0,
             decoration: BoxDecoration(

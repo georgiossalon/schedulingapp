@@ -34,7 +34,7 @@ abstract class EmployeesRepository {
   //designations 
   //todo I need a page where the user will add designations
   //todo... when creating an employee there will be a dropdown to choose from
-  Stream<List<Designation>> designations();
+  Future<List<Designation>> designations();
 
   Future<void> addNewDesignation(Designation designation);
 

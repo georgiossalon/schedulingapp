@@ -10,13 +10,14 @@ import 'package:meta/meta.dart';
 class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
   final EmployeesRepository _employeesRepository;
   StreamSubscription _designationsSubcription;
+  // StreamSubscription<String> _designationsToEmployeeSubscription;
 
   DesignationsBloc({@required EmployeesRepository employeesRepository})
       : assert(employeesRepository != null),
         _employeesRepository = employeesRepository;
 
   @override
-  DesignationsState get initialState => DesignationsLoading();
+  DesignationsState get initialState => DesignationsState.designationsLoading();
 
   @override
   Stream<DesignationsState> mapEventToState(
@@ -32,14 +33,27 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
       yield* _mapDeleteDesignationToState(event);
     } else if (event is DesignationsUpdated) {
       yield* _mapDesignationsUpdatedToState(event);
+    } else if (event is AssignDesignationsToEmployee) {
+      yield* _mapAssignDesignationsToEmployee(event);
     }
   }
 
   Stream<DesignationsState> _mapLoadDesignationsToState() async* {
     _designationsSubcription?.cancel();
-    _designationsSubcription = _employeesRepository.designations().listen(
-          (designations) => add(DesignationsUpdated(designations)),
-        );
+    // _designationsSubcription = _employeesRepository.designations().listen(
+    //       (designations) => add(DesignationsUpdated(designations)),
+    //     );
+   final designations = await _employeesRepository.designations();
+    yield DesignationsState.designationsLoaded(designations: designations); 
+  }
+  Stream<DesignationsState> _mapAssignDesignationsToEmployee(AssignDesignationsToEmployee event) async* {
+    final currentState = state;
+    yield DesignationsState.designationsLoadedAndAssignedToShift(designations: currentState.designations, designationsChosen: event.designationsString);
+  }
+
+  Stream<DesignationsState> _mapDesignationsUpdatedToState(
+      DesignationsUpdated event) async* {
+    yield DesignationsState.designationsLoaded(designations: event.designations);
   }
 
   Stream<DesignationsState> _mapAddDesignationToState(
@@ -57,10 +71,6 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
     _employeesRepository.deleteDesignation(event.designation);
   }
 
-  Stream<DesignationsState> _mapDesignationsUpdatedToState(
-      DesignationsUpdated event) async* {
-    yield DesignationsLoaded(event.designations);
-  }
 
   @override
   Future<void> close() {

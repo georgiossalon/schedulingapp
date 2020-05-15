@@ -152,12 +152,19 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Stream<List<Designation>> designations() {
-    return _designationCollection.snapshots().map((snapshot) {
-      return snapshot.documents
-          .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
-          .toList();
-    });
+  Future<List<Designation>> designations() {
+    return _designationCollection.getDocuments().then((designations) {
+      List<Designation> hList = new List();
+      for (DocumentSnapshot item in designations.documents) {
+        hList.add(Designation.fromEntity(DesignationEntity.fromSnapshot(item)));
+      }
+    return hList;
+    }); 
+    // .map((snapshot) {
+    //   return snapshot.documents
+    //       .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
+    //       .toList();
+    // });
   }
 
   @override
