@@ -40,7 +40,7 @@ class Employee {
       String name,
       double salary,
       double weeklyHours,
-      List<Ereignis> currentWeekEreignis}) {
+      List<DateEvent> currentWeekDateEvent}) {
     return Employee(
       designations: designations ?? this.designations,
       email: email ?? this.email,
@@ -49,7 +49,7 @@ class Employee {
       name: name ?? this.name,
       salary: salary ?? this.salary,
       weeklyHours: weeklyHours ?? this.weeklyHours,
-      busyMap: currentWeekEreignis ?? this.busyMap
+      busyMap: currentWeekDateEvent ?? this.busyMap
     );
   }
 
@@ -82,7 +82,7 @@ class Employee {
 
   @override
   String toString() {
-    return 'Employee ( designations: $designations, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekEreignis: $busyMap)';
+    return 'Employee ( designations: $designations, email: $email, hiringDate: $hiringDate, id: $id, name: $name, salary: $salary, weeklyHours: $weeklyHours, currentWeekDateEvent: $busyMap)';
   }
 
   EmployeeEntity toEntity() {

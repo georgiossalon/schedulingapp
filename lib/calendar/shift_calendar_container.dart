@@ -1,8 +1,8 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/blocs/shifts_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,21 +11,21 @@ import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShiftCalendarContainer extends StatelessWidget {
-  final Ereignis ereignis;
+  final DateEvent dateEvent;
   final BuildContext scaffoldContext;
 
-  const ShiftCalendarContainer({Key key, this.ereignis, this.scaffoldContext})
+  const ShiftCalendarContainer({Key key, this.dateEvent, this.scaffoldContext})
       : super(key: key);
 
-  showSnackBar(context, deletedEreignis) {
+  showSnackBar(context, deletedDateEvent) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Shift Deleted!'),
       duration: Duration(seconds: 3),
       action: SnackBarAction(
         label: 'UNDO',
         onPressed: () {
-          BlocProvider.of<EreignisesBloc>(context)
-              .add(RedoEreignis(deletedEreignis));
+          BlocProvider.of<DateEventsBloc>(context)
+              .add(RedoDateEvent(deletedDateEvent));
         },
       ),
     ));
@@ -46,8 +46,8 @@ class ShiftCalendarContainer extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                    ereignis.start_shift != null
-                        ? 'Start ${ereignis.start_shift}'
+                    dateEvent.start_shift != null
+                        ? 'Start ${dateEvent.start_shift}'
                         : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -58,8 +58,8 @@ class ShiftCalendarContainer extends StatelessWidget {
                     width: 20.0,
                   ),
                   Text(
-                    ereignis.end_shift != null
-                        ? 'End ${ereignis.end_shift}'
+                    dateEvent.end_shift != null
+                        ? 'End ${dateEvent.end_shift}'
                         : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -69,12 +69,12 @@ class ShiftCalendarContainer extends StatelessWidget {
                 ],
               ),
               Text(
-                'Designation: ${ereignis.designation}',
+                'Designation: ${dateEvent.designation}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
                 textAlign: TextAlign.left,
               ),
               Text(
-                'Employee: ${ereignis.employeeName}',
+                'Employee: ${dateEvent.employeeName}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
                 textAlign: TextAlign.left,
               ),
@@ -83,7 +83,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '${ereignis.id}',
+                      '${dateEvent.id}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 17.0),
                       textAlign: TextAlign.left,
@@ -104,11 +104,11 @@ class ShiftCalendarContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  BlocProvider.of<EreignisesBloc>(context)
-                      .add(DeleteEreignis(ereignis));
+                  BlocProvider.of<DateEventsBloc>(context)
+                      .add(DeleteDateEvent(dateEvent));
                   // hide previous snackbars and show only the current one
                   Scaffold.of(context).hideCurrentSnackBar();
-                  showSnackBar(scaffoldContext, ereignis);
+                  showSnackBar(scaffoldContext, dateEvent);
                 },
               ),
               GestureDetector(
@@ -120,10 +120,12 @@ class ShiftCalendarContainer extends StatelessWidget {
                   ),
                 ),
                 onTap: () async {
+                  // todo the following should be in the repository. I should not have Firestore.instance in the UI
+                  //todo: check why I am fetching an employee from firestore when I already have this passed within this widget
                   // ! the following snapshot, employee are there for the dropdown
                   DocumentSnapshot snapshot = await Firestore.instance
                       .collection('Employees')
-                      .document(ereignis.parentId)
+                      .document(dateEvent.parentId)
                       .get();
                   Employee oldEmployee = Employee.fromEntity(
                       EmployeeEntity.fromSnapshot(snapshot));
@@ -132,14 +134,14 @@ class ShiftCalendarContainer extends StatelessWidget {
 
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditEmployeeEreignis(
+                    return AddEditEmployeeDateEvent(
                       onSave: (description,
                           designation,
                           employeeName,
                           end_shift,
                           reason,
                           start_shift,
-                          ereignis_date,
+                          dateEvent_date,
                           parentId,
                           oldParentId,
                           changedEmployee,
@@ -147,9 +149,9 @@ class ShiftCalendarContainer extends StatelessWidget {
                         // if I change the employee then delete and add to
                         // the sub-collection of the new employee
                         if (changedEmployee) {
-                          BlocProvider.of<EreignisesBloc>(context)
-                              .add(DeleteEreignis(
-                            ereignis.copyWith(
+                          BlocProvider.of<DateEventsBloc>(context)
+                              .add(DeleteDateEvent(
+                            dateEvent.copyWith(
                                 description: description,
                                 designation: designation,
                                 employeeName: employeeName,
@@ -158,9 +160,9 @@ class ShiftCalendarContainer extends StatelessWidget {
                                 start_shift: start_shift,
                                 parentId: oldParentId),
                           ));
-                          BlocProvider.of<EreignisesBloc>(context)
-                              .add(AddEreignis(
-                            ereignis.copyWith(
+                          BlocProvider.of<DateEventsBloc>(context)
+                              .add(AddDateEvent(
+                            dateEvent.copyWith(
                                 description: description,
                                 designation: designation,
                                 employeeName: employeeName,
@@ -174,7 +176,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                           // if I still choose the same employee I will not be running in here
                           // since I am using and if-statement with the bool changedEmployee
                           Map<DateTime, bool> hbusyMap = employeeObj.busyMap;
-                          hbusyMap[ereignis_date] = true;
+                          hbusyMap[dateEvent_date] = true;
                           var hMap =
                               EmployeeEntity.changeMapKeyForDocument(hbusyMap);
                           BlocProvider.of<EmployeesBloc>(context)
@@ -182,7 +184,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                           // -- now I have to remove the event from the old employee's busy_map
                           Map<DateTime, bool> hbusyMapOldEmployee =
                               oldEmployee.busyMap;
-                          hbusyMapOldEmployee[ereignis_date] = false;
+                          hbusyMapOldEmployee[dateEvent_date] = false;
                           var hMapOldEmployee =
                               EmployeeEntity.changeMapKeyForDocument(
                                   hbusyMapOldEmployee);
@@ -192,10 +194,10 @@ class ShiftCalendarContainer extends StatelessWidget {
                           // -- end
                         } else {
                           //if I only update the values of the shift then update
-                          BlocProvider.of<EreignisesBloc>(context)
-                              .add(UpdateEreignis(
+                          BlocProvider.of<DateEventsBloc>(context)
+                              .add(UpdateDateEvent(
                             //todo might have to add the parentId field
-                            ereignis.copyWith(
+                            dateEvent.copyWith(
                                 description: description,
                                 designation: designation,
                                 employeeName: employeeName,
@@ -209,7 +211,7 @@ class ShiftCalendarContainer extends StatelessWidget {
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
                       isShift: true,
-                      ereignis: ereignis,
+                      dateEvent: dateEvent,
                       employee: oldEmployee,
                     );
                   }));

@@ -1,3 +1,3 @@
 export 'employee.dart';
-export 'ereignis.dart';
+export 'date_event.dart';
 export 'designation.dart';

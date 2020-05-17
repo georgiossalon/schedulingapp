@@ -23,4 +23,16 @@ class EmployeesLoaded extends EmployeesState {
   String toString() => 'EmployeesLoaded {employees: $employees }';
 }
 
+class EmployeesLoadedWithGivenDesignation extends EmployeesState {
+  final List<Employee> employees;
+
+  const EmployeesLoadedWithGivenDesignation([this.employees = const[]]);
+
+  @override
+  List<Object> get props => [employees];
+
+  @override
+  String toString() => 'EmployeesLoaded {employees: $employees }';
+}
+
 class EmployeesNotLoaded extends EmployeesState {}

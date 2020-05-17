@@ -80,6 +80,15 @@ class EmployeesUpdated extends EmployeesEvent {
   List<Object> get props => [employees];
 }
 
+class EmployeesUpdatedWithGivenDesignation extends EmployeesEvent {
+  final List<Employee> employees;
+
+  const EmployeesUpdatedWithGivenDesignation(this.employees);
+
+  @override
+  List<Object> get props => [employees];
+}
+
 class LoadEmployeesWithGivenDesignation extends EmployeesEvent {
   final String designation;
   final DateTime date;

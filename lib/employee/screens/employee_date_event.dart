@@ -2,8 +2,8 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shifts_repository/shifts_repository.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/main.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
@@ -12,24 +12,24 @@ import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EmployeeEreignis extends StatelessWidget {
-  //todo cancel the subscription for the employees ereignis when clicking on the
+class EmployeeDateEvent extends StatelessWidget {
+  //todo cancel the subscription for the employees dateEvent when clicking on the
   //todo... arrow of the top left corner of the screen
 
   static const String screenId = 'employee_availability';
   final Employee employee;
-  static DateTime employeeEreignisSelectedDay = DateTime.now();
+  static DateTime employeeDateEventSelectedDay = DateTime.now();
 
-  const EmployeeEreignis({Key key, this.employee}) : super(key: key);
+  const EmployeeDateEvent({Key key, this.employee}) : super(key: key);
 
-  static Map<DateTime, List<dynamic>> ereignisListToCalendarMap(
-      List<Ereignis> currentWeekEreignis) {
+  static Map<DateTime, List<dynamic>> dateEventListToCalendarMap(
+      List<DateEvent> currentWeekDateEvent) {
     Map<DateTime, List<dynamic>> hMap = new Map<DateTime, List<dynamic>>();
-    if (currentWeekEreignis != null) {
-      for (Ereignis ereignis in currentWeekEreignis) {
+    if (currentWeekDateEvent != null) {
+      for (DateEvent dateEvent in currentWeekDateEvent) {
         //!! only one event is allowed for the availability calendar
         //!! still I use a List. Change this in the future?
-        hMap[ereignis.ereignis_date] = [ereignis];
+        hMap[dateEvent.dateEvent_date] = [dateEvent];
       }
     }
     return hMap;
@@ -37,14 +37,14 @@ class EmployeeEreignis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EreignisesBloc, EreignisesState>(
+    return BlocBuilder<DateEventsBloc, DateEventsState>(
       builder: (context, state) {
-        if (state is EreignisesLoading) {
+        if (state is DateEventsLoading) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is EreignisesLoaded) {
-          List<Ereignis> currentEmployeesEreignises = state.ereignises;
+        } else if (state is DateEventsLoaded) {
+          List<DateEvent> currentEmployeesDateEvents = state.dateEvents;
           //todo take only the info for the given employee
           return SafeArea(
             child: Scaffold(
@@ -52,7 +52,7 @@ class EmployeeEreignis extends StatelessWidget {
                 title: Text('Employee Availability'),
               ),
               body: CalendarWidget(
-                map: ereignisListToCalendarMap(currentEmployeesEreignises),
+                map: dateEventListToCalendarMap(currentEmployeesDateEvents),
                 isShift: false,
               ),
               floatingActionButton: SpeedDial(
@@ -75,7 +75,7 @@ class EmployeeEreignis extends StatelessWidget {
                               end_shift,
                               shift_date,
                             ) {
-                              //todo: add the shift to the employees ereignises (Bloc)
+                              //todo: add the shift to the employees dateEvents (Bloc)
                               BlocProvider.of<ShiftsBloc>(context).add(AddShift(
                                 Shift(
                                   designation: designation,
@@ -85,37 +85,37 @@ class EmployeeEreignis extends StatelessWidget {
                                   shift_date: shift_date,
                                 ),
                               ));
-                              BlocProvider.of<EreignisesBloc>(context).add(
-                                  AddEreignis(Ereignis(
+                              BlocProvider.of<DateEventsBloc>(context).add(
+                                  AddDateEvent(DateEvent(
                                       reason: 'shift',
                                       description: designation,
                                       start_shift: start_shift,
                                       end_shift: end_shift,
-                                      ereignis_date: shift_date)));
+                                      dateEvent_date: shift_date)));
                             },
-                            daySelected: employeeEreignisSelectedDay,
+                            daySelected: employeeDateEventSelectedDay,
                             isEditing: false,
                           );
                         }));
                       }),
                   SpeedDialChild(
                       child: Icon(FontAwesomeIcons.couch),
-                      label: 'Add ereignis',
+                      label: 'Add dateEvent',
                       backgroundColor: Colors.grey,
                       onTap: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          // return AddEditEmployeeEreignis(
+                          // return AddEditEmployeeDateEvent(
                           //   onSave: (reason, description, selectedDay) {
-                          //     BlocProvider.of<EreignisesBloc>(context).add(
-                          //         AddEreignis(
-                          //             Ereignis(
+                          //     BlocProvider.of<DateEventsBloc>(context).add(
+                          //         AddDateEvent(
+                          //             DateEvent(
                           //                 reason: reason,
                           //                 description: description,
-                          //                 ereignis_date: selectedDay),
+                          //                 dateEvent_date: selectedDay),
                           //             employee.id));
                           //   },
-                          //   daySelected: employeeEreignisSelectedDay,
+                          //   daySelected: employeeDateEventSelectedDay,
                           //   isEditing: false,
                           // );
                         }));

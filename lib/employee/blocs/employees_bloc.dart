@@ -35,9 +35,11 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapUpdateEmployeeBusyMapToState(event);
     } else if (event is EmployeesEmpty) {
       yield* _mapEmployeesNotLoadedMapToState();
+    } else if (event is EmployeesUpdatedWithGivenDesignation) {
+      yield* _mapEmployeesUpdatedWithGivenDesignationMapToState(event);
     }
-//    else if (event is EmployeeEreignisRequested) {
-//      yield* _mapEmployeeEreignisRequestedToState(event);
+//    else if (event is EmployeeDateEventRequested) {
+//      yield* _mapEmployeeDateEventRequestedToState(event);
 //    }
   }
 
@@ -52,15 +54,12 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(LoadEmployeesWithGivenDesignation event) async* {
     _employeesSubscription?.cancel();
     _employeesSubscription = _employeesRepository.availableEmployeesForGivenDesignation(event.designation, event.date).listen(
-      // (employees) => add(EmployeesUpdated(employees)),
-      (employees) {
-        if ( employees.isNotEmpty) {
-          return add(EmployeesUpdated(employees));
-        } else {
-          return add(EmployeesEmpty());
-        }
-      }
+      (employees) => add(EmployeesUpdatedWithGivenDesignation(employees)),
     );
+  }
+
+  Stream<EmployeesState> _mapEmployeesUpdatedWithGivenDesignationMapToState(EmployeesUpdatedWithGivenDesignation event) async* {
+    yield EmployeesLoadedWithGivenDesignation(event.employees);
   }
   
 

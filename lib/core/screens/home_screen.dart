@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
 import 'package:snapshot_test/current_day/current_day.dart';
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget setBody(AppTab activeTab, BuildContext context) {
     if (activeTab == AppTab.calendar) {
-      BlocProvider.of<EreignisesBloc>(context).add(LoadAllShiftsForXWeeks(4));
+      BlocProvider.of<DateEventsBloc>(context).add(LoadAllShiftsForXWeeks(4));
       return ShiftsView();
     } else if( activeTab == AppTab.currentDay) {
       return CurrentDay();

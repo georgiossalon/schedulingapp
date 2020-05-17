@@ -40,11 +40,11 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
 
   Stream<DesignationsState> _mapLoadDesignationsToState() async* {
     _designationsSubcription?.cancel();
-    // _designationsSubcription = _employeesRepository.designations().listen(
-    //       (designations) => add(DesignationsUpdated(designations)),
-    //     );
-   final designations = await _employeesRepository.designations();
-    yield DesignationsState.designationsLoaded(designations: designations); 
+    _designationsSubcription = _employeesRepository.designations().listen(
+          (designations) => add(DesignationsUpdated(designations)),
+        );
+  //  final designations = await _employeesRepository.designations();
+  //   yield DesignationsState.designationsLoaded(designations: designations); 
   }
   Stream<DesignationsState> _mapAssignDesignationsToEmployee(AssignDesignationsToEmployee event) async* {
     final currentState = state;

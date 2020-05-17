@@ -13,7 +13,7 @@ import 'package:snapshot_test/core/screens/home_screen.dart';
 import 'package:snapshot_test/core/screens/splash_screen.dart';
 import 'package:snapshot_test/tabs/blocs/tab.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
 
 import 'authentication/blocs/authentication.dart';
 import 'employee/blocs/designations.dart';
@@ -48,8 +48,8 @@ class ShiftsApp extends StatelessWidget {
           // )..add(LoadEmployeesWithGivenDesignation('5',DateTime.now()));
         }
         ,),
-        BlocProvider<EreignisesBloc>(create: (context) {
-          return EreignisesBloc(
+        BlocProvider<DateEventsBloc>(create: (context) {
+          return DateEventsBloc(
             employeesRepository: FirebaseEmployeesRepository()
             );
             // )..add(LoadAllShiftsForXWeeks(4));

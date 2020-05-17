@@ -39,7 +39,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedEreignisBarAppearance</key>
+	<key>UIViewControllerBasedDateEventBarAppearance</key>
 	<false/>
 </dict>
 </plist>

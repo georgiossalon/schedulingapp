@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-class EreignisEntity extends Equatable {
+class DateEventEntity extends Equatable {
   final String description;
   final String designation;
   final String employeeName;
@@ -10,10 +10,10 @@ class EreignisEntity extends Equatable {
   final String id;
   final String reason;
   final String start_shift;
-  final DateTime ereignis_date;
+  final DateTime dateEvent_date;
   final String parentId;
 
-  const EreignisEntity({
+  const DateEventEntity({
     this.description,
     this.designation,
     this.employeeName,
@@ -21,14 +21,14 @@ class EreignisEntity extends Equatable {
     this.id,
     this.reason,
     this.start_shift,
-    this.ereignis_date,
+    this.dateEvent_date,
     this.parentId
   });
 
   // @override
   // Map<String, Object> toJson() {
   //   return {
-  //     'ereignis_date': ereignis_date,
+  //     'dateEvent_date': dateEvent_date,
   //     'start_shift': start_shift,
   //     'end_shift': end_shift,
   //     'reason': reason,
@@ -47,7 +47,7 @@ class EreignisEntity extends Equatable {
       'designation': designation,
       'employee_name': employeeName,
       'end_shift': end_shift,
-      'ereignis_date': ereignis_date,
+      'dateEvent_date': dateEvent_date,
       'start_shift': start_shift,
       'reason': reason,
       'parent_id': parentId,
@@ -62,19 +62,19 @@ class EreignisEntity extends Equatable {
         id,
         reason,
         start_shift,
-        ereignis_date,
+        dateEvent_date,
         parentId
       ];
 
   @override
   String toString() {
-    return 'EreignisEntity { description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId)';
+    return 'DateEventEntity { description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, parentId: $parentId)';
   }
 
-  static EreignisEntity fromJson(Map<String, Object> json, DateTime date) {
+  static DateEventEntity fromJson(Map<String, Object> json, DateTime date) {
     if (json == null) return null;
 
-    return EreignisEntity(
+    return DateEventEntity(
       designation: json['designation'] as String,
       description: json['description'] as String,
       employeeName: json['employee_name'] as String,
@@ -82,13 +82,13 @@ class EreignisEntity extends Equatable {
       id: json['id'] as String,
       reason: json['reason'] as String,
       start_shift: json['start_shift'] as String,
-      ereignis_date: date,
+      dateEvent_date: date,
       parentId: json['parend_id'] as String,
     );
   }
 
-  static EreignisEntity fromSnapshot(DocumentSnapshot snap) {
-    return EreignisEntity(
+  static DateEventEntity fromSnapshot(DocumentSnapshot snap) {
+    return DateEventEntity(
       designation: snap.data['designation'],
       description: snap.data['description'],
       employeeName: snap.data['employee_name'],
@@ -96,8 +96,8 @@ class EreignisEntity extends Equatable {
       id: snap.documentID,
       reason: snap.data['reason'],
       start_shift: snap.data['start_shift'],
-      ereignis_date: convertingFirestoreDateToDateTime(
-          snap.data['ereignis_date'] as Timestamp),
+      dateEvent_date: convertingFirestoreDateToDateTime(
+          snap.data['dateEvent_date'] as Timestamp),
       parentId: snap.data['parent_id']
     );
   }

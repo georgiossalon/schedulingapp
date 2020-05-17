@@ -65,7 +65,7 @@ class EmployeeEntity extends Equatable {
   //     json['name'] as String,
   //     json['salary'] as double,
   //     json['weeklyHours'] as double,
-  //     // json['currentWeekEreignis'] as Map
+  //     // json['currentWeekDateEvent'] as Map
   //   );
   // }
 
@@ -79,38 +79,38 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  static List<Ereignis> snapMapToList(var snapMap) {
+  static List<DateEvent> snapMapToList(var snapMap) {
     if (snapMap != null) {
-      List<Ereignis> hList = new List<Ereignis>();
+      List<DateEvent> hList = new List<DateEvent>();
       snapMap.forEach((k, v) {
-        //fixme: the ereignis keys are of type String.
+        //fixme: the dateEvent keys are of type String.
         //fixme... make the keys to have the same format example 2020-05-31
         var dateTime = DateTime.parse(k);
         DateTime updatedDateTime = utcTo12oclock(dateTime);
-        Ereignis ereignis =
-            Ereignis.fromEntity(EreignisEntity.fromJson(v, updatedDateTime));
-        hList.add(ereignis);
+        DateEvent dateEvent =
+            DateEvent.fromEntity(DateEventEntity.fromJson(v, updatedDateTime));
+        hList.add(dateEvent);
       });
       return hList;
     }
   }
 
-  static Map ereignisListToMap(List<Ereignis> currentWeekEreignis) {
-    if (currentWeekEreignis != null) {
+  static Map dateEventListToMap(List<DateEvent> currentWeekDateEvent) {
+    if (currentWeekDateEvent != null) {
       Map<String, Map<String, String>> hMap =
           new Map<String, Map<String, String>>();
-      for (Ereignis ereignis in currentWeekEreignis) {
+      for (DateEvent dateEvent in currentWeekDateEvent) {
         Map<String, String> hhMap = new Map<String, String>();
-        hhMap['start_shift'] = ereignis.start_shift;
-        hhMap['end_shift'] = ereignis.end_shift;
-        hhMap['reason'] = ereignis.reason;
-        hhMap['description'] = ereignis.description;
+        hhMap['start_shift'] = dateEvent.start_shift;
+        hhMap['end_shift'] = dateEvent.end_shift;
+        hhMap['reason'] = dateEvent.reason;
+        hhMap['description'] = dateEvent.description;
         // Firestore keys (map) have to be of type String
         // key: date ->
         // val: Map (keys: start_shift, end_shift, reason, description)
         var formatter = new DateFormat('yyyy-MM-dd');
-        String formatedDate = formatter.format(ereignis.ereignis_date);
-        // connecting the ereignis details with the date
+        String formatedDate = formatter.format(dateEvent.dateEvent_date);
+        // connecting the dateEvent details with the date
         hMap[formatedDate] = hhMap;
       }
       return hMap;

@@ -19,22 +19,23 @@ abstract class EmployeesRepository {
 
   // create a stream for a given employee
   //todo only give id instead of the whole object
-  Stream<List<Ereignis>> allEreignisesForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
+  Stream<List<DateEvent>> allDateEventsForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
   
-  Stream<List<Ereignis>> allShiftEreignisesForXWeeks(int numOfWeeks, DateTime currentDate);
+  Stream<List<DateEvent>> allShiftDateEventsForXWeeks(int numOfWeeks, DateTime currentDate);
 
-  Future<void> updateEreignis(Ereignis ereignis);
+  Future<void> updateDateEvent(DateEvent dateEvent);
 
-  Future<void> deleteEreignis(Ereignis ereignis);
+  Future<void> deleteDateEvent(DateEvent dateEvent);
   
-  Future<void> addNewEreignis(Ereignis ereignis);
+  Future<void> addNewDateEvent(DateEvent dateEvent);
   
-  Future<void> redoEreignis(Ereignis ereignis);
+  Future<void> redoDateEvent(DateEvent dateEvent);
 
   //designations 
   //todo I need a page where the user will add designations
   //todo... when creating an employee there will be a dropdown to choose from
-  Future<List<Designation>> designations();
+  // Future<List<Designation>> designations();
+  Stream<List<Designation>> designations();
 
   Future<void> addNewDesignation(Designation designation);
 

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../entities/entities.dart';
 
 @immutable
-class Ereignis {
+class DateEvent {
   final String description;
   final String designation;
   final String employeeName;
@@ -13,10 +13,10 @@ class Ereignis {
   final String id;
   final String reason;
   final String start_shift;
-  final DateTime ereignis_date;
+  final DateTime dateEvent_date;
   final String parentId;
 
-  Ereignis({
+  DateEvent({
     this.description,
     this.designation,
     this.employeeName,
@@ -24,7 +24,7 @@ class Ereignis {
     this.id,
     this.reason,
     this.start_shift,
-    this.ereignis_date,
+    this.dateEvent_date,
     this.parentId
   });
 
@@ -37,7 +37,7 @@ class Ereignis {
     }
   }
 
-  Ereignis copyWith({
+  DateEvent copyWith({
     String description,
     String designation,
     String employeeName,
@@ -45,10 +45,10 @@ class Ereignis {
     String id,
     String reason,
     String start_shift,
-    DateTime ereignis_date,
+    DateTime dateEvent_date,
     String parentId,
   }) {
-    return Ereignis(
+    return DateEvent(
       description: description ?? this.description,
       designation: designation ?? this.designation,
       employeeName: employeeName ?? this.employeeName,
@@ -56,7 +56,7 @@ class Ereignis {
       id: id ?? this.id,
       reason: reason ?? this.reason,
       start_shift: start_shift ?? this.start_shift,
-      ereignis_date: ereignis_date ?? this.ereignis_date,
+      dateEvent_date: dateEvent_date ?? this.dateEvent_date,
       parentId: parentId ?? this.parentId
     );
   }
@@ -70,7 +70,7 @@ class Ereignis {
         id.hashCode ^
         reason.hashCode ^
         start_shift.hashCode ^
-        ereignis_date.hashCode ^
+        dateEvent_date.hashCode ^
         parentId.hashCode;
   }
 
@@ -78,7 +78,7 @@ class Ereignis {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is Ereignis &&
+    return o is DateEvent &&
         o.description == description &&
         o.designation == designation &&
         o.employeeName == employeeName &&
@@ -86,17 +86,17 @@ class Ereignis {
         o.id == id &&
         o.reason == reason &&
         o.start_shift == start_shift &&
-        o.ereignis_date == ereignis_date &&
+        o.dateEvent_date == dateEvent_date &&
         o.parentId == parentId;
   }
 
   @override
   String toString() {
-    return 'Ereignis {description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, ereignisDate: $ereignis_date, parentId: $parentId }';
+    return 'DateEvent {description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, parentId: $parentId }';
   }
 
-  EreignisEntity toEntity() {
-    return EreignisEntity(
+  DateEventEntity toEntity() {
+    return DateEventEntity(
       description: description,
       designation: designation,
       employeeName: employeeName,
@@ -104,13 +104,13 @@ class Ereignis {
       id: id,
       reason: reason,
       start_shift: start_shift,
-      ereignis_date: ereignis_date,
+      dateEvent_date: dateEvent_date,
       parentId: parentId
     );
   }
 
-  static Ereignis fromEntity(EreignisEntity entity) {
-    return Ereignis(
+  static DateEvent fromEntity(DateEventEntity entity) {
+    return DateEvent(
       description: entity.description,
       designation: entity.designation,
       employeeName: entity.employeeName,
@@ -118,7 +118,7 @@ class Ereignis {
       id: entity.id,
       reason: entity.reason,
       start_shift: entity.start_shift,
-      ereignis_date: entity.ereignis_date,
+      dateEvent_date: entity.dateEvent_date,
       parentId: entity.parentId
     );
   }

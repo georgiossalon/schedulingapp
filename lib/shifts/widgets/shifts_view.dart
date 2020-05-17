@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifts_repository/shifts_repository.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_ereignis.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/shifts/blocs/shifts.dart';
 import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
@@ -16,9 +16,9 @@ class ShiftsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EreignisesBloc, EreignisesState>(
+    return BlocBuilder<DateEventsBloc, DateEventsState>(
       builder: (context, state) {
-        if (state is EreignisesLoading) {
+        if (state is DateEventsLoading) {
           return Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
@@ -27,10 +27,11 @@ class ShiftsView extends StatelessWidget {
                   style: TextStyle(fontSize: 20.0),
                 ),
               ));
-        } else if (state is ShiftEreignisesLoaded) {
-          //todo this should only load after the shift ereignises are read from firestore
-          final shiftsList = state.ereignises;
-          Map<DateTime, List<Ereignis>> map = ShiftsView.shiftListToCalendarEventMap(shiftsList);
+        } else if (state is ShiftDateEventsLoaded) {
+          //todo this should only load after the shift dateEvents are read from firestore
+          final shiftsList = state.dateEvents;
+          Map<DateTime, List<DateEvent>> map =
+              ShiftsView.shiftListToCalendarEventMap(shiftsList);
           return Scaffold(
             appBar: AppBar(
               title: Text('Shifts'),
@@ -43,40 +44,44 @@ class ShiftsView extends StatelessWidget {
               child: Icon(Icons.add),
               backgroundColor: Colors.pink,
               onPressed: () {
-                      
+                // BlocProvider.of<EmployeesBloc>(context)
+                //     .add(LoadEmployeesWithGivenDesignation(
+                //   designation: 'open',
+                //   date: shiftCalendarSelectedDay,
+                // ));
+                // designation = 'open';
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return AddEditEmployeeEreignis(
-                    onSave: (
-                      description,
-                      designation,
-                      employee,
-                      end_shift,
-                      reason,
-                      start_shift,
-                      ereignis_date,
-                      parentId,
-                      oldParentId,
-                      changedEmployee,
-                      employeeObj
-                    ) {
-                      BlocProvider.of<EreignisesBloc>(context).add(AddEreignis(
-                        Ereignis(
-                          description: description,
+                  return AddEditEmployeeDateEvent(
+                    onSave: (description,
+                        designation,
+                        employeeName,
+                        end_shift,
+                        reason,
+                        start_shift,
+                        dateEvent_date,
+                        parentId,
+                        oldParentId,
+                        changedEmployee,
+                        employeeObj) {
+                      BlocProvider.of<DateEventsBloc>(context).add(AddDateEvent(
+                        DateEvent(
+                            description: description,
                             designation: designation,
-                            employeeName: employee,
+                            employeeName: employeeName,
                             end_shift: end_shift,
                             reason: reason,
                             start_shift: start_shift,
-                            ereignis_date: ereignis_date,
+                            dateEvent_date: dateEvent_date,
                             parentId: parentId),
                       ));
                       // -- adding the new event into the busy map
-                      Map<DateTime,bool> hbusyMap = employeeObj.busyMap;
-                      hbusyMap[ereignis_date] = true;
-                      var hMap = EmployeeEntity.changeMapKeyForDocument(hbusyMap);
-                      BlocProvider.of<EmployeesBloc>(context).add(UpdateEmployeeBusyMap(
-                        employeeObj.id,hMap));
+                      Map<DateTime, bool> hbusyMap = employeeObj.busyMap;
+                      hbusyMap[dateEvent_date] = true;
+                      var hMap =
+                          EmployeeEntity.changeMapKeyForDocument(hbusyMap);
+                      BlocProvider.of<EmployeesBloc>(context)
+                          .add(UpdateEmployeeBusyMap(employeeObj.id, hMap));
                       // -- end
                     },
                     daySelected: shiftCalendarSelectedDay,
@@ -96,23 +101,22 @@ class ShiftsView extends StatelessWidget {
     );
   }
 
-  static Map<DateTime, List<Ereignis>> shiftListToCalendarEventMap(
-      List<Ereignis> shiftList) {
-    Map<DateTime, List<Ereignis>> map = {};
+  static Map<DateTime, List<DateEvent>> shiftListToCalendarEventMap(
+      List<DateEvent> shiftList) {
+    Map<DateTime, List<DateEvent>> map = {};
     for (int i = 0; i < shiftList.length; i++) {
-      //todo maybe map ereignis to a shift object?
-      //todo... it maybe though to much hustle to put it back to the EreignisBloc (add/edit/delete/)
-      Ereignis shift = shiftList[i];
-      DateTime shiftDateTime = shift.ereignis_date;
+      //todo maybe map dateEvent to a shift object?
+      //todo... it maybe though to much hustle to put it back to the DateEventBloc (add/edit/delete/)
+      DateEvent shift = shiftList[i];
+      DateTime shiftDateTime = shift.dateEvent_date;
       if (map[shiftDateTime] == null) {
         // creating a new List and passing a widget
         map[shiftDateTime] = [shift];
       } else {
-        List<Ereignis> helpList = map[shiftDateTime];
+        List<DateEvent> helpList = map[shiftDateTime];
         helpList.add(shift);
       }
     }
     return map;
   }
 }
-

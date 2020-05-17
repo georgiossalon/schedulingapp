@@ -14,38 +14,38 @@ typedef OnSaveCallback = Function(
     String end_shift,
     String reason,
     String start_shift,
-    DateTime ereignis_date,
+    DateTime dateEvent_date,
     String parentId,
     String oldParentId,
     bool changedEmployee,
     Employee employeeObj);
 
-class AddEditEmployeeEreignis extends StatefulWidget {
-  static const String screenId = 'add_edit_employee_ereignis';
+class AddEditEmployeeDateEvent extends StatefulWidget {
+  static const String screenId = 'add_edit_employee_dateEvent';
 
   final DateTime daySelected;
   final bool isEditing;
   final bool isShift;
   final OnSaveCallback onSave;
-  final Ereignis ereignis;
+  final DateEvent dateEvent;
   final Employee employee;
 
-  AddEditEmployeeEreignis({
+  AddEditEmployeeDateEvent({
     Key key,
     this.daySelected,
     this.isEditing,
     this.isShift,
     this.onSave,
-    this.ereignis,
+    this.dateEvent,
     this.employee,
   }) : super(key: key);
 
   @override
-  _AddEditEmployeeEreignisState createState() =>
-      _AddEditEmployeeEreignisState();
+  _AddEditEmployeeDateEventState createState() =>
+      _AddEditEmployeeDateEventState();
 }
 
-class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
+class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _description;
@@ -68,13 +68,13 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   void initState() {
     super.initState();
     if (isEditing) {
-      _description = widget.ereignis.description;
-      _designation = widget.ereignis.designation;
-      _employeeName = widget.ereignis.employeeName;
-      _reason = widget.ereignis.reason;
-      _start_shift = widget.ereignis.start_shift;
-      _end_shift = widget.ereignis.end_shift;
-      _parentId = widget.ereignis.parentId;
+      _description = widget.dateEvent.description;
+      _designation = widget.dateEvent.designation;
+      _employeeName = widget.dateEvent.employeeName;
+      _reason = widget.dateEvent.reason;
+      _start_shift = widget.dateEvent.start_shift;
+      _end_shift = widget.dateEvent.end_shift;
+      _parentId = widget.dateEvent.parentId;
       // _employeeObj = widget.employee; // todo probably need this when editing
 
       // when editing a shift, I should give the user the choice to choose
@@ -95,6 +95,10 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
       _designation = 'open';
       // I chose to load the open employee for this case but I do not have to
       // otherwise the dropdown would be set as Loading...
+      //! This does not note a change when I go from an editted shift to a new shift
+      //! this means that the onTransition in the simple_bloc_delegate
+      // Alternative 1: I can fetch only the open employee without using the Bloc
+      // Alternative 2: (not working) Write the BlocProvider outside the init before calling this screen
       BlocProvider.of<EmployeesBloc>(context)
           .add(LoadEmployeesWithGivenDesignation(
         designation: _designation,
@@ -125,11 +129,14 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
   Widget _buildEmployeeDropdown() {
     return BlocBuilder<EmployeesBloc, EmployeesState>(
       builder: (context, state) {
+        //! why is the old state getting loaded after I have clicked on a shift
+        //! to edit and then want to create a new shift? In my init method
+        //! I am calling only the available employees ('open')
         if (state is EmployeesLoading) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is EmployeesLoaded) {
+        } else if (state is EmployeesLoadedWithGivenDesignation) {
           // the open employee will always be shown, when added in the employees list
 
           //todo when setting the new employee for the shift, the list
@@ -271,15 +278,15 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
     if (isEditing) {
       // while editing I can change multiple times the name on the dropdown
       // but if in the end the employeeName remains the same, then nothing changes
-      // this means that this ereignis will only get updated
-      if (widget.ereignis.employeeName == _employeeName) {
+      // this means that this dateEvent will only get updated
+      if (widget.dateEvent.employeeName == _employeeName) {
         _changedEmployee = false;
       } else {
-        // this means that the employee was changed. The ereignis will get
+        // this means that the employee was changed. The dateEvent will get
         // deleted from the sub-collection of the former employee and then
         // added to the new one
         _changedEmployee = true;
-        _oldParentId = widget.ereignis.parentId;
+        _oldParentId = widget.dateEvent.parentId;
       }
     } else {
       _changedEmployee = false;
@@ -314,7 +321,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                   TextFormField(
                     enabled: isShift ? false : true,
                     initialValue: isEditing
-                        ? isShift ? 'shift' : widget.ereignis.reason
+                        ? isShift ? 'shift' : widget.dateEvent.reason
                         : isShift ? 'shift' : '',
                     autofocus: !isEditing,
                     decoration:
@@ -325,7 +332,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
                     onSaved: (value) => _reason = value,
                   ),
                   TextFormField(
-                    initialValue: isEditing ? widget.ereignis.description : '',
+                    initialValue: isEditing ? widget.dateEvent.description : '',
                     decoration:
                         InputDecoration(hintText: 'Description (optional)'),
                     //todo description is optional
@@ -368,7 +375,7 @@ class _AddEditEmployeeEreignisState extends State<AddEditEmployeeEreignis> {
               )),
         ),
         floatingActionButton: FloatingActionButton(
-          tooltip: isEditing ? 'Save Changes' : 'Add ereignis',
+          tooltip: isEditing ? 'Save Changes' : 'Add dateEvent',
           child: Icon(isEditing ? Icons.check : Icons.add),
           backgroundColor: Colors.pink,
           onPressed: () {

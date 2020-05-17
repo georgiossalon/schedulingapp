@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'entities/entities.dart';
 
 class FirebaseEmployeesRepository implements EmployeesRepository {
-  final String ereignisesCollectionName = 'Ereignises';
+  final String dateEventsCollectionName = 'DateEvents';
 // todo --
   static final _firestore = Firestore.instance;
 
@@ -58,42 +58,42 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<void> addNewEreignis(Ereignis ereignis) {
+  Future<void> addNewDateEvent(DateEvent dateEvent) {
     return _employeeCollection
-        .document(ereignis.parentId)
-        .collection(ereignisesCollectionName)
-        .add(ereignis.toEntity().toDocument());
+        .document(dateEvent.parentId)
+        .collection(dateEventsCollectionName)
+        .add(dateEvent.toEntity().toDocument());
   }
 
   @override
-  Future<void> deleteEreignis(Ereignis ereignis) {
+  Future<void> deleteDateEvent(DateEvent dateEvent) {
     return _employeeCollection
-        .document(ereignis.parentId)
-        .collection(ereignisesCollectionName)
-        .document(ereignis.id)
+        .document(dateEvent.parentId)
+        .collection(dateEventsCollectionName)
+        .document(dateEvent.id)
         .delete();
   }
 
   @override
-  Future<void> updateEreignis(Ereignis ereignis) {
+  Future<void> updateDateEvent(DateEvent dateEvent) {
     return _employeeCollection
-        .document(ereignis.parentId)
-        .collection(ereignisesCollectionName)
-        .document(ereignis.id)
-        .updateData(ereignis.toEntity().toDocument());
+        .document(dateEvent.parentId)
+        .collection(dateEventsCollectionName)
+        .document(dateEvent.id)
+        .updateData(dateEvent.toEntity().toDocument());
   }
 
   @override
-  Future<void> redoEreignis(Ereignis ereignis) {
+  Future<void> redoDateEvent(DateEvent dateEvent) {
     return _employeeCollection
-        .document(ereignis.parentId)
-        .collection(ereignisesCollectionName)
-        .document(ereignis.id)
-        .setData(ereignis.toEntity().toDocument());
+        .document(dateEvent.parentId)
+        .collection(dateEventsCollectionName)
+        .document(dateEvent.id)
+        .setData(dateEvent.toEntity().toDocument());
   }
 
   @override
-  Stream<List<Ereignis>> allEreignisesForGivenEmployee(
+  Stream<List<DateEvent>> allDateEventsForGivenEmployee(
       String employeeId, int numOfWeeks, DateTime currentDate) {
     // !at the moment I get events from current week upto the numOfWeeks
     DateTime mondayOfCurrentWeek =
@@ -102,33 +102,33 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
         mondayOfCurrentWeek.add(new Duration(days: numOfWeeks * 7 - 1));
     return _employeeCollection
         .document(employeeId)
-        .collection(ereignisesCollectionName)
-        .where('ereignis_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
-        .where('ereignis_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
+        .collection(dateEventsCollectionName)
+        .where('dateEvent_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
+        .where('dateEvent_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents.map((doc) {
-        return Ereignis.fromEntity(EreignisEntity.fromSnapshot(doc));
+        return DateEvent.fromEntity(DateEventEntity.fromSnapshot(doc));
       }).toList();
     });
   }
 
   @override
-  Stream<List<Ereignis>> allShiftEreignisesForXWeeks(
+  Stream<List<DateEvent>> allShiftDateEventsForXWeeks(
       int numOfWeeks, DateTime currentDate) {
     DateTime mondayOfCurrentWeek =
         currentDate.subtract(new Duration(days: currentDate.weekday - 1));
     DateTime dateOfSundayForXthWeek =
         mondayOfCurrentWeek.add(new Duration(days: numOfWeeks * 7 - 1));
     return _firestore
-        .collectionGroup('Ereignises')
+        .collectionGroup('DateEvents')
         .where('reason', isEqualTo: 'shift')
-        .where('ereignis_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
-        .where('ereignis_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
+        .where('dateEvent_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
+        .where('dateEvent_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents.map((doc) {
-        return Ereignis.fromEntity(EreignisEntity.fromSnapshot(doc));
+        return DateEvent.fromEntity(DateEventEntity.fromSnapshot(doc));
       }).toList();
     });
   }
@@ -152,19 +152,20 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<List<Designation>> designations() {
-    return _designationCollection.getDocuments().then((designations) {
-      List<Designation> hList = new List();
-      for (DocumentSnapshot item in designations.documents) {
-        hList.add(Designation.fromEntity(DesignationEntity.fromSnapshot(item)));
-      }
-    return hList;
-    }); 
-    // .map((snapshot) {
-    //   return snapshot.documents
-    //       .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
-    //       .toList();
-    // });
+  // Future<List<Designation>> designations() {
+  Stream<List<Designation>> designations() {
+    // return _designationCollection.getDocuments().then((designations) {
+    //   List<Designation> hList = new List();
+    //   for (DocumentSnapshot item in designations.documents) {
+    //     hList.add(Designation.fromEntity(DesignationEntity.fromSnapshot(item)));
+    //   }
+    // return hList;
+    // }); 
+    return _designationCollection.snapshots().map((snapshot) {
+      return snapshot.documents
+          .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
+          .toList();
+    });
   }
 
   @override

@@ -8,22 +8,22 @@ import '../entities/entities.dart';
 class Designation {
   final String designation;
   final String id;
-  final String chosenDesignationForEreignis;
+  final String chosenDesignationForDateEvent;
   Designation({
     this.designation,
     this.id,
-    this.chosenDesignationForEreignis
+    this.chosenDesignationForDateEvent
   });
 
   Designation copyWith({
     String designation,
     String id,
-    String chosenDesignationForEreignis,
+    String chosenDesignationForDateEvent,
   }) {
     return Designation(
       designation: designation ?? this.designation,
       id: id ?? this.id,
-      chosenDesignationForEreignis: chosenDesignationForEreignis ?? this.chosenDesignationForEreignis
+      chosenDesignationForDateEvent: chosenDesignationForDateEvent ?? this.chosenDesignationForDateEvent
     );
   }
 

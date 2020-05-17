@@ -1,0 +1,87 @@
+import 'dart:async';
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:employees_repository/employees_repository.dart';
+
+class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
+  final EmployeesRepository _employeesRepository;
+  StreamSubscription _dateEventsSubscription;
+
+  DateEventsBloc({@required EmployeesRepository employeesRepository})
+      : assert(employeesRepository != null),
+        _employeesRepository = employeesRepository;
+
+  @override
+  DateEventsState get initialState => DateEventsLoading();
+
+  @override
+  Stream<DateEventsState> mapEventToState(DateEventsEvent event) async* {
+    if (event is LoadAllDateEventsForEmployeeForXWeeks) {
+      yield* _mapLoadDateEventsToState(event);
+    } else if (event is AddDateEvent) {
+      yield* _mapAddDateEventToState(event);
+    } else if (event is UpdateDateEvent) {
+      yield* _mapUpdateDateEvent(event);
+    } else if (event is DeleteDateEvent) {
+      yield* _mapDeleteDateEventToState(event);
+    } else if (event is RedoDateEvent) {
+      yield* _mapDateEventsRedoToState(event);
+    } else if (event is DateEventsUpdated) {
+      yield* _mapDateEventsUpdateToState(event);
+    } else if (event is LoadAllShiftsForXWeeks) {
+      yield* _mapDateEventsLoadAllShiftsForXWeeksToState(event);
+    } else if (event is ShiftDateEventsUpdated) {
+      yield* _mapShiftDateEventsUpdateToState(event);
+    }
+  }
+
+  // ! Load only when I ask. For this case I have to use an employee and the number of weeks
+  Stream<DateEventsState> _mapLoadDateEventsToState(LoadAllDateEventsForEmployeeForXWeeks event) async* {
+    _dateEventsSubscription?.cancel();
+    _dateEventsSubscription = _employeesRepository
+        .allDateEventsForGivenEmployee(event.employeeId, event.numOfWeeks, DateTime.now()).listen(
+          (dateEvents) => add(DateEventsUpdated(dateEvents)));
+  }
+
+  Stream<DateEventsState> _mapDateEventsLoadAllShiftsForXWeeksToState(LoadAllShiftsForXWeeks event) async* {
+    _dateEventsSubscription?.cancel();
+    _dateEventsSubscription = _employeesRepository
+        .allShiftDateEventsForXWeeks(event.numOfWeeks, DateTime.now()).listen(
+          (dateEvents) => add(ShiftDateEventsUpdated(dateEvents))
+        );
+  }
+
+  // ! This will only add an dateEvent to the already started stream for the given employee.
+  // ! Use Future or a Stream ?
+  //todo: implement a method that pushes for a given employee
+  Stream <DateEventsState> _mapAddDateEventToState(AddDateEvent event) async* {
+    _employeesRepository.addNewDateEvent(event.dateEvent);
+  }
+
+  Stream<DateEventsState> _mapUpdateDateEvent(UpdateDateEvent event) async* {
+    _employeesRepository.updateDateEvent(event.dateEvent);
+  }
+
+  Stream<DateEventsState> _mapDeleteDateEventToState(DeleteDateEvent event) async* {
+    _employeesRepository.deleteDateEvent(event.dateEvent);
+  }
+
+  Stream<DateEventsState> _mapDateEventsRedoToState (RedoDateEvent event) async* {
+    _employeesRepository.redoDateEvent(event.dateEvent);
+  }
+
+  Stream<DateEventsState> _mapDateEventsUpdateToState (DateEventsUpdated event) async* {
+    yield DateEventsLoaded(event.dateEvents);
+  }
+  
+  Stream<DateEventsState> _mapShiftDateEventsUpdateToState (ShiftDateEventsUpdated event) async* {
+    yield ShiftDateEventsLoaded(event.dateEvents);
+  }
+
+  @override
+  Future<void> clode() {
+    _dateEventsSubscription?.cancel();
+    return super.close();
+  }
+}

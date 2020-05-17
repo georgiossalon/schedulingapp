@@ -1,6 +1,6 @@
 
 import 'package:employees_repository/employees_repository.dart';
 
-class DayOff extends Ereignis {
+class DayOff extends DateEvent {
   
 }

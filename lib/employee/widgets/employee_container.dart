@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/ereignises.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/employee/screens/employee_ereignis.dart';
+import 'package:snapshot_test/employee/screens/employee_date_event.dart';
 
 //!! Maybe stateful?
 class EmployeeContainer extends StatelessWidget {
@@ -85,12 +85,12 @@ class EmployeeContainer extends StatelessWidget {
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
-                          // ! is this the right way to use the EreignisBloc Here??
+                          // ! is this the right way to use the DateEventBloc Here??
                           //! also the number 2 is the default and should be changed
-                          BlocProvider.of<EreignisesBloc>(context).add(LoadAllEreignisesForEmployeeForXWeeks(employee.id, 2));
+                          BlocProvider.of<DateEventsBloc>(context).add(LoadAllDateEventsForEmployeeForXWeeks(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                                return EmployeeEreignis(employee: employee,);
+                                return EmployeeDateEvent(employee: employee,);
                               }));
                         },
                         color: Colors.blueGrey.shade400,
