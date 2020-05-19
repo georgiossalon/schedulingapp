@@ -1,3 +1,5 @@
+// import 'dart:js';
+
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +52,10 @@ class ShiftsView extends StatelessWidget {
                 //   date: shiftCalendarSelectedDay,
                 // ));
                 // designation = 'open';
+
+                BlocProvider.of<DateEventsBloc>(context)
+                    .add(LoadDesignationsForShift());
+
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return AddEditEmployeeDateEvent(

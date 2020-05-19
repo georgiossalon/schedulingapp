@@ -1,5 +1,6 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:snapshot_test/employee/blocs/date_events.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:snapshot_test/employee/blocs/designations_bloc.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
@@ -67,6 +68,8 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
   @override
   void initState() {
     super.initState();
+    //todo: avoid the if-statement (no calculations within the initState)
+    //todo... the computations should happen in beforehand
     if (isEditing) {
       _description = widget.dateEvent.description;
       _designation = widget.dateEvent.designation;
@@ -218,14 +221,16 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
   }
 
   Widget _buildDesignationField() {
-    return BlocBuilder<DesignationsBloc, DesignationsState>(
+    return BlocBuilder<DateEventsBloc, DateEventsState>(
       builder: (context, state) {
-        if (state.designations.isEmpty) {
-          return Container(
-            child: Text('Loading'),
-          );
-        } else if (state.designations.isNotEmpty &&
-            state.designationsChosen != null) {
+        // if (state is ) {
+        //   return Container(
+        //     child: Text('Loading'),
+        //   );
+        // } else 
+        // if (state.designationsObj.designations.isNotEmpty &&
+        //     state.designationsObj.currentDesignation != null) {
+          if (state is NewShiftCreated) {
           return InputDecorator(
             decoration: InputDecoration(
               icon: Icon(FontAwesomeIcons.tasks),
@@ -233,10 +238,10 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                items: state.designations.map((Designation designation) {
+                items: state.designations.map((String designation) {
                   return new DropdownMenuItem<String>(
-                    value: designation.designation,
-                    child: Text(designation.designation),
+                    value: designation,
+                    child: Text(designation),
                   );
                 }).toList(),
                 onChanged: (String newDesignation) {

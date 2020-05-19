@@ -1,5 +1,6 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 abstract class DesignationsEvent extends Equatable {
   const DesignationsEvent();
@@ -20,7 +21,7 @@ class AssignDesignationsToEmployee extends DesignationsEvent {
 }
 
 class DesignationsUpdated extends DesignationsEvent {
-  final List<Designation> designations;
+  final Designations designations;
 
   const DesignationsUpdated(this.designations);
 
@@ -29,19 +30,22 @@ class DesignationsUpdated extends DesignationsEvent {
 }
 
 class AddDesignation extends DesignationsEvent {
-  final Designation designation;
+  final Designations designationsObj;
 
-  const AddDesignation(this.designation);
+  const AddDesignation({
+    @required this.designationsObj,
+  });
 
   @override
-  List<Object> get props => [designation];
+  List<Object> get props => [designationsObj];
 
   @override
-  String toString() => 'AddDesignation { designation: $designation }';
+  String toString() =>
+      'AddDesignation { adding a designationsObj: $designationsObj }';
 }
 
 class DeleteDesignation extends DesignationsEvent {
-  final Designation designation;
+  final Designations designation;
 
   const DeleteDesignation(this.designation);
 
@@ -53,13 +57,15 @@ class DeleteDesignation extends DesignationsEvent {
 }
 
 class UpdateDesignation extends DesignationsEvent {
-  final Designation designation;
+  final Designations designationsObj;
 
-  const UpdateDesignation(this.designation);
+  const UpdateDesignation({
+    @required this.designationsObj,
+  });
 
   @override
-  List<Object> get props => [designation];
+  List<Object> get props => [designationsObj];
 
   @override
-  String toString() => 'UpdateDesignation { designation: $designation }';
+  String toString() => 'UpdateDesignation { designationsObj: $designationsObj }';
 }

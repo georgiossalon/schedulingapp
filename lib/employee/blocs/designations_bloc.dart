@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 
 class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
   final EmployeesRepository _employeesRepository;
-  StreamSubscription _designationsSubcription;
+  StreamSubscription _designationsSubscription;
   // StreamSubscription<String> _designationsToEmployeeSubscription;
 
   DesignationsBloc({@required EmployeesRepository employeesRepository})
@@ -39,31 +39,44 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
   }
 
   Stream<DesignationsState> _mapLoadDesignationsToState() async* {
-    _designationsSubcription?.cancel();
-    _designationsSubcription = _employeesRepository.designations().listen(
+    _designationsSubscription?.cancel();
+    _designationsSubscription = _employeesRepository.designations().listen(
+          // I am Listening a Designations object
+          // I am only passing its List<String> of designations
           (designations) => add(DesignationsUpdated(designations)),
         );
-  //  final designations = await _employeesRepository.designations();
-  //   yield DesignationsState.designationsLoaded(designations: designations); 
   }
-  Stream<DesignationsState> _mapAssignDesignationsToEmployee(AssignDesignationsToEmployee event) async* {
+
+  Stream<DesignationsState> _mapAssignDesignationsToEmployee(
+      AssignDesignationsToEmployee event) async* {
     final currentState = state;
-    yield DesignationsState.designationsLoadedAndAssignedToShift(designations: currentState.designations, designationsChosen: event.designationsString);
+    yield DesignationsState.designationsLoadedAndAssignedToShift(
+        designations: currentState.designationsObj.designations,
+        designationsChosen: event.designationsString);
   }
 
   Stream<DesignationsState> _mapDesignationsUpdatedToState(
       DesignationsUpdated event) async* {
-    yield DesignationsState.designationsLoaded(designations: event.designations);
+    yield DesignationsState.designationsLoaded(
+        designations: event.designations.designations,
+        id: event.designations.id);
   }
 
   Stream<DesignationsState> _mapAddDesignationToState(
       AddDesignation event) async* {
-    _employeesRepository.addNewDesignation(event.designation);
+        // if the list within the designations object is empty, I do not have
+        // a document in firestore. Thus, I have to create a new one
+        // else update the document by adding the newly created designation
+    if (event.designationsObj.designations.isEmpty) {
+      _employeesRepository.addNewDesignation(event.designationsObj);
+    } else {
+      _employeesRepository.updateDesignation(event.designationsObj);
+    }
   }
 
   Stream<DesignationsState> _mapUpdateDesignationToState(
       UpdateDesignation event) async* {
-    _employeesRepository.updateDesignation(event.designation);
+    _employeesRepository.updateDesignation(event.designationsObj);
   }
 
   Stream<DesignationsState> _mapDeleteDesignationToState(
@@ -71,10 +84,9 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
     _employeesRepository.deleteDesignation(event.designation);
   }
 
-
   @override
   Future<void> close() {
-    _designationsSubcription?.cancel();
+    _designationsSubscription?.cancel();
     return super.close();
   }
 }

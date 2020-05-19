@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class DesignationEntity extends Equatable {
-  final String designation;
+  final List<String> designations;
   final String id;
   DesignationEntity({
-    this.designation,
+    this.designations,
     this.id,
   });
 
@@ -16,14 +16,14 @@ class DesignationEntity extends Equatable {
     String id,
   }) {
     return DesignationEntity(
-      designation: designation ?? this.designation,
+      designations: designation ?? this.designations,
       id: id ?? this.id,
     );
   }
 
   Map<String, dynamic> toDocument() {
     return {
-      'designation': designation,
+      'designations': designations,
     };
   }
 
@@ -31,7 +31,7 @@ class DesignationEntity extends Equatable {
     if (snap == null) return null;
   
     return DesignationEntity(
-      designation: snap['designation'],
+      designations:  List.from(snap['designations']),
       id: snap.documentID,
     );
   }
@@ -41,23 +41,23 @@ class DesignationEntity extends Equatable {
   static DesignationEntity fromJson(String source) => fromSnapshot(json.decode(source));
 
   @override
-  String toString() => 'DesignationEntity(designation: $designation, id: $id)';
+  String toString() => 'DesignationEntity{ designation: $designations}';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
     return o is DesignationEntity &&
-      o.designation == designation &&
+      o.designations == designations &&
       o.id == id;
   }
 
   @override
-  int get hashCode => designation.hashCode ^ id.hashCode;
+  int get hashCode => designations.hashCode ^ id.hashCode;
 
   @override
   List<Object> get props => [
-    designation,
+    designations,
     id,
   ];
 }

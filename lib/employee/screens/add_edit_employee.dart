@@ -101,11 +101,11 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildDesignationField(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state.designations.isEmpty) {
+        if (state.designationsObj.designations.isEmpty) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state.designations.isNotEmpty) {
+        } else if (state.designationsObj.designations.isNotEmpty) {
           return Container(
             height: 70.0,
             decoration: BoxDecoration(
@@ -154,8 +154,8 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                           // I need this map to see which designations are
                           // assigned to an employee
                           Map<String, bool> hCheck = new Map<String, bool>();
-                          for (var i = 0; i < state.designations.length; i++) {
-                            hCheck[state.designations[i].designation] = false;
+                          for (var i = 0; i < state.designationsObj.designations.length; i++) {
+                            hCheck[state.designationsObj.designations[i]] = false;
                           }
                           if (_designations.isNotEmpty) {
                             // this means I am editing an employee and I have
@@ -168,7 +168,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                           showDialog(
                               context: context,
                               builder: (context) => DesignationDialog(
-                                    allDesignations: state.designations,
+                                    allDesignations: state.designationsObj.designations,
                                     hChecked: hCheck,
                                     employeesDesignations: _designations,
                                     parent: this,
@@ -359,7 +359,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
 }
 
 class DesignationDialog extends StatefulWidget {
-  final List<Designation> allDesignations;
+  final List<String> allDesignations;
   final List<String> employeesDesignations;
   final Map<String, bool> hChecked;
   _AddEditEmployeeState parent;
@@ -377,7 +377,7 @@ class DesignationDialog extends StatefulWidget {
 }
 
 class _DesignationDialogState extends State<DesignationDialog> {
-  _buildDialogChild(BuildContext context, List<Designation> allDesignations) {
+  _buildDialogChild(BuildContext context, List<String> allDesignations) {
     return Container(
       height: 200.0,
       child: Column(
@@ -395,13 +395,13 @@ class _DesignationDialogState extends State<DesignationDialog> {
                         child: Container(
                           height: 20.0,
                           child: Text(
-                            allDesignations[index].designation,
+                            allDesignations[index],
                             style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           width: 90.0,
                           color: widget
-                                  .hChecked[allDesignations[index].designation]
+                                  .hChecked[allDesignations[index]]
                               ? Colors.green
                               : Colors.grey,
                         ),
@@ -409,11 +409,11 @@ class _DesignationDialogState extends State<DesignationDialog> {
                       Expanded(
                         child: SwitchListTile(
                             value: widget
-                                .hChecked[allDesignations[index].designation],
+                                .hChecked[allDesignations[index]],
                             onChanged: (bool value) {
                               setState(() {
                                 widget.hChecked[
-                                    allDesignations[index].designation] = value;
+                                    allDesignations[index]] = value;
                               });
                             }),
                       )

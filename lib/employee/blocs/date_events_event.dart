@@ -101,3 +101,44 @@ class ShiftDateEventsUpdated extends DateEventsEvent {
   List<Object> get props => [dateEvents];
 }
 
+class CreateNewShift extends DateEventsEvent {}
+
+class LoadDesignationsForShift extends DateEventsEvent {}
+
+class DesignationsUpdatedForShift extends DateEventsEvent {
+  final Designations designations;
+
+  const DesignationsUpdatedForShift(this.designations);
+
+  @override
+  List<Object> get props => [designations];
+
+  @override
+  String toString() => 'DesignationsUpdatedForShift: $designations';
+}
+
+class FetchOpenEmployeeAndSaveDesignations extends DateEventsEvent {
+  final List<String> designations;
+
+  const FetchOpenEmployeeAndSaveDesignations(this.designations);
+
+  @override
+  List<Object> get props => [designations];
+
+  @override
+  String toString() => 'SavedDesignations: $designations';
+}
+
+class OpenEmployeeUpdate extends DateEventsEvent {
+  final Employee openEmployee;
+  final List<String> designations;
+
+  const OpenEmployeeUpdate(this.openEmployee, this.designations);
+
+  @override
+  List<Object> get props => [openEmployee,designations];
+
+  @override
+  String toString() => 'OpenEmployeeUpdate: $openEmployee, savedDesignations: $designations';
+}
+

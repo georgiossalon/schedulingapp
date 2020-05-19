@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employees_repository/employees_repository.dart';
+import 'package:employees_repository/src/models/designations.dart';
 import 'package:intl/intl.dart';
 import 'entities/entities.dart';
 
@@ -44,7 +45,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  Future<void> updateEmployeesBusyMap(String employeeId, Map<String,bool> busy_map) {
+  Future<void> updateEmployeesBusyMap(
+      String employeeId, Map<String, bool> busy_map) {
     return _employeeCollection
         .document(employeeId)
         .updateData({'busy_map': busy_map});
@@ -141,8 +143,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     String formatedDate = formatter.format(date);
     return _employeeCollection
         .where('designations', arrayContains: designation)
-        .where('busy_map.$formatedDate',
-            isEqualTo: false) 
+        .where('busy_map.$formatedDate', isEqualTo: false)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents
@@ -152,37 +153,55 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
   @override
-  // Future<List<Designation>> designations() {
-  Stream<List<Designation>> designations() {
-    // return _designationCollection.getDocuments().then((designations) {
-    //   List<Designation> hList = new List();
-    //   for (DocumentSnapshot item in designations.documents) {
-    //     hList.add(Designation.fromEntity(DesignationEntity.fromSnapshot(item)));
-    //   }
-    // return hList;
-    // }); 
+  Stream<Designations> designations() {
     return _designationCollection.snapshots().map((snapshot) {
-      return snapshot.documents
-          .map((doc) => Designation.fromEntity(DesignationEntity.fromSnapshot(doc)))
-          .toList();
+      if (snapshot.documents.isNotEmpty) {
+        return Designations.fromEntity(
+            DesignationEntity.fromSnapshot(snapshot.documents.first));
+      } else {
+        // create a new object with an empty list
+        return Designations(
+          designations: const [],
+        );
+      }
     });
   }
 
   @override
-  Future<void> addNewDesignation(Designation designation) {
-    return _designationCollection.add(designation.toEntity().toDocument());
+  Future<void> addNewDesignation(Designations designationsObj) {
+    designationsObj.designations.add(designationsObj.currentDesignation);
+    // the first designation has to be passed as a List element
+    return _designationCollection.add(
+        DesignationEntity(designations: designationsObj.designations)
+            .toDocument());
   }
 
   @override
-  Future<void> deleteDesignation(Designation designation) {
+  Future<void> deleteDesignation(Designations designation) {
     return _designationCollection.document(designation.id).delete();
   }
 
   @override
-  Future<void> updateDesignation(Designation designation) {
-    return _designationCollection.document(designation.id)
-        .updateData(designation.toEntity().toDocument());
+  Future<void> updateDesignation(Designations designationsObj) {
+    designationsObj.designations.add(designationsObj.currentDesignation);
+    return _designationCollection
+        .document(designationsObj.id)
+        .updateData(designationsObj.toEntity().toDocument());
   }
 
-  
+  @override
+  Stream<Employee> fetchTheOpenEmployee() {
+    // fetch the open employee if existant
+    return _employeeCollection
+        .where('name', isEqualTo: 'open')
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.documents[0] != null) {
+        return Employee.fromEntity(
+            EmployeeEntity.fromSnapshot(snapshot.documents[0]));
+      } else {
+        return Employee();
+      }
+    });
+  }
 }

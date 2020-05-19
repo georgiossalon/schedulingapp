@@ -2,7 +2,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 
 class DesignationContainer extends StatelessWidget {
-  final Designation designation;
+  final String designation;
 
   const DesignationContainer({Key key, this.designation}) : super(key: key);
 
@@ -14,7 +14,7 @@ class DesignationContainer extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            designation.designation,
+            designation,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             textAlign: TextAlign.center,
           ),

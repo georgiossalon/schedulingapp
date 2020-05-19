@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:employees_repository/employees_repository.dart';
+import 'package:employees_repository/src/models/designations.dart';
 
 abstract class EmployeesRepository {
   Future<void> addNewEmployee(Employee employee);
@@ -35,12 +36,14 @@ abstract class EmployeesRepository {
   //todo I need a page where the user will add designations
   //todo... when creating an employee there will be a dropdown to choose from
   // Future<List<Designation>> designations();
-  Stream<List<Designation>> designations();
+  Stream<Designations> designations();
 
-  Future<void> addNewDesignation(Designation designation);
+  Future<void> addNewDesignation(Designations designationsObj);
 
-  Future<void> deleteDesignation(Designation designation);
+  Future<void> deleteDesignation(Designations designationObj);
 
-  Future<void> updateDesignation(Designation designation);
+  Future<void> updateDesignation(Designations designationObj);
+
+  Stream<Employee> fetchTheOpenEmployee();
 
 }

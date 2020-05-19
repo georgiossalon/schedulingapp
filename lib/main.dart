@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -48,16 +50,18 @@ class ShiftsApp extends StatelessWidget {
           // )..add(LoadEmployeesWithGivenDesignation('5',DateTime.now()));
         }
         ,),
-        BlocProvider<DateEventsBloc>(create: (context) {
-          return DateEventsBloc(
-            employeesRepository: FirebaseEmployeesRepository()
-            );
-            // )..add(LoadAllShiftsForXWeeks(4));
-        },),
         BlocProvider<DesignationsBloc>(create: (context) {
           return DesignationsBloc(employeesRepository: FirebaseEmployeesRepository()
           )..add(LoadDesignations());
-        })
+        }),
+        BlocProvider<DateEventsBloc>(create: (context) {
+          return DateEventsBloc(
+            context.bloc<DesignationsBloc>(), // consume the same instance
+            employeesRepository: FirebaseEmployeesRepository(),
+            );
+            // )..add(LoadAllShiftsForXWeeks(4));
+        },),
+        
       ],
       // fixme: after restarting the app the user is still loged in
       child: MaterialApp(
