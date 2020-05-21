@@ -16,11 +16,11 @@ class DesignationList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state.designationsObj.designations == null) {
+        if (state is DesignationsLoading) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state.designationsObj.designations != null) {
+        } else if (state is DesignationsLoaded) {
           return SafeArea(
             child: Scaffold(
               appBar: AppBar(

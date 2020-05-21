@@ -20,12 +20,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_speed_dial: ^1.2.5
+  rxdart: ^0.24.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  shifts_repository:
-    path: shifts_repository
+  date_events_repository:
+    path: date_events_repository
   user_repository:
     path: user_repository
   employees_repository:

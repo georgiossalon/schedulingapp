@@ -11,7 +11,7 @@ class DateEventEntity extends Equatable {
   final String reason;
   final String start_shift;
   final DateTime dateEvent_date;
-  final String parentId;
+  final String employeeId;
 
   const DateEventEntity({
     this.description,
@@ -22,7 +22,7 @@ class DateEventEntity extends Equatable {
     this.reason,
     this.start_shift,
     this.dateEvent_date,
-    this.parentId
+    this.employeeId
   });
 
   // @override
@@ -50,7 +50,7 @@ class DateEventEntity extends Equatable {
       'dateEvent_date': dateEvent_date,
       'start_shift': start_shift,
       'reason': reason,
-      'parent_id': parentId,
+      'employee_id': employeeId,
     };
   }
 
@@ -63,12 +63,12 @@ class DateEventEntity extends Equatable {
         reason,
         start_shift,
         dateEvent_date,
-        parentId
+        employeeId
       ];
 
   @override
   String toString() {
-    return 'DateEventEntity { description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, parentId: $parentId)';
+    return 'DateEventEntity { description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, employeeId: $employeeId)';
   }
 
   static DateEventEntity fromJson(Map<String, Object> json, DateTime date) {
@@ -83,7 +83,7 @@ class DateEventEntity extends Equatable {
       reason: json['reason'] as String,
       start_shift: json['start_shift'] as String,
       dateEvent_date: date,
-      parentId: json['parend_id'] as String,
+      employeeId: json['employee_id'] as String,
     );
   }
 
@@ -98,7 +98,7 @@ class DateEventEntity extends Equatable {
       start_shift: snap.data['start_shift'],
       dateEvent_date: convertingFirestoreDateToDateTime(
           snap.data['dateEvent_date'] as Timestamp),
-      parentId: snap.data['parent_id']
+      employeeId: snap.data['employee_id']
     );
   }
 

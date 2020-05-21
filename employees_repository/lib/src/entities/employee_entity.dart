@@ -6,6 +6,8 @@ import 'package:employees_repository/src/entities/entities.dart';
 import 'package:employees_repository/src/models/employee.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+//import 'package:date_events_repository/date_events_repository.dart';
+
 
 class EmployeeEntity extends Equatable {
   final List<String> designations;
@@ -79,43 +81,43 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  static List<DateEvent> snapMapToList(var snapMap) {
-    if (snapMap != null) {
-      List<DateEvent> hList = new List<DateEvent>();
-      snapMap.forEach((k, v) {
-        //fixme: the dateEvent keys are of type String.
-        //fixme... make the keys to have the same format example 2020-05-31
-        var dateTime = DateTime.parse(k);
-        DateTime updatedDateTime = utcTo12oclock(dateTime);
-        DateEvent dateEvent =
-            DateEvent.fromEntity(DateEventEntity.fromJson(v, updatedDateTime));
-        hList.add(dateEvent);
-      });
-      return hList;
-    }
-  }
+  // static List<EmployeeDateEvent> snapMapToList(var snapMap) {
+  //   if (snapMap != null) {
+  //     List<EmployeeDateEvent> hList = new List<EmployeeDateEvent>();
+  //     snapMap.forEach((k, v) {
+  //       //fixme: the dateEvent keys are of type String.
+  //       //fixme... make the keys to have the same format example 2020-05-31
+  //       var dateTime = DateTime.parse(k);
+  //       DateTime updatedDateTime = utcTo12oclock(dateTime);
+  //       EmployeeDateEvent dateEvent =
+  //           EmployeeDateEvent.fromEntity(EmployeeDateEventEntity.fromJson(v, updatedDateTime));
+  //       hList.add(dateEvent);
+  //     });
+  //     return hList;
+  //   }
+  // }
 
-  static Map dateEventListToMap(List<DateEvent> currentWeekDateEvent) {
-    if (currentWeekDateEvent != null) {
-      Map<String, Map<String, String>> hMap =
-          new Map<String, Map<String, String>>();
-      for (DateEvent dateEvent in currentWeekDateEvent) {
-        Map<String, String> hhMap = new Map<String, String>();
-        hhMap['start_shift'] = dateEvent.start_shift;
-        hhMap['end_shift'] = dateEvent.end_shift;
-        hhMap['reason'] = dateEvent.reason;
-        hhMap['description'] = dateEvent.description;
-        // Firestore keys (map) have to be of type String
-        // key: date ->
-        // val: Map (keys: start_shift, end_shift, reason, description)
-        var formatter = new DateFormat('yyyy-MM-dd');
-        String formatedDate = formatter.format(dateEvent.dateEvent_date);
-        // connecting the dateEvent details with the date
-        hMap[formatedDate] = hhMap;
-      }
-      return hMap;
-    }
-  }
+  // static Map dateEventListToMap(List<EmployeeDateEvent> currentWeekDateEvent) {
+  //   if (currentWeekDateEvent != null) {
+  //     Map<String, Map<String, String>> hMap =
+  //         new Map<String, Map<String, String>>();
+  //     for (EmployeeDateEvent dateEvent in currentWeekDateEvent) {
+  //       Map<String, String> hhMap = new Map<String, String>();
+  //       hhMap['start_shift'] = dateEvent.start_shift;
+  //       hhMap['end_shift'] = dateEvent.end_shift;
+  //       hhMap['reason'] = dateEvent.reason;
+  //       hhMap['description'] = dateEvent.description;
+  //       // Firestore keys (map) have to be of type String
+  //       // key: date ->
+  //       // val: Map (keys: start_shift, end_shift, reason, description)
+  //       var formatter = new DateFormat('yyyy-MM-dd');
+  //       String formatedDate = formatter.format(dateEvent.dateEvent_date);
+  //       // connecting the dateEvent details with the date
+  //       hMap[formatedDate] = hhMap;
+  //     }
+  //     return hMap;
+  //   }
+  // }
 
   static Map<String, bool> changeMapKeyForDocument(Map<DateTime, bool> busyMap) {
     if (busyMap != null) {

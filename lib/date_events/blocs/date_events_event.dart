@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
-import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/date_events/blocs/date_events.dart';
+import 'package:date_events_repository/date_events_repository.dart';
 
 abstract class DateEventsEvent extends Equatable {
   const DateEventsEvent();
@@ -44,7 +45,7 @@ class AddDateEvent extends DateEventsEvent {
   List<Object> get props => [dateEvent];
 
   @override
-  String toString() => 'AddDateEvent { dateEvent: $dateEvent for parentId: ${dateEvent.parentId} }';
+  String toString() => 'AddDateEvent { dateEvent: $dateEvent for parentId: ${dateEvent.employeeId} }';
 }
 
 class UpdateDateEvent extends DateEventsEvent {
@@ -56,7 +57,7 @@ class UpdateDateEvent extends DateEventsEvent {
   List<Object> get props => [dateEvent];
 
   @override
-  String toString() => 'UpdateDateEvent { updateDateEvent: $dateEvent for parentId: ${dateEvent.parentId} }';
+  String toString() => 'UpdateDateEvent { updateDateEvent: $dateEvent for parentId: ${dateEvent.employeeId} }';
 }
 
 class RedoDateEvent extends DateEventsEvent {
@@ -68,7 +69,7 @@ class RedoDateEvent extends DateEventsEvent {
   List<Object> get props => [dateEvent];
 
   @override
-  String toString() => 'RedoDateEvent { redoDateEvent: $dateEvent for parentId: ${dateEvent.parentId} }';
+  String toString() => 'RedoDateEvent { redoDateEvent: $dateEvent for parentId: ${dateEvent.employeeId} }';
 }
 
 class DeleteDateEvent extends DateEventsEvent {
@@ -80,7 +81,7 @@ class DeleteDateEvent extends DateEventsEvent {
   List<Object> get props => [dateEvent];
 
   @override
-  String toString() => 'DeleteDateEvent { deleteDateEvent: $dateEvent for parentId: ${dateEvent.parentId} }';
+  String toString() => 'DeleteDateEvent { deleteDateEvent: $dateEvent for parentId: ${dateEvent.employeeId} }';
 }
 
 class DateEventsUpdated extends DateEventsEvent {
@@ -101,7 +102,7 @@ class ShiftDateEventsUpdated extends DateEventsEvent {
   List<Object> get props => [dateEvents];
 }
 
-class CreateNewShift extends DateEventsEvent {}
+// class CreateNewShift extends DateEventsEvent {}
 
 class LoadDesignationsForShift extends DateEventsEvent {}
 

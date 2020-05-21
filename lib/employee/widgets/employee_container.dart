@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
-import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/date_events/blocs/date_events.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/employee_date_event.dart';
@@ -90,7 +90,7 @@ class EmployeeContainer extends StatelessWidget {
                           BlocProvider.of<DateEventsBloc>(context).add(LoadAllDateEventsForEmployeeForXWeeks(employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                                return EmployeeDateEvent(employee: employee,);
+                                return EmployeeDateEventScreen(employee: employee,);
                               }));
                         },
                         color: Colors.blueGrey.shade400,

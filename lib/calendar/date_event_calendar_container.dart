@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
-import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
+import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
+import 'package:date_events_repository/date_events_repository.dart';
 
 class DateEventCalendarContainer extends StatelessWidget {
   final DateEvent dateEvent;

@@ -1,8 +1,10 @@
+import 'package:date_events_repository/date_events_repository.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/screens/employee_date_event.dart';
-import 'package:snapshot_test/shifts/widgets/shifts_view.dart';
+import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
 import 'package:table_calendar/table_calendar.dart';
+// import 'package:date_events_repository/date_events_repository.dart';
 
 import '../core/date_info.dart';
 import 'shift_calendar_container.dart';
@@ -111,7 +113,7 @@ class _CalendarState extends State<CalendarWidget> {
           widget.isShift
               ? ShiftsView.shiftCalendarSelectedDay =
                   _calendarController.selectedDay
-              : EmployeeDateEvent.employeeDateEventSelectedDay =
+              : EmployeeDateEventScreen.employeeDateEventSelectedDay =
                   _calendarController.selectedDay;
         });
       },

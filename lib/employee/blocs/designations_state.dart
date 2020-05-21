@@ -40,20 +40,25 @@ import 'package:snapshot_test/employee/blocs/designations.dart';
 //       ));
 // }
 
-abstract class DesignationsState {}
+abstract class DesignationsState {
+  const DesignationsState();
+
+  @override
+  List<Object> get props => [];
+}
 
 class DesignationsLoading extends DesignationsState {}
 
 class DesignationsLoaded extends DesignationsState {
-  final List<Designations> designations;
+  final Designations designationsObj;
 
-  const DesignationsLoaded([this.designations = const[]]);
-
-  @override
-  List<Object> get props => [designations];
+  const DesignationsLoaded(this.designationsObj);
 
   @override
-  String toString() => 'Designations { designations $designations }';
+  List<Object> get props => [designationsObj];
+
+  @override
+  String toString() => 'Designations { designations $designationsObj }';
 }
 
 class DesignationsLoadedAndAssignedToTheEmployee extends DesignationsState {

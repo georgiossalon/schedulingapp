@@ -20,17 +20,17 @@ abstract class EmployeesRepository {
 
   // create a stream for a given employee
   //todo only give id instead of the whole object
-  Stream<List<DateEvent>> allDateEventsForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
+  // Stream<List<DateEvent>> allDateEventsForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
   
-  Stream<List<DateEvent>> allShiftDateEventsForXWeeks(int numOfWeeks, DateTime currentDate);
+  // Stream<List<DateEvent>> allShiftDateEventsForXWeeks(int numOfWeeks, DateTime currentDate);
 
-  Future<void> updateDateEvent(DateEvent dateEvent);
+  // // Future<void> updateDateEvent(DateEvent dateEvent);
 
-  Future<void> deleteDateEvent(DateEvent dateEvent);
+  // Future<void> deleteDateEvent(DateEvent dateEvent);
   
-  Future<void> addNewDateEvent(DateEvent dateEvent);
+  // Future<void> addOrUpdateDateEvent(DateEvent dateEvent);
   
-  Future<void> redoDateEvent(DateEvent dateEvent);
+  // Future<void> redoDateEvent(DateEvent dateEvent);
 
   //designations 
   //todo I need a page where the user will add designations
@@ -44,6 +44,6 @@ abstract class EmployeesRepository {
 
   Future<void> updateDesignation(Designations designationObj);
 
-  Stream<Employee> fetchTheOpenEmployee();
+  // Stream<Employee> fetchTheOpenEmployee();
 
 }

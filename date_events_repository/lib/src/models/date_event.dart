@@ -14,7 +14,7 @@ class DateEvent {
   final String reason;
   final String start_shift;
   final DateTime dateEvent_date;
-  final String parentId;
+  final String employeeId;
 
   DateEvent({
     this.description,
@@ -25,7 +25,7 @@ class DateEvent {
     this.reason,
     this.start_shift,
     this.dateEvent_date,
-    this.parentId
+    this.employeeId
   });
 
   static DateTime convertingFirestoreDateToDateTime(Timestamp timestamp) {
@@ -57,7 +57,7 @@ class DateEvent {
       reason: reason ?? this.reason,
       start_shift: start_shift ?? this.start_shift,
       dateEvent_date: dateEvent_date ?? this.dateEvent_date,
-      parentId: parentId ?? this.parentId
+      employeeId: employeeId ?? this.employeeId
     );
   }
 
@@ -71,7 +71,7 @@ class DateEvent {
         reason.hashCode ^
         start_shift.hashCode ^
         dateEvent_date.hashCode ^
-        parentId.hashCode;
+        employeeId.hashCode;
   }
 
   @override
@@ -87,12 +87,12 @@ class DateEvent {
         o.reason == reason &&
         o.start_shift == start_shift &&
         o.dateEvent_date == dateEvent_date &&
-        o.parentId == parentId;
+        o.employeeId == employeeId;
   }
 
   @override
   String toString() {
-    return 'DateEvent {description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, parentId: $parentId }';
+    return 'DateEvent {description: $description, designation: $designation, employee: $employeeName, end_shift: $end_shift, id: $id, reason: $reason, start_shift: $start_shift, dateEventDate: $dateEvent_date, parentId: $employeeId }';
   }
 
   DateEventEntity toEntity() {
@@ -105,7 +105,7 @@ class DateEvent {
       reason: reason,
       start_shift: start_shift,
       dateEvent_date: dateEvent_date,
-      parentId: parentId
+      employeeId: employeeId
     );
   }
 
@@ -119,7 +119,7 @@ class DateEvent {
       reason: entity.reason,
       start_shift: entity.start_shift,
       dateEvent_date: entity.dateEvent_date,
-      parentId: entity.parentId
+      employeeId: entity.employeeId
     );
   }
 }

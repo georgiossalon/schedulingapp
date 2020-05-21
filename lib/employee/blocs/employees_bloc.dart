@@ -9,8 +9,8 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   StreamSubscription _employeesSubscription;
 
   EmployeesBloc({@required EmployeesRepository employeesRepository})
-    : assert(employeesRepository != null),
-      _employeesRepository = employeesRepository;
+      : assert(employeesRepository != null),
+        _employeesRepository = employeesRepository;
 
   @override
   EmployeesState get initialState => EmployeesLoading();
@@ -21,7 +21,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapLoadEmployeesToState();
     } else if (event is AddEmployee) {
       yield* _mapAddEmployeeToState(event);
-    } else if(event is UpdateEmployee) {
+    } else if (event is UpdateEmployee) {
       yield* _mapUpdateEmployeeToState(event);
     } else if (event is DeleteEmployee) {
       yield* _mapDeleteEmployeeToState(event);
@@ -46,25 +46,30 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   Stream<EmployeesState> _mapLoadEmployeesToState() async* {
     _employeesSubscription?.cancel();
     _employeesSubscription = _employeesRepository.employees().listen(
-      (employees) => add(EmployeesUpdated(employees)),
-    );
-  }
-  
-  // ! do I need a stream for the designations??
-    Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(LoadEmployeesWithGivenDesignation event) async* {
-    _employeesSubscription?.cancel();
-    _employeesSubscription = _employeesRepository.availableEmployeesForGivenDesignation(event.designation, event.date).listen(
-      (employees) => add(EmployeesUpdatedWithGivenDesignation(employees)),
-    );
+          (employees) => add(EmployeesUpdated(employees)),
+        );
   }
 
-  Stream<EmployeesState> _mapEmployeesUpdatedWithGivenDesignationMapToState(EmployeesUpdatedWithGivenDesignation event) async* {
+  // ! do I need a stream for the designations??
+  Stream<EmployeesState> _mapLoadEmployeesWithGivenDesignation(
+      LoadEmployeesWithGivenDesignation event) async* {
+    _employeesSubscription?.cancel();
+    _employeesSubscription = _employeesRepository
+        .availableEmployeesForGivenDesignation(event.designation, event.date)
+        .listen(
+          (employees) => add(EmployeesUpdatedWithGivenDesignation(employees)),
+        );
+  }
+
+  Stream<EmployeesState> _mapEmployeesUpdatedWithGivenDesignationMapToState(
+      EmployeesUpdatedWithGivenDesignation event) async* {
     yield EmployeesLoadedWithGivenDesignation(event.employees);
   }
-  
 
-  Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(UpdateEmployeeBusyMap event) async* {
-    _employeesRepository.updateEmployeesBusyMap(event.employeeId, event.busyMap);
+  Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(
+      UpdateEmployeeBusyMap event) async* {
+    _employeesRepository.updateEmployeesBusyMap(
+        event.employeeId, event.busyMap);
   }
 
   Stream<EmployeesState> _mapAddEmployeeToState(AddEmployee event) async* {
@@ -75,26 +80,28 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     _employeesRepository.redoEmployee(event.redoneEmployee);
   }
 
-  Stream<EmployeesState> _mapUpdateEmployeeToState(UpdateEmployee event) async* {
+  Stream<EmployeesState> _mapUpdateEmployeeToState(
+      UpdateEmployee event) async* {
     _employeesRepository.updateEmployee(event.updatedEmployee);
   }
 
-  Stream<EmployeesState> _mapDeleteEmployeeToState(DeleteEmployee event) async* {
+  Stream<EmployeesState> _mapDeleteEmployeeToState(
+      DeleteEmployee event) async* {
     _employeesRepository.deleteEmployee(event.employee);
   }
 
-  Stream<EmployeesState> _mapEmployeesUpdateToState(EmployeesUpdated event) async* {
+  Stream<EmployeesState> _mapEmployeesUpdateToState(
+      EmployeesUpdated event) async* {
     yield EmployeesLoaded(event.employees);
   }
 
   Stream<EmployeesState> _mapEmployeesNotLoadedMapToState() async* {
     yield EmployeesNotLoaded();
   }
- 
+
   @override
   Future<void> close() {
     _employeesSubscription?.cancel();
     return super.close();
   }
-
 }

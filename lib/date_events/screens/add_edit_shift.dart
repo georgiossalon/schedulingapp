@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shifts_repository/shifts_repository.dart';
+import 'package:date_events_repository/date_events_repository.dart';
 
 typedef OnSaveCallback = Function(String designation, String employeeName,
     String start_shift, String end_shift, DateTime shift_Date);

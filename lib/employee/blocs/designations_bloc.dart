@@ -17,7 +17,7 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
         _employeesRepository = employeesRepository;
 
   @override
-  DesignationsState get initialState => DesignationsState.designationsLoading();
+  DesignationsState get initialState => DesignationsLoading();
 
   @override
   Stream<DesignationsState> mapEventToState(
@@ -33,33 +33,32 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
       yield* _mapDeleteDesignationToState(event);
     } else if (event is DesignationsUpdated) {
       yield* _mapDesignationsUpdatedToState(event);
-    } else if (event is AssignDesignationsToEmployee) {
-      yield* _mapAssignDesignationsToEmployee(event);
-    }
+    } 
+    // else if (event is AssignDesignationsToEmployee) {
+    //   yield* _mapAssignDesignationsToEmployee(event);
+    // }
   }
 
   Stream<DesignationsState> _mapLoadDesignationsToState() async* {
     _designationsSubscription?.cancel();
     _designationsSubscription = _employeesRepository.designations().listen(
           // I am Listening a Designations object
-          // I am only passing its List<String> of designations
-          (designations) => add(DesignationsUpdated(designations)),
+          // I am only passing a Designations object
+          (designationsObj) => add(DesignationsUpdated(designationsObj)),
         );
   }
 
-  Stream<DesignationsState> _mapAssignDesignationsToEmployee(
-      AssignDesignationsToEmployee event) async* {
-    final currentState = state;
-    yield DesignationsState.designationsLoadedAndAssignedToShift(
-        designations: currentState.designationsObj.designations,
-        designationsChosen: event.designationsString);
-  }
+  // Stream<DesignationsState> _mapAssignDesignationsToEmployee(
+  //     AssignDesignationsToEmployee event) async* {
+  //   final currentState = state;
+  //   yield DesignationsState.designationsLoadedAndAssignedToShift(
+  //       designations: currentState.designationsObj.designations,
+  //       designationsChosen: event.designationsString);
+  // }
 
   Stream<DesignationsState> _mapDesignationsUpdatedToState(
       DesignationsUpdated event) async* {
-    yield DesignationsState.designationsLoaded(
-        designations: event.designations.designations,
-        id: event.designations.id);
+    yield DesignationsLoaded(event.designationsObj);
   }
 
   Stream<DesignationsState> _mapAddDesignationToState(
@@ -67,6 +66,7 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
         // if the list within the designations object is empty, I do not have
         // a document in firestore. Thus, I have to create a new one
         // else update the document by adding the newly created designation
+        //todo perhaps I can avoid the if statement here?
     if (event.designationsObj.designations.isEmpty) {
       _employeesRepository.addNewDesignation(event.designationsObj);
     } else {
@@ -81,7 +81,7 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
 
   Stream<DesignationsState> _mapDeleteDesignationToState(
       DeleteDesignation event) async* {
-    _employeesRepository.deleteDesignation(event.designation);
+    _employeesRepository.deleteDesignation(event.designationObj);
   }
 
   @override

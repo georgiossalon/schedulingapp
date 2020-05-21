@@ -21,12 +21,12 @@ class AssignDesignationsToEmployee extends DesignationsEvent {
 }
 
 class DesignationsUpdated extends DesignationsEvent {
-  final Designations designations;
+  final Designations designationsObj;
 
-  const DesignationsUpdated(this.designations);
+  const DesignationsUpdated(this.designationsObj);
 
   @override
-  List<Object> get props => [designations];
+  List<Object> get props => [designationsObj];
 }
 
 class AddDesignation extends DesignationsEvent {
@@ -45,15 +45,15 @@ class AddDesignation extends DesignationsEvent {
 }
 
 class DeleteDesignation extends DesignationsEvent {
-  final Designations designation;
+  final Designations designationObj;
 
-  const DeleteDesignation(this.designation);
-
-  @override
-  List<Object> get props => [designation];
+  const DeleteDesignation(this.designationObj);
 
   @override
-  String toString() => 'DeleteDesignation { designation: $designation }';
+  List<Object> get props => [designationObj];
+
+  @override
+  String toString() => 'DeleteDesignation { designation: $designationObj }';
 }
 
 class UpdateDesignation extends DesignationsEvent {

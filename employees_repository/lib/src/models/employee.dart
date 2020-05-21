@@ -3,6 +3,7 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:meta/meta.dart';
 import '../entities/entities.dart';
 
+
 @immutable
 class Employee {
   final List<String> designations;
@@ -40,7 +41,7 @@ class Employee {
       String name,
       double salary,
       double weeklyHours,
-      List<DateEvent> currentWeekDateEvent}) {
+      Map<DateTime,bool> busyMap}) {
     return Employee(
       designations: designations ?? this.designations,
       email: email ?? this.email,
@@ -49,7 +50,7 @@ class Employee {
       name: name ?? this.name,
       salary: salary ?? this.salary,
       weeklyHours: weeklyHours ?? this.weeklyHours,
-      busyMap: currentWeekDateEvent ?? this.busyMap
+      busyMap: busyMap ?? this.busyMap
     );
   }
 

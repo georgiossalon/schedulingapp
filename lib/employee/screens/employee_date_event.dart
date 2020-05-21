@@ -1,18 +1,19 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:shifts_repository/shifts_repository.dart';
-import 'package:snapshot_test/employee/blocs/date_events.dart';
+import 'package:snapshot_test/date_events/blocs/date_events.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/main.dart';
-import 'package:snapshot_test/shifts/blocs/shifts.dart';
-import 'package:snapshot_test/shifts/screens/add_edit_shift.dart';
+import 'package:snapshot_test/date_events/blocs/shifts.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:date_events_repository/date_events_repository.dart';
 
-class EmployeeDateEvent extends StatelessWidget {
+
+class EmployeeDateEventScreen extends StatelessWidget {
   //todo cancel the subscription for the employees dateEvent when clicking on the
   //todo... arrow of the top left corner of the screen
 
@@ -20,7 +21,7 @@ class EmployeeDateEvent extends StatelessWidget {
   final Employee employee;
   static DateTime employeeDateEventSelectedDay = DateTime.now();
 
-  const EmployeeDateEvent({Key key, this.employee}) : super(key: key);
+  const EmployeeDateEventScreen({Key key, this.employee}) : super(key: key);
 
   static Map<DateTime, List<dynamic>> dateEventListToCalendarMap(
       List<DateEvent> currentWeekDateEvent) {
@@ -76,22 +77,22 @@ class EmployeeDateEvent extends StatelessWidget {
                               shift_date,
                             ) {
                               //todo: add the shift to the employees dateEvents (Bloc)
-                              BlocProvider.of<ShiftsBloc>(context).add(AddShift(
-                                Shift(
-                                  designation: designation,
-                                  employee: employeeName,
-                                  start_shift: start_shift,
-                                  end_shift: end_shift,
-                                  shift_date: shift_date,
-                                ),
-                              ));
-                              BlocProvider.of<DateEventsBloc>(context).add(
-                                  AddDateEvent(DateEvent(
-                                      reason: 'shift',
-                                      description: designation,
-                                      start_shift: start_shift,
-                                      end_shift: end_shift,
-                                      dateEvent_date: shift_date)));
+                              // BlocProvider.of<ShiftsBloc>(context).add(AddShift(
+                              //   Shift(
+                              //     designation: designation,
+                              //     employee: employeeName,
+                              //     start_shift: start_shift,
+                              //     end_shift: end_shift,
+                              //     shift_date: shift_date,
+                              //   ),
+                              // ));
+                              // BlocProvider.of<DateEventsBloc>(context).add(
+                              //     AddDateEvent(DateEvent(
+                              //         reason: 'shift',
+                              //         description: designation,
+                              //         start_shift: start_shift,
+                              //         end_shift: end_shift,
+                              //         dateEvent_date: shift_date)));
                             },
                             daySelected: employeeDateEventSelectedDay,
                             isEditing: false,
