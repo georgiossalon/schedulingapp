@@ -39,6 +39,8 @@ class ShiftCreatedOrEdited extends ShiftsState {
   final String shiftEnd;
   final DateTime shiftDate;
   final String reason = 'shift';
+  final String id;
+  final Employee oldEmployee;
 
   const ShiftCreatedOrEdited({
     @required this.designations,
@@ -49,6 +51,8 @@ class ShiftCreatedOrEdited extends ShiftsState {
     this.shiftStart,
     this.shiftEnd,
     this.shiftDate,
+    this.id,
+    this.oldEmployee,
   });
 
 
@@ -64,11 +68,13 @@ class ShiftCreatedOrEdited extends ShiftsState {
         shiftEnd,
         shiftDate,
         reason,
+        id,
+        oldEmployee,
       ];
 
   @override
   String toString() =>
-      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason }';
+      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason, id: $id, oldEmployee: $oldEmployee }';
 
   ShiftCreatedOrEdited copyWith({
     String currentDesignation,
@@ -79,6 +85,8 @@ class ShiftCreatedOrEdited extends ShiftsState {
     String shiftStart,
     String shiftEnd,
     DateTime shiftDate,
+    String id,
+    Employee oldEmployee,
   }) {
     return ShiftCreatedOrEdited(
       currentDesignation: currentDesignation ?? this.currentDesignation,
@@ -89,6 +97,8 @@ class ShiftCreatedOrEdited extends ShiftsState {
       shiftStart: shiftStart ?? this.shiftStart,
       shiftEnd: shiftEnd ?? this.shiftEnd,
       shiftDate: shiftDate ?? this.shiftDate,
+      id: id ?? this.id,
+      oldEmployee: oldEmployee ?? this.oldEmployee,
     );
   }
 }

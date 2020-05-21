@@ -1,16 +1,10 @@
-// import 'dart:js';
-
-import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_events_repository/date_events_repository.dart';
-import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/date_events/blocs/date_events.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_date_event.dart';
 
 class ShiftsView extends StatelessWidget {
   static const String screenId = 'shifts_view';
@@ -53,37 +47,7 @@ class ShiftsView extends StatelessWidget {
 
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return AddEditEmployeeDateEvent(
-                    // onSave: (
-                    //   description,
-                    //   designation,
-                    //   employeeName,
-                    //   end_shift,
-                    //   reason,
-                    //   start_shift,
-                    //   dateEvent_date,
-                    //   employeeId,
-                    // ) {
-                    //   BlocProvider.of<DateEventsBloc>(context).add(AddDateEvent(
-                    //     DateEvent(
-                    //         description: description,
-                    //         designation: designation,
-                    //         employeeName: employeeName,
-                    //         end_shift: end_shift,
-                    //         reason: reason,
-                    //         start_shift: start_shift,
-                    //         dateEvent_date: dateEvent_date,
-                    //         employeeId: employeeId),
-                    //   ));
-                    //   //todo: -- adding the new event into the busy map
-                    //   // Map<DateTime, bool> hbusyMap = employeeObj.busyMap;
-                    //   // hbusyMap[dateEvent_date] = true;
-                    //   // var hMap =
-                    //   //     EmployeeEntity.changeMapKeyForDocument(hbusyMap);
-                    //   // BlocProvider.of<EmployeesBloc>(context)
-                    //   //     .add(UpdateEmployeeBusyMap(employeeObj.id, hMap));
-                    //   // -- end
-                    // },
+                  return AddEditDateEvent(
                     daySelected: shiftCalendarSelectedDay,
                     isShift: true,
                     isEditing: false,

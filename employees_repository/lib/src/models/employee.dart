@@ -13,7 +13,7 @@ class Employee {
   final String name;
   final double salary;
   final double weeklyHours;
-  final Map<DateTime,bool> busyMap;
+  final Map<DateTime, String> busyMap;
   Employee(
       {this.designations,
       this.email,
@@ -41,7 +41,7 @@ class Employee {
       String name,
       double salary,
       double weeklyHours,
-      Map<DateTime,bool> busyMap}) {
+      Map<DateTime, String> busyMap}) {
     return Employee(
       designations: designations ?? this.designations,
       email: email ?? this.email,

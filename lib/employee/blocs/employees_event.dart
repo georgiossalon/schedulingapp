@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
+import 'package:meta/meta.dart';
 
 abstract class EmployeesEvent extends Equatable {
   const EmployeesEvent();
@@ -35,16 +36,34 @@ class UpdateEmployee extends EmployeesEvent {
 }
 
 class UpdateEmployeeBusyMap extends EmployeesEvent {
-  final String employeeId;
-  final Map<String,bool> busyMap;
+  final EmployeeDateEvent employeeDateEvent;
 
-  const UpdateEmployeeBusyMap(this.employeeId, this.busyMap);
-
-  @override
-  List<Object> get props => [employeeId, busyMap];
+  const UpdateEmployeeBusyMap({this.employeeDateEvent});
 
   @override
-  String toString() => 'UpdateEmployeeBusyMap { employeeId: $employeeId and busyMap: $busyMap }';
+  List<Object> get props => [employeeDateEvent];
+
+  @override
+  String toString() =>
+      'UpdateEmployeeBusyMap { employeeDateEvent: $employeeDateEvent}';
+}
+
+class EmployeesBusyMapDateEventRemoved extends EmployeesEvent {
+  final String oldEmployeeId;
+  final DateTime dateTime;
+
+  EmployeesBusyMapDateEventRemoved({
+    @required this.oldEmployeeId,
+    @required this.dateTime,
+  });
+
+  @override
+  List<Object> get props => [oldEmployeeId, dateTime];
+
+  @override
+  String toString() {
+    return 'EmployeesBusyMapDateEventRemoved: { oldEmployeeId: $oldEmployeeId, dateTime: $dateTime }';
+  }
 }
 
 class RedoEmployee extends EmployeesEvent {
@@ -100,6 +119,3 @@ class LoadEmployeesWithGivenDesignation extends EmployeesEvent {
 }
 
 class EmployeesEmpty extends EmployeesEvent {}
-
-
-

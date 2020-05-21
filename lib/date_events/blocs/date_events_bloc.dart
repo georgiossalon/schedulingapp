@@ -2,14 +2,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:snapshot_test/date_events/blocs/date_events.dart';
-import 'package:employees_repository/employees_repository.dart';
-import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:date_events_repository/date_events_repository.dart';
 
 class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
   final DateEventsRepository _dateEventsRepository; // dependency
   StreamSubscription _dateEventsSubscription;
-  StreamSubscription _employeesSubscription;
   // final DesignationsBloc _designationsBloc; // dependency
   // StreamSubscription _designationsSubscription;
 

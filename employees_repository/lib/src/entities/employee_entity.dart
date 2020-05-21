@@ -17,7 +17,7 @@ class EmployeeEntity extends Equatable {
   final String name;
   final double salary;
   final double weeklyHours;
-  final Map<DateTime, bool> busyMap;
+  final Map<DateTime,String> busyMap;
 
   const EmployeeEntity(
       {this.designations,
@@ -119,9 +119,9 @@ class EmployeeEntity extends Equatable {
   //   }
   // }
 
-  static Map<String, bool> changeMapKeyForDocument(Map<DateTime, bool> busyMap) {
+  static Map<String, String> changeMapKeyForDocument(Map<DateTime, String> busyMap) {
     if (busyMap != null) {
-      Map<String, bool> hMap = new Map<String, bool>();
+      Map<String, String> hMap = new Map<String,String>();
       busyMap.forEach((k, v) {
         var formatter = new DateFormat('yyyy-MM-dd');
         String formatedDate = formatter.format(k);
@@ -131,9 +131,9 @@ class EmployeeEntity extends Equatable {
     }
   }
 
-  static Map<DateTime, bool> changeMapKeyForObject(Map<String,dynamic> snapMap) {
+  static Map<DateTime, String> changeMapKeyForObject(Map<String,dynamic> snapMap) {
     if (snapMap != null) {
-      Map<DateTime, bool> hMap = new Map<DateTime,bool>();
+      Map<DateTime, String> hMap = new Map<DateTime,String>();
       snapMap.forEach((k,v) {
          var dateTime = DateTime.parse(k);
         DateTime updatedDateTime = utcTo12oclock(dateTime);

@@ -37,10 +37,13 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       yield* _mapEmployeesNotLoadedMapToState();
     } else if (event is EmployeesUpdatedWithGivenDesignation) {
       yield* _mapEmployeesUpdatedWithGivenDesignationMapToState(event);
+    } else if (event is EmployeesBusyMapDateEventRemoved) {
+      yield* _mapEmployeesBusyMapDateEventRemovedToState(event);
     }
-//    else if (event is EmployeeDateEventRequested) {
-//      yield* _mapEmployeeDateEventRequestedToState(event);
-//    }
+  }
+
+  Stream<EmployeesState> _mapEmployeesBusyMapDateEventRemovedToState(EmployeesBusyMapDateEventRemoved event) async* {
+    _employeesRepository.deleteEmployeesDateEventBusyMapElement(event.oldEmployeeId, event.dateTime);
   }
 
   Stream<EmployeesState> _mapLoadEmployeesToState() async* {
@@ -68,8 +71,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(
       UpdateEmployeeBusyMap event) async* {
-    _employeesRepository.updateEmployeesBusyMap(
-        event.employeeId, event.busyMap);
+    _employeesRepository.updateEmployeesBusyMap( event.employeeDateEvent);
   }
 
   Stream<EmployeesState> _mapAddEmployeeToState(AddEmployee event) async* {

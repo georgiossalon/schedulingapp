@@ -4,44 +4,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:date_events_repository/date_events_repository.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
 
-// typedef OnSaveCallback = Function(
-//   String description,
-//   String designation,
-//   String employeeName,
-//   String end_shift,
-//   String reason,
-//   String start_shift,
-//   DateTime dateEvent_date,
-//   String employeeId,
-// );
-
-class AddEditEmployeeDateEvent extends StatefulWidget {
+class AddEditDateEvent extends StatefulWidget {
   static const String screenId = 'add_edit_employee_dateEvent';
 
   final DateTime daySelected;
   final bool isEditing;
   final bool isShift;
-  // final OnSaveCallback onSave;
   final DateEvent dateEvent;
-  final Employee employee;
 
-  AddEditEmployeeDateEvent({
+  AddEditDateEvent({
     Key key,
     this.daySelected,
     this.isEditing,
     this.isShift,
-    // this.onSave,
     this.dateEvent,
-    this.employee,
   }) : super(key: key);
 
   @override
-  _AddEditEmployeeDateEventState createState() =>
-      _AddEditEmployeeDateEventState();
+  _AddEditDateEventState createState() => _AddEditDateEventState();
 }
 
-class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
+class _AddEditDateEventState extends State<AddEditDateEvent> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool get isEditing => widget.isEditing;
@@ -95,7 +80,8 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
 
                   for (Employee employee in hList) {
                     if (employee.name == newEmployeeName) {
-                      BlocProvider.of<ShiftsBloc>(context).add(ShiftsEmployeeChanged(
+                      BlocProvider.of<ShiftsBloc>(context)
+                          .add(ShiftsEmployeeChanged(
                         employee: employee,
                       ));
                       //! should I avoid using such parameters? and only use Bloc
@@ -148,7 +134,8 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
                   );
                 }).toList(),
                 onChanged: (String newDesignation) {
-                  BlocProvider.of<ShiftsBloc>(context).add(ShiftsDesignationChanged(
+                  BlocProvider.of<ShiftsBloc>(context)
+                      .add(ShiftsDesignationChanged(
                     designation: newDesignation,
                   ));
                 },
@@ -216,13 +203,7 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
             onPressed: () async {
               TimeOfDay timeOfDay = await selectTime(context);
               if (timeOfDay != null) {
-                //! Do I need to pass every time all these values?
-                BlocProvider.of<ShiftsBloc>(context).add(ShiftEdited(
-                  currentDesignation: state.currentDesignation,
-                  shiftDate: state.shiftDate,
-                  currentEmployee: state.currentEmployee,
-                  description: state.description,
-                  shiftEnd: state.shiftEnd,
+                BlocProvider.of<ShiftsBloc>(context).add(ShiftsStartTimeChanged(
                   shiftStart: '${timeOfDay.hour}:${timeOfDay.minute}',
                 ));
               } else {
@@ -244,14 +225,8 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
             onPressed: () async {
               TimeOfDay timeOfDay = await selectTime(context);
               if (timeOfDay != null) {
-                //! Do I need to pass every time all these values?
-                BlocProvider.of<ShiftsBloc>(context).add(ShiftEdited(
-                  currentDesignation: state.currentDesignation,
-                  shiftDate: state.shiftDate,
-                  currentEmployee: state.currentEmployee,
-                  description: state.description,
+                BlocProvider.of<ShiftsBloc>(context).add(ShiftsEndTimeChanged(
                   shiftEnd: '${timeOfDay.hour}:${timeOfDay.minute}',
-                  shiftStart: state.shiftStart,
                 ));
               } else {
                 //todo add parameter and use it for the validator
@@ -307,23 +282,53 @@ class _AddEditEmployeeDateEventState extends State<AddEditEmployeeDateEvent> {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
 
-                    BlocProvider.of<ShiftsBloc>(context)
-                        .add(ShiftAsDateEventAdded(
-                            dateEvent: DateEvent(
+                    DateEvent dateEvent = DateEvent(
                       dateEvent_date: state.shiftDate,
-                      description:
-                          state.description, 
+                      description: state.description,
                       designation: state.currentDesignation,
                       employeeId: state.currentEmployee != null
-                                     ? state.currentEmployee.id
-                                     : null,
+                          ? state.currentEmployee.id
+                          : null,
                       employeeName: state.currentEmployee != null
-                                        ? state.currentEmployee.name
-                                        : null,
+                          ? state.currentEmployee.name
+                          : null,
                       end_shift: state.shiftEnd,
                       reason: state.reason,
                       start_shift: state.shiftStart,
-                    )));
+                      id: state.id,
+                    );
+
+
+                    BlocProvider.of<ShiftsBloc>(context)
+                        .add(ShiftAsDateEventAdded(dateEvent: dateEvent));
+                    //todo: -- adding the new event into the busy map
+                    //! Rolly: Opinion
+                    EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
+                      designation: dateEvent.description,
+                      dateEvent_date: dateEvent.dateEvent_date,
+                      description: dateEvent.description,
+                      employeeId: dateEvent.employeeId,
+                      employeeName: dateEvent.employeeName,
+                      end_shift: dateEvent.end_shift,
+                      id: dateEvent.id,
+                      reason: dateEvent.reason,
+                      start_shift: dateEvent.start_shift,
+                    );
+                    //! - currently I am saving all dateEvents into the busy_map of an employee
+                    //! after a while I will be having too many of them
+                    //! In addition, when I am editing shifts I should delete from the old employee
+                    //! the dateEvent from its busyMap
+                    // remove the dateEvent from the old employees busy_map
+                    if (state.oldEmployee != null) {
+                      if (state.oldEmployee.id != employeeDateEvent.employeeId) {
+                        BlocProvider.of<EmployeesBloc>(context)
+                            .add(EmployeesBusyMapDateEventRemoved(oldEmployeeId: state.oldEmployee.id, dateTime: dateEvent.dateEvent_date));
+                      }
+                    }
+                    if (dateEvent.employeeId != null) {
+                      BlocProvider.of<EmployeesBloc>(context)
+                          .add(UpdateEmployeeBusyMap(employeeDateEvent: employeeDateEvent));
+                    }
                     Navigator.pop(context);
                   }
                 },

@@ -4,7 +4,6 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
-import 'package:employees_repository/employees_repository.dart';
 // import 'package:shifts_repository/shifts_repository.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -102,6 +101,7 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
                 description: currentState.description,
                 shiftEnd: currentState.shiftEnd,
                 shiftStart: currentState.shiftStart,
+                id: currentState.id,
               )));
     }
   }
@@ -157,6 +157,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
               shiftStart: event.shiftStart,
               shiftEnd: event.shiftEnd,
               description: event.description,
+              id: event.id,
+              oldEmployee: event.oldEmployee
             )));
   }
 
@@ -174,6 +176,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       description: event.description,
       shiftEnd: event.shiftEnd,
       shiftStart: event.shiftStart,
+      id: event.id,
+      oldEmployee: event.oldEmployee
     );
   }
 

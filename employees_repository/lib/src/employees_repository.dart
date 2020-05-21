@@ -16,7 +16,9 @@ abstract class EmployeesRepository {
 
   Future<void> redoEmployee(Employee employee);
 
-  Future<void> updateEmployeesBusyMap(String employeeId, Map<String,bool> busy_map);
+  Future<void> updateEmployeesBusyMap(EmployeeDateEvent employeeDateEvent);
+  
+  Future<void> deleteEmployeesDateEventBusyMapElement(String oldEmployeeId, DateTime dateTime);
 
   // create a stream for a given employee
   //todo only give id instead of the whole object

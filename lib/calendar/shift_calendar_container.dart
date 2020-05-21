@@ -1,14 +1,11 @@
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/date_events/blocs/date_events.dart';
-import 'package:snapshot_test/employee/screens/add_edit_employee_date_event.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:snapshot_test/date_events/blocs/shifts_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_date_event.dart';
 import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_events_repository/date_events_repository.dart';
 
 class ShiftCalendarContainer extends StatelessWidget {
@@ -120,63 +117,30 @@ class ShiftCalendarContainer extends StatelessWidget {
                     color: Colors.yellow.shade700,
                   ),
                 ),
-                onTap: () async {
-                  // todo the following should be in the repository. I should not have Firestore.instance in the UI
-                  //todo: check why I am fetching an employee from firestore when I already have this passed within this widget
-                  // ! the following snapshot, employee are there for the dropdown
-                  // DocumentSnapshot snapshot = await Firestore.instance
-                  //     .collection('Employees')
-                  //     .document(dateEvent.parentId)
-                  //     .get();
-                  // Employee oldEmployee = Employee.fromEntity(
-                  //     EmployeeEntity.fromSnapshot(snapshot));
-                  // BlocProvider.of<EmployeesBloc>(context).add(LoadEmployees());
-                  // ! end
+                onTap: () {
 
-                  BlocProvider.of<ShiftsBloc>(context).add(ShiftEdited(
-                    currentEmployee: Employee(
+                    Employee currentEmployee = Employee(
                       id: dateEvent.employeeId,
                       name: dateEvent.employeeName,
-                    ),
+                    );
+                  BlocProvider.of<ShiftsBloc>(context).add(ShiftEdited(
+                    currentEmployee: currentEmployee,
                     currentDesignation: dateEvent.designation,
                     shiftDate: dateEvent.dateEvent_date,
                     description: dateEvent.description,
                     shiftStart: dateEvent.start_shift,
                     shiftEnd: dateEvent.end_shift,
+                    id: dateEvent.id,
+                    oldEmployee: currentEmployee,
                   ));
 
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditEmployeeDateEvent(
-                      // onSave: (description,
-                      //     designation,
-                      //     employeeName,
-                      //     end_shift,
-                      //     reason,
-                      //     start_shift,
-                      //     dateEvent_date,
-                      //     employeeId,) {
-                      //     BlocProvider.of<DateEventsBloc>(context)
-                      //         .add(UpdateDateEvent(
-                      //       //todo might have to add the parentId field
-                      //       dateEvent.copyWith(
-                      //           description: description,
-                      //           designation: designation,
-                      //           employeeName: employeeName,
-                      //           end_shift: end_shift,
-                      //           reason: reason,
-                      //           start_shift: start_shift,
-                      //           parentId: employeeId),
-                      //     ));
-                      // },
+                    return AddEditDateEvent(
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
                       isShift: true,
                       dateEvent: dateEvent,
-                      employee: Employee(
-                        name: dateEvent.employeeName,
-                        id: dateEvent.employeeId,
-                      ),
                     );
                   }));
                 },

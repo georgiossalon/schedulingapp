@@ -95,6 +95,8 @@ class ShiftEdited extends ShiftsEvent {
   final String description;
   final String shiftStart;
   final String shiftEnd;
+  final String id;
+  final Employee oldEmployee;
 
   ShiftEdited({
     @required this.currentEmployee,
@@ -103,6 +105,8 @@ class ShiftEdited extends ShiftsEvent {
     @required this.shiftEnd,
     @required this.currentDesignation,
     @required this.shiftDate,
+    this.id,
+    this.oldEmployee,
   });
 
   @override
@@ -113,11 +117,13 @@ class ShiftEdited extends ShiftsEvent {
         shiftEnd,
         currentDesignation,
         shiftDate,
+        id,
+        oldEmployee,
       ];
 
       @override
       String toString() {
-      return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate }';
+      return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate, id: $id, oldEmployee: $oldEmployee }';
        }
 }
 
@@ -153,6 +159,8 @@ class ShiftDataPushed extends ShiftsEvent {
   final String shiftStart;
   final String shiftEnd;
   final String description;
+  final String id;
+  final Employee oldEmployee;
 
   ShiftDataPushed({
     @required this.currentEmployee,
@@ -162,6 +170,8 @@ class ShiftDataPushed extends ShiftsEvent {
     this.shiftStart,
     this.shiftEnd,
     this.description,
+    this.id,
+    this.oldEmployee,
   });
 
   @override
@@ -173,11 +183,13 @@ class ShiftDataPushed extends ShiftsEvent {
         shiftStart,
         shiftEnd,
         description,
+        id,
+        oldEmployee,
       ];
 
   @override
   String toString() {
-    return 'ShiftDataPushed: { currentEmployee: $currentEmployee, currentDesignation: $currentDesignation, shiftDate: $shiftDate, availableEmployees: $availableEmployees, shiftStart: $shiftStart, shiftEnd: $shiftEnd, description: $description }';
+    return 'ShiftDataPushed: { currentEmployee: $currentEmployee, currentDesignation: $currentDesignation, shiftDate: $shiftDate, availableEmployees: $availableEmployees, shiftStart: $shiftStart, shiftEnd: $shiftEnd, description: $description, id: $id, oldEmployee: $oldEmployee }';
   }
 }
 

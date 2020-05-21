@@ -3,7 +3,6 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:snapshot_test/core/validators.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 typedef OnSaveCallback = Function(
   List<String> designation,
@@ -12,7 +11,7 @@ typedef OnSaveCallback = Function(
   double salary,
   String email,
   DateTime hiringDate,
-  Map<DateTime, bool> busyMap,
+  Map<DateTime, String> busyMap,
 );
 
 class AddEditEmployee extends StatefulWidget {
@@ -39,7 +38,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   double _salary;
   String _email;
   DateTime _hiringDate;
-  Map<DateTime, bool> _busyMap;
+  Map<DateTime, String> _busyMap;
 
   bool get isEditing => widget.isEditing;
 
@@ -292,19 +291,19 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
     );
   }
 
-  Map<DateTime, bool> setEmployeeBusy() {
-    DateTime mondayOfCurrentWeek =
-        DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
-    // DateTime dateOfSundayForXthWeek =
-    //     mondayOfCurrentWeek.add(new Duration(days: 7 - 1));
-    Map<DateTime, bool> hMap = new Map<DateTime, bool>();
-    DateTime hDate = mondayOfCurrentWeek;
-    for (var i = 0; i < 7; i++) {
-      hMap[hDate] = false;
-      hDate = hDate.add(new Duration(days: 1));
-    }
-    return hMap;
-  }
+  // Map<DateTime, bool> setEmployeeBusy() {
+  //   DateTime mondayOfCurrentWeek =
+  //       DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
+  //   // DateTime dateOfSundayForXthWeek =
+  //   //     mondayOfCurrentWeek.add(new Duration(days: 7 - 1));
+  //   Map<DateTime, bool> hMap = new Map<DateTime, bool>();
+  //   DateTime hDate = mondayOfCurrentWeek;
+  //   for (var i = 0; i < 7; i++) {
+  //     hMap[hDate] = false;
+  //     hDate = hDate.add(new Duration(days: 1));
+  //   }
+  //   return hMap;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +346,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                   _email,
                   _hiringDate,
                   _busyMap == null
-                      ? setEmployeeBusy()
+                      ? Map<DateTime,String>()
                       : widget.employee.busyMap);
               Navigator.pop(context);
             }

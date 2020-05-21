@@ -48,10 +48,25 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   @override
   Future<void> updateEmployeesBusyMap(
-      String employeeId, Map<String, bool> busy_map) {
+      EmployeeDateEvent employeeDateEvent) {
+        // I do not need the busy map of the employee, since I only get the
+        // available employees for the given date. Also I can only update an
+        // entity of the busy_map in firestore, thus I do not need to update the
+        // whole busy_map
+         var formatter = new DateFormat('yyyy-MM-dd');
+    String formatedDate = formatter.format(employeeDateEvent.dateEvent_date);
+        
     return _employeeCollection
-        .document(employeeId)
-        .updateData({'busy_map': busy_map});
+        .document(employeeDateEvent.employeeId)
+        .updateData({'busy_map.${formatedDate}': employeeDateEvent.reason});
+  }
+
+  Future<void> deleteEmployeesDateEventBusyMapElement(String oldEmployeeId, DateTime dateTime) {
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formatedDate = formatter.format(dateTime);
+    return _employeeCollection
+        .document(oldEmployeeId)
+        .updateData({'busy_map.${formatedDate}': null});
   }
 
   @override
