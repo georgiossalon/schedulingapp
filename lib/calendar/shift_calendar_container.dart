@@ -4,9 +4,10 @@ import 'package:snapshot_test/date_events/blocs/date_events.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:snapshot_test/date_events/blocs/shifts_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_date_event.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
 import 'package:date_events_repository/date_events_repository.dart';
+import 'package:snapshot_test/employee/blocs/employees.dart';
 
 class ShiftCalendarContainer extends StatelessWidget {
   final DateEvent dateEvent;
@@ -24,6 +25,20 @@ class ShiftCalendarContainer extends StatelessWidget {
         onPressed: () {
           BlocProvider.of<DateEventsBloc>(context)
               .add(RedoDateEvent(deletedDateEvent));
+          // add in employees busy_map
+           EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
+                      designation: dateEvent.description,
+                      dateEvent_date: dateEvent.dateEvent_date,
+                      description: dateEvent.description,
+                      employeeId: dateEvent.employeeId,
+                      employeeName: dateEvent.employeeName,
+                      end_shift: dateEvent.end_shift,
+                      id: dateEvent.id,
+                      reason: dateEvent.reason,
+                      start_shift: dateEvent.start_shift,
+                    );
+BlocProvider.of<EmployeesBloc>(context)
+                          .add(UpdateEmployeeBusyMap(employeeDateEvent: employeeDateEvent));
         },
       ),
     ));
@@ -107,6 +122,9 @@ class ShiftCalendarContainer extends StatelessWidget {
                   // hide previous snackbars and show only the current one
                   Scaffold.of(context).hideCurrentSnackBar();
                   showSnackBar(scaffoldContext, dateEvent);
+                  // delete from the employees busy_map
+                   BlocProvider.of<EmployeesBloc>(context)
+                            .add(EmployeesBusyMapDateEventRemoved(oldEmployeeId: dateEvent.employeeId, dateTime: dateEvent.dateEvent_date));
                 },
               ),
               GestureDetector(
@@ -136,7 +154,7 @@ class ShiftCalendarContainer extends StatelessWidget {
 
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return AddEditDateEvent(
+                    return AddEditShift(
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
                       isShift: true,

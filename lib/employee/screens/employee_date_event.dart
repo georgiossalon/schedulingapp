@@ -2,14 +2,16 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:snapshot_test/date_events/blocs/date_events.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
+import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_events_repository/date_events_repository.dart';
-
+import 'package:snapshot_test/date_events/screens/add_edit_dayoff.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 
 class EmployeeDateEventScreen extends StatelessWidget {
+  //! Rolly ask him about this
   //todo cancel the subscription for the employees dateEvent when clicking on the
   //todo... arrow of the top left corner of the screen
 
@@ -42,7 +44,6 @@ class EmployeeDateEventScreen extends StatelessWidget {
           );
         } else if (state is DateEventsLoaded) {
           List<DateEvent> currentEmployeesDateEvents = state.dateEvents;
-          //todo take only the info for the given employee
           return SafeArea(
             child: Scaffold(
               appBar: AppBar(
@@ -60,61 +61,38 @@ class EmployeeDateEventScreen extends StatelessWidget {
                       label: 'Add Shift',
                       backgroundColor: Colors.green.shade400,
                       onTap: () {
+                        BlocProvider.of<ShiftsBloc>(context)
+                            .add(NewShiftEmployeeSpecificCreated(
+                          employee: employee,
+                          shiftDate: employeeDateEventSelectedDay,
+                        ));
                         //todo do not allow to add an event on a day where there is a registered event
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
                           return AddEditShift(
-                            onSave: (
-                              designation,
-                              //todo the employee name field should be assigned from the chosen employee
-                              employeeName,
-                              start_shift,
-                              end_shift,
-                              shift_date,
-                            ) {
-                              //todo: add the shift to the employees dateEvents (Bloc)
-                              // BlocProvider.of<ShiftsBloc>(context).add(AddShift(
-                              //   Shift(
-                              //     designation: designation,
-                              //     employee: employeeName,
-                              //     start_shift: start_shift,
-                              //     end_shift: end_shift,
-                              //     shift_date: shift_date,
-                              //   ),
-                              // ));
-                              // BlocProvider.of<DateEventsBloc>(context).add(
-                              //     AddDateEvent(DateEvent(
-                              //         reason: 'shift',
-                              //         description: designation,
-                              //         start_shift: start_shift,
-                              //         end_shift: end_shift,
-                              //         dateEvent_date: shift_date)));
-                            },
                             daySelected: employeeDateEventSelectedDay,
                             isEditing: false,
+                            isShift: true,
                           );
                         }));
                       }),
                   SpeedDialChild(
                       child: Icon(FontAwesomeIcons.couch),
-                      label: 'Add dateEvent',
+                      label: 'Add Day Off',
                       backgroundColor: Colors.grey,
                       onTap: () {
+                        BlocProvider.of<ShiftsBloc>(context).add(
+                            NewDayOffCreated(
+                                employeeId: employee.id,
+                                employeeName: employee.name,
+                                dayOffDate: employeeDateEventSelectedDay));
+                        //todo add day offs while using the same AddEditDateEvent screen
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          // return AddEditEmployeeDateEvent(
-                          //   onSave: (reason, description, selectedDay) {
-                          //     BlocProvider.of<DateEventsBloc>(context).add(
-                          //         AddDateEvent(
-                          //             DateEvent(
-                          //                 reason: reason,
-                          //                 description: description,
-                          //                 dateEvent_date: selectedDay),
-                          //             employee.id));
-                          //   },
-                          //   daySelected: employeeDateEventSelectedDay,
-                          //   isEditing: false,
-                          // );
+                          return AddEditDayOff(
+                            daySelected: employeeDateEventSelectedDay,
+                            isEditing: false,
+                          );
                         }));
                       })
                 ],

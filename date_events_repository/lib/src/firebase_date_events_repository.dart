@@ -43,7 +43,6 @@ class FirebaseDateEventsRepository implements DateEventsRepository {
 
   @override
   Future<void> addOrUpdateDateEvent(DateEvent dateEvent) {
-    //todo: check if when dateEvent.id == null a new event is created, otherwise updated
     return _dateEventsCollection
         .document(dateEvent.id)
         .setData(dateEvent.toEntity().toDocument());
@@ -80,6 +79,7 @@ class FirebaseDateEventsRepository implements DateEventsRepository {
     return _dateEventsCollection
         .where('dateEvent_date', isGreaterThanOrEqualTo: mondayOfCurrentWeek)
         .where('dateEvent_date', isLessThanOrEqualTo: dateOfSundayForXthWeek)
+        .where('employee_id', isEqualTo: employeeId)
         .snapshots()
         .map((snapshot) {
       return snapshot.documents.map((doc) {

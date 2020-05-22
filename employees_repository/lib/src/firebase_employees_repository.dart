@@ -61,6 +61,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
         .updateData({'busy_map.${formatedDate}': employeeDateEvent.reason});
   }
 
+  //! Rolly
+  // todo can I complete delete the key (entry) from the map? 
   Future<void> deleteEmployeesDateEventBusyMapElement(String oldEmployeeId, DateTime dateTime) {
     var formatter = new DateFormat('yyyy-MM-dd');
     String formatedDate = formatter.format(dateTime);
@@ -149,10 +151,9 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     // in firstore the keys of a map are Strings, thus I have to change DateTime to String
     var formatter = new DateFormat('yyyy-MM-dd');
     String formatedDate = formatter.format(date);
-    //todo check why I am getting with null also the false employees
     return _employeeCollection
         .where('designations', arrayContains: designation)
-        .where('busy_map.$formatedDate', isEqualTo: null) 
+        .where('busy_map.$formatedDate', isNull: true) 
         .snapshots()
         .map((snapshot) {
       return snapshot.documents

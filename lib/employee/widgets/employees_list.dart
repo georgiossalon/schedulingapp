@@ -37,7 +37,6 @@ class _EmployeesListState extends State<EmployeesList> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  //todo add a screen for adding designations
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                     return DesignationList();
                   }));
@@ -45,7 +44,6 @@ class _EmployeesListState extends State<EmployeesList> {
               )
             ],
           ),
-          // todo: hide the 'open' employee from the list
           body: ListView.builder(
               itemCount: state.employees.length,
               itemBuilder: (context, index) {
@@ -60,6 +58,7 @@ class _EmployeesListState extends State<EmployeesList> {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return AddEditEmployee(
+                  //todo use bloc event instead of the callback method
                   onSave: (
                     designation,
                     employeeName,

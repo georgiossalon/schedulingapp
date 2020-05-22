@@ -24,11 +24,12 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       {@required DesignationsBloc designationsBloc,
       @required DateEventsRepository dateEventsRepository,
       @required EmployeesRepository employeeRepository})
-      : assert(designationsBloc != null && dateEventsRepository != null && employeeRepository != null),
+      : assert(designationsBloc != null &&
+            dateEventsRepository != null &&
+            employeeRepository != null),
         _designationsBloc = designationsBloc,
         _dateEventsRepository = dateEventsRepository,
         _employeeRepository = employeeRepository;
-
 
   @override
   ShiftsState get initialState => ShiftsLoading();
@@ -52,8 +53,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       yield* _mapEditShiftToState(event);
     } else if (event is ShiftDataPushed) {
       yield* _mapPassShiftDataToState(event);
-    } else if (event is ShiftAsDateEventAdded) {
-      yield* _mapAddShiftAsDateEventToState(event);
+    } else if (event is UploadDateEventAdded) {
+      yield* _mapUploadDateEventToState(event);
     } else if (event is ShiftsDescriptionChanged) {
       yield* _mapShiftsDescriptionChangedToState(event);
     } else if (event is ShiftsEmployeeChanged) {
@@ -64,20 +65,35 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       yield* _mapShiftsShiftStartChangedToState(event);
     } else if (event is ShiftsEndTimeChanged) {
       yield* _mapShiftsShiftEndChangedToState(event);
+    } else if (event is NewShiftEmployeeSpecificCreated) {
+      yield* _mapNewShiftEmployeeSpecificCreatedToState(event);
+    } else if (event is NewDayOffCreated) {
+      yield* _mapNewDayOffCreatedToState(event);
+    } else if (event is DayOffDescriptionChanged) {
+      yield* _mapDayOffDescriptionChangedToState(event);
     }
   }
 
-   Stream<ShiftsState> _mapShiftsShiftStartChangedToState(ShiftsStartTimeChanged event) async* {
+Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
+     DayOffDescriptionChanged event) async* {
+   if (state is CreatedOrEditedDayOff) {
+     yield (state as CreatedOrEditedDayOff)
+         .copyWith(description: event.description);
+   }
+ }
+
+  Stream<ShiftsState> _mapShiftsShiftStartChangedToState(
+      ShiftsStartTimeChanged event) async* {
     if (state is ShiftCreatedOrEdited) {
       yield (state as ShiftCreatedOrEdited)
           .copyWith(shiftStart: event.shiftStart);
     }
-   }
+  }
 
-  Stream<ShiftsState> _mapShiftsShiftEndChangedToState(ShiftsEndTimeChanged event) async* {
+  Stream<ShiftsState> _mapShiftsShiftEndChangedToState(
+      ShiftsEndTimeChanged event) async* {
     if (state is ShiftCreatedOrEdited) {
-      yield (state as ShiftCreatedOrEdited)
-          .copyWith(shiftEnd: event.shiftEnd);
+      yield (state as ShiftCreatedOrEdited).copyWith(shiftEnd: event.shiftEnd);
     }
   }
 
@@ -123,8 +139,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
   }
 
   // todo: move the dateEvents/shifts to their own repository
-  Stream<ShiftsState> _mapAddShiftAsDateEventToState(
-      ShiftAsDateEventAdded event) async* {
+  Stream<ShiftsState> _mapUploadDateEventToState(
+      UploadDateEventAdded event) async* {
     //! what happens to the state? In this case I do not have Event -> State
     _dateEventsRepository.addOrUpdateDateEvent(event.dateEvent);
   }
@@ -140,6 +156,30 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
           (designations as DesignationsLoaded).designationsObj.designations,
       currentDesignation: 'open',
       shiftDate: event.shiftDate,
+      employeeSpecific: false,
+    );
+  }
+
+  Stream<ShiftsState> _mapNewShiftEmployeeSpecificCreatedToState(
+      NewShiftEmployeeSpecificCreated event) async* {
+    yield ShiftCreatedOrEdited(
+      //! in this case I only have one designation per employee
+      //! and I show the first designation
+      currentDesignation: event.employee.designations[0],
+      designations: event.employee.designations,
+      shiftDate: event.shiftDate,
+      currentEmployee: event.employee,
+      availableEmployees: [event.employee],
+      employeeSpecific: true,
+    );
+  }
+  
+  Stream<ShiftsState> _mapNewDayOffCreatedToState(
+      NewDayOffCreated event) async* {
+    yield CreatedOrEditedDayOff(
+      dayOffDate: event.dayOffDate,
+      employeeId: event.employeeId,
+      employeeName: event.employeeName,
     );
   }
 
@@ -150,16 +190,15 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
         .availableEmployeesForGivenDesignation(
             event.currentDesignation, event.shiftDate)
         .listen((employees) => add(ShiftDataPushed(
-              availableEmployees: employees,
-              currentDesignation: event.currentDesignation,
-              currentEmployee: event.currentEmployee,
-              shiftDate: event.shiftDate,
-              shiftStart: event.shiftStart,
-              shiftEnd: event.shiftEnd,
-              description: event.description,
-              id: event.id,
-              oldEmployee: event.oldEmployee
-            )));
+            availableEmployees: employees,
+            currentDesignation: event.currentDesignation,
+            currentEmployee: event.currentEmployee,
+            shiftDate: event.shiftDate,
+            shiftStart: event.shiftStart,
+            shiftEnd: event.shiftEnd,
+            description: event.description,
+            id: event.id,
+            oldEmployee: event.oldEmployee)));
   }
 
   Stream<ShiftsState> _mapPassShiftDataToState(ShiftDataPushed event) async* {
@@ -167,18 +206,17 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
         .firstWhere((state) => state is DesignationsLoaded);
 
     yield ShiftCreatedOrEdited(
-      designations:
-          (designations as DesignationsLoaded).designationsObj.designations,
-      currentDesignation: event.currentDesignation,
-      currentEmployee: event.currentEmployee,
-      availableEmployees: event.availableEmployees,
-      shiftDate: event.shiftDate,
-      description: event.description,
-      shiftEnd: event.shiftEnd,
-      shiftStart: event.shiftStart,
-      id: event.id,
-      oldEmployee: event.oldEmployee
-    );
+        designations:
+            (designations as DesignationsLoaded).designationsObj.designations,
+        currentDesignation: event.currentDesignation,
+        currentEmployee: event.currentEmployee,
+        availableEmployees: event.availableEmployees,
+        shiftDate: event.shiftDate,
+        description: event.description,
+        shiftEnd: event.shiftEnd,
+        shiftStart: event.shiftStart,
+        id: event.id,
+        oldEmployee: event.oldEmployee);
   }
 
   @override
@@ -188,6 +226,4 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     _dateEventsSubscription?.cancel();
     return super.close();
   }
-
-
 }

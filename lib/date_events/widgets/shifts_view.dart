@@ -4,7 +4,7 @@ import 'package:date_events_repository/date_events_repository.dart';
 import 'package:snapshot_test/date_events/blocs/date_events.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:snapshot_test/calendar/calendar_widget.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_date_event.dart';
+import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 
 class ShiftsView extends StatelessWidget {
   static const String screenId = 'shifts_view';
@@ -47,7 +47,7 @@ class ShiftsView extends StatelessWidget {
 
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return AddEditDateEvent(
+                  return AddEditShift(
                     daySelected: shiftCalendarSelectedDay,
                     isShift: true,
                     isEditing: false,

@@ -7,7 +7,6 @@ import 'package:snapshot_test/core/simple_bloc_delegate.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 import 'package:snapshot_test/employee/screens/add_edit_employee.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
-import 'package:snapshot_test/date_events/screens/add_edit_shift.dart';
 import 'package:snapshot_test/core/screens/home_screen.dart';
 import 'package:snapshot_test/core/screens/splash_screen.dart';
 import 'package:snapshot_test/tabs/blocs/tab.dart';

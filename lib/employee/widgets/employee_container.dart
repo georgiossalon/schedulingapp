@@ -13,7 +13,8 @@ class EmployeeContainer extends StatelessWidget {
   final Employee employee;
   final BuildContext scaffoldContext;
 
-  const EmployeeContainer({Key key, this.employee, this.scaffoldContext}) : super(key: key);
+  const EmployeeContainer({Key key, this.employee, this.scaffoldContext})
+      : super(key: key);
 
   showSnackBar(context, deletedEmployee) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -22,7 +23,8 @@ class EmployeeContainer extends StatelessWidget {
       action: SnackBarAction(
         label: 'UNDO',
         onPressed: () {
-          BlocProvider.of<EmployeesBloc>(context).add(RedoEmployee(deletedEmployee));
+          BlocProvider.of<EmployeesBloc>(context)
+              .add(RedoEmployee(deletedEmployee));
         },
       ),
     ));
@@ -80,18 +82,22 @@ class EmployeeContainer extends StatelessWidget {
                 children: <Widget>[
                   //Availability
                   Expanded(
-                                      child: Container(
+                    child: Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
                           // ! is this the right way to use the DateEventBloc Here??
-                          //! also the number 2 is the default and should be changed
-                          BlocProvider.of<DateEventsBloc>(context).add(LoadAllDateEventsForEmployeeForXWeeks(employee.id, 2));
+                          //! also the number 2 is the default and should be a variable
+                          BlocProvider.of<DateEventsBloc>(context).add(
+                              LoadAllDateEventsForEmployeeForXWeeks(
+                                  employee.id, 2));
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                                return EmployeeDateEventScreen(employee: employee,);
-                              }));
+                            return EmployeeDateEventScreen(
+                              employee: employee,
+                            );
+                          }));
                         },
                         color: Colors.blueGrey.shade400,
                         shape: RoundedRectangleBorder(
@@ -105,7 +111,7 @@ class EmployeeContainer extends StatelessWidget {
                   ),
                   // Edit
                   Expanded(
-                                      child: Container(
+                    child: Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
@@ -122,15 +128,14 @@ class EmployeeContainer extends StatelessWidget {
                                 hiringDate,
                                 busyMap,
                               ) {
-                                BlocProvider.of<EmployeesBloc>(context)
-                                    .add(UpdateEmployee(employee.copyWith(
-                                      designations: designations,
-                                      email: email,
-                                      hiringDate: hiringDate,
-                                      name: employeeName,
-                                      salary: salary,
-                                      weeklyHours: weeklyHours
-                                    )));
+                                BlocProvider.of<EmployeesBloc>(context).add(
+                                    UpdateEmployee(employee.copyWith(
+                                        designations: designations,
+                                        email: email,
+                                        hiringDate: hiringDate,
+                                        name: employeeName,
+                                        salary: salary,
+                                        weeklyHours: weeklyHours)));
                               },
                               isEditing: true,
                               employee: employee,
@@ -149,12 +154,13 @@ class EmployeeContainer extends StatelessWidget {
                   ),
                   // Delete
                   Expanded(
-                                      child: Container(
+                    child: Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(10.0),
                       child: FlatButton(
                         onPressed: () {
-                          BlocProvider.of<EmployeesBloc>(context).add(DeleteEmployee(employee));
+                          BlocProvider.of<EmployeesBloc>(context)
+                              .add(DeleteEmployee(employee));
                           Scaffold.of(scaffoldContext).hideCurrentSnackBar();
                           showSnackBar(scaffoldContext, employee);
                         },

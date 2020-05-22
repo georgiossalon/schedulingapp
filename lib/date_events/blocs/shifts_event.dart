@@ -1,6 +1,6 @@
+import 'package:date_events_repository/date_events_repository.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:date_events_repository/date_events_repository.dart';
 import 'package:meta/meta.dart';
 
 abstract class ShiftsEvent extends Equatable {
@@ -84,8 +84,79 @@ class NewShiftCreated extends ShiftsEvent {
 
   @override
   String toString() {
-  return 'NewShiftCreated: { shiftDate: $shiftDate }';
+    return 'NewShiftCreated: { shiftDate: $shiftDate }';
+  }
+}
+
+class NewShiftEmployeeSpecificCreated extends ShiftsEvent {
+  final DateTime shiftDate;
+  final Employee employee;
+
+  NewShiftEmployeeSpecificCreated({
+    this.shiftDate,
+    this.employee,
+  });
+
+  @override
+  List<Object> get props => [shiftDate, employee];
+
+  @override
+  String toString() {
+    return 'NewShiftEmployeeSpecificCreated: { shiftDate: $shiftDate, employee: $employee } ';
+  }
+}
+
+class NewDayOffCreated extends ShiftsEvent {
+  final DateTime dayOffDate;
+  final String employeeId;
+  final String employeeName;
+
+  NewDayOffCreated({
+    this.dayOffDate,
+    this.employeeId,
+    this.employeeName
+  });
+
+  @override
+  List<Object> get props => [dayOffDate, employeeId, employeeName];
+
+  @override
+  String toString() {
+  return 'NewDayOffCreated: dayOffDate: $dayOffDate, employee: $employeeId, employeeName: $employeeName } ';
    }
+}
+
+class DayOffEdited extends ShiftsEvent {
+  final DateTime dayOffDate;
+  final String employeeId;
+  final String id;
+  final String description;
+  final String reason = 'Day Off';
+
+  DayOffEdited({this.dayOffDate, this.employeeId, this.id, this.description});
+
+  @override
+  List<Object> get props => [dayOffDate, employeeId, id, description];
+
+  @override
+  String toString() {
+    return 'DayOffEdited(dayOffDate: $dayOffDate, employeeId: $employeeId, id: $id, description: $description, reason: $reason)';
+  }
+
+  DayOffEdited copyWith({
+    DateTime dayOffDate,
+    Employee employeeId,
+    String id,
+    String description,
+    String reason,
+  }) {
+    return DayOffEdited(
+      dayOffDate: dayOffDate ?? this.dayOffDate,
+      employeeId: employeeId ?? this.employeeId,
+      id: id ?? this.id,
+      description: description ?? this.description,
+    );
+  }
 }
 
 class ShiftEdited extends ShiftsEvent {
@@ -121,10 +192,10 @@ class ShiftEdited extends ShiftsEvent {
         oldEmployee,
       ];
 
-      @override
-      String toString() {
-      return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate, id: $id, oldEmployee: $oldEmployee }';
-       }
+  @override
+  String toString() {
+    return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate, id: $id, oldEmployee: $oldEmployee }';
+  }
 }
 
 class AvailableEmployeesForDesignationFetched extends ShiftsEvent {
@@ -193,10 +264,10 @@ class ShiftDataPushed extends ShiftsEvent {
   }
 }
 
-class ShiftAsDateEventAdded extends ShiftsEvent {
+class UploadDateEventAdded extends ShiftsEvent {
   final DateEvent dateEvent;
 
-  ShiftAsDateEventAdded({@required this.dateEvent});
+  UploadDateEventAdded({@required this.dateEvent});
 
   @override
   List<Object> get props => [dateEvent];
@@ -218,6 +289,20 @@ class ShiftsDescriptionChanged extends ShiftsEvent {
   @override
   String toString() {
     return 'ShiftsDescriptionChanged: { $description }';
+  }
+}
+
+class DayOffDescriptionChanged extends ShiftsEvent {
+  final String description;
+
+  DayOffDescriptionChanged({this.description});
+
+  @override
+  List<Object> get props => [description];
+
+  @override
+  String toString() {
+    return 'DayOffDescriptionChanged: { $description }';
   }
 }
 

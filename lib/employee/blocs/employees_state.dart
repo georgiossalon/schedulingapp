@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:employees_repository/employees_repository.dart';
-import 'package:snapshot_test/employee/blocs/employees.dart';
 
 abstract class EmployeesState extends Equatable {
   const EmployeesState();

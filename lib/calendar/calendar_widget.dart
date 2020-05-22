@@ -228,13 +228,13 @@ class _CalendarState extends State<CalendarWidget> {
                     ? widget.map[utcTo12oclock(_calendarController.selectedDay)]
                         [index]
                     : null;
-                //todo if I want to reuse this Widget I have to specify
-                //todo... if I have a shift or an other status
                 return widget.isShift
                     ? ShiftCalendarContainer(
                         dateEvent: event,
                         scaffoldContext: context,
                       )
+                    // todo On the availability screen I have this Widget
+                    //todo... do I need this or can I reuse the upper one?
                     : DateEventCalendarContainer(
                         dateEvent: event,
                         scaffoldContext: context,

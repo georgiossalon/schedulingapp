@@ -1,7 +1,7 @@
+import 'package:date_events_repository/date_events_repository.dart';
 import 'package:employees_repository/employees_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:date_events_repository/date_events_repository.dart';
 
 abstract class ShiftsState extends Equatable {
   const ShiftsState();
@@ -41,6 +41,7 @@ class ShiftCreatedOrEdited extends ShiftsState {
   final String reason = 'shift';
   final String id;
   final Employee oldEmployee;
+  final bool employeeSpecific;
 
   const ShiftCreatedOrEdited({
     @required this.designations,
@@ -53,6 +54,7 @@ class ShiftCreatedOrEdited extends ShiftsState {
     this.shiftDate,
     this.id,
     this.oldEmployee,
+    this.employeeSpecific,
   });
 
 
@@ -70,11 +72,12 @@ class ShiftCreatedOrEdited extends ShiftsState {
         reason,
         id,
         oldEmployee,
+        employeeSpecific,
       ];
 
   @override
   String toString() =>
-      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason, id: $id, oldEmployee: $oldEmployee }';
+      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason, id: $id, oldEmployee: $oldEmployee, employeeSpecific: $employeeSpecific }';
 
   ShiftCreatedOrEdited copyWith({
     String currentDesignation,
@@ -99,6 +102,66 @@ class ShiftCreatedOrEdited extends ShiftsState {
       shiftDate: shiftDate ?? this.shiftDate,
       id: id ?? this.id,
       oldEmployee: oldEmployee ?? this.oldEmployee,
+    );
+  }
+}
+
+// class CreatedDayOff extends ShiftsState {
+//   final DateTime dayOffDate;
+//   final String employeeId;
+
+//   CreatedDayOff({this.dayOffDate, this.employeeId});
+
+//   @override
+//   List<Object> get props => [dayOffDate, employeeId];
+
+//   @override
+//   String toString() {
+//     return 'CreatedDayOff(dayOffDate: $dayOffDate, employeeId: $employeeId)';
+//   }
+
+//   CreatedDayOff copyWith({
+//     DateTime dayOffDate,
+//     String employeeId,
+//   }) {
+//     return CreatedDayOff(
+//       dayOffDate: dayOffDate ?? this.dayOffDate,
+//       employeeId: employeeId ?? this.employeeId,
+//     );
+//   }
+// }
+
+class CreatedOrEditedDayOff extends ShiftsState {
+  final DateTime dayOffDate;
+  final String id;
+  final String employeeId;
+  final String employeeName;
+  final String description;
+  final String reason = 'Day Off';
+
+  CreatedOrEditedDayOff({this.dayOffDate, this.id, this.employeeId, this.employeeName, this.description});
+
+  @override
+  List<Object> get props => [dayOffDate, id, employeeId, employeeName, description];
+
+  @override
+  String toString() {
+    return 'EditedDayOff(dayOffDate: $dayOffDate, id: $id, employeeId: $employeeId, employeeName: $employeeName, description: $description)';
+  }
+
+  CreatedOrEditedDayOff copyWith({
+    DateTime dayOffDate,
+    String id,
+    String employeeId,
+    String employeeName,
+    String description,
+  }) {
+    return CreatedOrEditedDayOff(
+      dayOffDate: dayOffDate ?? this.dayOffDate,
+      id: id ?? this.id,
+      employeeId: employeeId ?? this.employeeId,
+      employeeName: employeeName ?? this.employeeName,
+      description: description ?? this.description,
     );
   }
 }
