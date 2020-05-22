@@ -12,9 +12,9 @@ import 'date_event_calendar_container.dart';
 
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;
-  bool isShift;
+  bool isShiftsView;
 
-  CalendarWidget({Key key, this.map, this.isShift}) : super(key: key);
+  CalendarWidget({Key key, this.map, this.isShiftsView}) : super(key: key);
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -110,7 +110,8 @@ class _CalendarState extends State<CalendarWidget> {
       initialSelectedDay: DateTime.now(),
       onDaySelected: (date, events) {
         setState(() {
-          widget.isShift
+          //! Rolly: How to get the clicked date for the different calendars?
+          widget.isShiftsView
               ? ShiftsView.shiftCalendarSelectedDay =
                   _calendarController.selectedDay
               : EmployeeDateEventScreen.employeeDateEventSelectedDay =
@@ -129,7 +130,7 @@ class _CalendarState extends State<CalendarWidget> {
           todayDayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: widget.isShift
+                color: widget.isShiftsView
                     ? Colors.teal.shade100
                     : dateColorAccordingToAction(date, true),
                 child: Text(
@@ -140,7 +141,7 @@ class _CalendarState extends State<CalendarWidget> {
           dayBuilder: (context, date, events) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(4.0),
-                color: widget.isShift
+                color: widget.isShiftsView
                     ? Colors.white24
                     : dateColorAccordingToAction(date, false),
                 child: Text(
@@ -228,17 +229,11 @@ class _CalendarState extends State<CalendarWidget> {
                     ? widget.map[utcTo12oclock(_calendarController.selectedDay)]
                         [index]
                     : null;
-                return widget.isShift
-                    ? ShiftCalendarContainer(
-                        dateEvent: event,
-                        scaffoldContext: context,
-                      )
-                    // todo On the availability screen I have this Widget
-                    //todo... do I need this or can I reuse the upper one?
-                    : DateEventCalendarContainer(
-                        dateEvent: event,
-                        scaffoldContext: context,
-                      );
+                return CalendarContainerEventCards(
+                  dateEvent: event,
+                  scaffoldContext: context,
+                  isShift: event.reason == 'shift' ? true : false,
+                );
               },
             ),
           ),

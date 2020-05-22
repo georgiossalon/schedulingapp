@@ -9,11 +9,12 @@ import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
 import 'package:date_events_repository/date_events_repository.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 
-class ShiftCalendarContainer extends StatelessWidget {
+class CalendarContainerEventCards extends StatelessWidget {
   final DateEvent dateEvent;
   final BuildContext scaffoldContext;
+  final bool isShift;
 
-  const ShiftCalendarContainer({Key key, this.dateEvent, this.scaffoldContext})
+  const CalendarContainerEventCards({Key key, this.dateEvent, this.scaffoldContext, this.isShift})
       : super(key: key);
 
   showSnackBar(context, deletedDateEvent) {
@@ -47,8 +48,10 @@ BlocProvider.of<EmployeesBloc>(context)
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blueGrey,
-      height: 65.0,
+      color: isShift
+          ? Colors.blueGrey
+          : Colors.red.shade100,
+      height: 85.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -56,6 +59,21 @@ BlocProvider.of<EmployeesBloc>(context)
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text(
+                    isShift
+                        ? 'Shift'
+                        : 'Day Off',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
+              Text('Description: ${dateEvent.description}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
+                  ),
               Row(
                 children: <Widget>[
                   Text(
@@ -81,11 +99,11 @@ BlocProvider.of<EmployeesBloc>(context)
                   ),
                 ],
               ),
-              Text(
-                'Designation: ${dateEvent.designation}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-                textAlign: TextAlign.left,
-              ),
+              // Text(
+              //   'Designation: ${dateEvent.designation}',
+              //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+              //   textAlign: TextAlign.left,
+              // ),
               Text(
                 'Employee: ${dateEvent.employeeName}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),

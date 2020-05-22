@@ -34,7 +34,7 @@ class ShiftsView extends StatelessWidget {
             ),
             body: CalendarWidget(
               map: map,
-              isShift: true,
+              isShiftsView: true,
             ),
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),

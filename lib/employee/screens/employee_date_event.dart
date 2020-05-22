@@ -51,7 +51,7 @@ class EmployeeDateEventScreen extends StatelessWidget {
               ),
               body: CalendarWidget(
                 map: dateEventListToCalendarMap(currentEmployeesDateEvents),
-                isShift: false,
+                isShiftsView: false,
               ),
               floatingActionButton: SpeedDial(
                 animatedIcon: AnimatedIcons.add_event,
