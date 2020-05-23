@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'entities/entities.dart';
 
 class FirebaseEmployeesRepository implements EmployeesRepository {
-// todo --
   static final _firestore = Firestore.instance;
   
   final CollectionReference _dateEventsCollection =

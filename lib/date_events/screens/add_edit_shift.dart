@@ -33,15 +33,17 @@ class _AddEditShiftState extends State<AddEditShift> {
   bool get isEditing => widget.isEditing;
   bool get isShift => widget.isShift;
 
-  //todo: When editing time the initial time is always the current Time!
-  //todo... I might have to change _start/_end time data type from String
-  Future<TimeOfDay> selectTime(BuildContext context) async {
-    final TimeOfDay _picked =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now()
-            // initialTime: selected == null
-            //                 ? TimeOfDay.now()
-            //                 : selected,
-            );
+  Future<TimeOfDay> selectTime(
+      BuildContext context, String selectedTime) async {
+        TimeOfDay hSelectedTime = 
+          TimeOfDay(hour:int.parse(selectedTime.split(":")[0]),minute: int.parse(selectedTime.split(":")[1]));
+    final TimeOfDay _picked = await showTimePicker(
+      context: context, 
+      initialTime: hSelectedTime == null 
+          ? TimeOfDay.now()
+          : hSelectedTime,
+    );
+
     if (_picked != null) {
       return _picked;
     } else {
@@ -67,7 +69,6 @@ class _AddEditShiftState extends State<AddEditShift> {
                   );
                 }).toList(),
                 onChanged: (String newEmployeeName) {
-
                   ///! Rolly
                   //! How should I do it better?
                   //! I somehow need to get the employee from his name
@@ -196,7 +197,7 @@ class _AddEditShiftState extends State<AddEditShift> {
             child: Text(
                 state.shiftStart == null ? 'Select Start' : state.shiftStart),
             onPressed: () async {
-              TimeOfDay timeOfDay = await selectTime(context);
+              TimeOfDay timeOfDay = await selectTime(context, state.shiftStart);
               if (timeOfDay != null) {
                 BlocProvider.of<ShiftsBloc>(context).add(ShiftsStartTimeChanged(
                   shiftStart: '${timeOfDay.hour}:${timeOfDay.minute}',
@@ -218,7 +219,7 @@ class _AddEditShiftState extends State<AddEditShift> {
           return RaisedButton(
             child: Text(state.shiftEnd == null ? 'Select End' : state.shiftEnd),
             onPressed: () async {
-              TimeOfDay timeOfDay = await selectTime(context);
+              TimeOfDay timeOfDay = await selectTime(context, state.shiftEnd);
               if (timeOfDay != null) {
                 BlocProvider.of<ShiftsBloc>(context).add(ShiftsEndTimeChanged(
                   shiftEnd: '${timeOfDay.hour}:${timeOfDay.minute}',
@@ -253,7 +254,7 @@ class _AddEditShiftState extends State<AddEditShift> {
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Form(
-            //! Rolly: validation method with bloc. Also why need autovalidate?
+              //! Rolly: validation method with bloc. Also why need autovalidate?
               autovalidate: true,
               key: _formKey,
               child: ListView(
@@ -316,22 +317,28 @@ class _AddEditShiftState extends State<AddEditShift> {
                     //! the dateEvent from its busyMap
                     // remove the dateEvent from the old employees busy_map
                     if (state.oldEmployee != null) {
-                      if (state.oldEmployee.id != employeeDateEvent.employeeId) {
-                        BlocProvider.of<EmployeesBloc>(context)
-                            .add(EmployeesBusyMapDateEventRemoved(oldEmployeeId: state.oldEmployee.id, dateTime: dateEvent.dateEvent_date));
+                      if (state.oldEmployee.id !=
+                          employeeDateEvent.employeeId) {
+                        BlocProvider.of<EmployeesBloc>(context).add(
+                            EmployeesBusyMapDateEventRemoved(
+                                oldEmployeeId: state.oldEmployee.id,
+                                dateTime: dateEvent.dateEvent_date));
                       }
                     }
                     // add in employees busy_map
                     if (dateEvent.employeeId != null) {
-                      BlocProvider.of<EmployeesBloc>(context)
-                          .add(UpdateEmployeeBusyMap(employeeDateEvent: employeeDateEvent));
+                      BlocProvider.of<EmployeesBloc>(context).add(
+                          UpdateEmployeeBusyMap(
+                              employeeDateEvent: employeeDateEvent));
                     }
                     Navigator.pop(context);
                   }
                 },
               );
             } else {
-              return Container(child: Text('ups'),);
+              return Container(
+                child: Text('ups'),
+              );
             }
           },
         ),

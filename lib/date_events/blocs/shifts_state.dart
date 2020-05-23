@@ -68,14 +68,6 @@ class ShiftCreatedOrEdited extends ShiftsState {
         // if there are available employees show them
         this.availableEmployees = addOldEmployeeToTheAvailableEmployees(
             availableEmployees, oldEmployee),
-        // [Employee(name: 'open')] +
-        //     // add the old employee only if his name is not open
-        //     (oldEmployee != null
-        //       ? oldEmployee.name != 'open'
-        //         ?[oldEmployee]
-        //         :[]
-        //       : []) +
-        //     (availableEmployees != null ? availableEmployees : []),
         this.employeeSpecific = employeeSpecific;
 
   // const ShiftCreatedOrEdited({
@@ -92,9 +84,6 @@ class ShiftCreatedOrEdited extends ShiftsState {
   //   this.employeeSpecific,
   // });
 
-  //todo: add the old employee if not null in the availability List
-  //todo... so that he is always visible in the dropdown. Thus, I will also avoid errors
-  //! this should only work when oldEmployee != null
   static List<Employee> addOldEmployeeToTheAvailableEmployees(
       List<Employee> availableEmployees, Employee oldEmployee) {
     bool openNotInList = true;
@@ -128,10 +117,12 @@ class ShiftCreatedOrEdited extends ShiftsState {
             availableEmployees.add(oldEmployee);
             return availableEmployees;
           } else {
+            // else return the list without the old employee
             return availableEmployees;
           }
         }
       } else {
+        // since there is no old employee return the list
         return availableEmployees;
       }
     } else {
