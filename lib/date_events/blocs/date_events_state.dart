@@ -37,32 +37,31 @@ class ShiftDateEventsLoaded extends DateEventsState {
 
 class DateEventsNotLoaded extends DateEventsState {}
 
-class ShiftUpdated extends DateEventsState {
-  final String currentDesignation;
-  final Employee currentEmployee;
-  final List<Employee> availableEmployeesForThisDesignation;
-  final List<String> designations;
+// class ShiftUpdated extends DateEventsState {
+//   final String currentDesignation;
+//   final Employee currentEmployee;
+//   final List<Employee> availableEmployeesForThisDesignation;
+//   final List<String> designations;
 
-  const ShiftUpdated(
-    this.currentDesignation,
-    this.currentEmployee,
-    //todo: merge the current employee with the employees List into one
-    this.availableEmployeesForThisDesignation,
-    this.designations,
-  );
+//   const ShiftUpdated(
+//     this.currentDesignation,
+//     this.currentEmployee,
+//     this.availableEmployeesForThisDesignation,
+//     this.designations,
+//   );
 
-  @override
-  List<Object> get props => [
-        currentDesignation,
-        currentEmployee,
-        availableEmployeesForThisDesignation,
-        designations,
-      ];
+//   @override
+//   List<Object> get props => [
+//         currentDesignation,
+//         currentEmployee,
+//         availableEmployeesForThisDesignation,
+//         designations,
+//       ];
 
-  @override
-  String toString() => 
-    'ShiftUpdated : { currentDesignation: $currentDesignation, currentEmployee: $currentEmployee, availableEmployeesForThisDesignation: $availableEmployeesForThisDesignation, designations: $designations' ;
-}
+//   @override
+//   String toString() => 
+//     'ShiftUpdated : { currentDesignation: $currentDesignation, currentEmployee: $currentEmployee, availableEmployeesForThisDesignation: $availableEmployeesForThisDesignation, designations: $designations' ;
+// }
 
 class DesignationsForShiftLoaded extends DateEventsState {}
 

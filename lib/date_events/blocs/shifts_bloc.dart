@@ -112,7 +112,7 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
                 // then I have to update the State
                 availableEmployees: employees,
                 currentDesignation: event.designation,
-                currentEmployee: null, // reset employee on designation change
+                currentEmployee: Employee(name: 'open'), // reset employee on designation change
                 shiftDate: currentState.shiftDate,
                 description: currentState.description,
                 shiftEnd: currentState.shiftEnd,
@@ -157,6 +157,7 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
       currentDesignation: 'open',
       shiftDate: event.shiftDate,
       employeeSpecific: false,
+      currentEmployee: Employee(name: 'open'),
     );
   }
 

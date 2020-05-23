@@ -24,7 +24,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     return _employeeCollection.add(employee.toEntity().toDocument());
   }
 
-  // todo: Pass only the id as a String insted of the whole object
+
   @override
   Future<void> deleteEmployee(Employee employee) {
     return _employeeCollection.document(employee.id).delete();
@@ -80,7 +80,7 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   // @override
   // Future<void> addOrUpdateDateEvent(DateEvent dateEvent) {
-  //   //todo: check if when dateEvent.id == null a new event is created, otherwise updated
+  
   //   return _dateEventsCollection.document(dateEvent.id).setData(dateEvent.toEntity().toDocument());
   // }
 

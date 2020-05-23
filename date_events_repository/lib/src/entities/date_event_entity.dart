@@ -37,9 +37,6 @@ class DateEventEntity extends Equatable {
   //   };
   // }
 
-  //todo implement two methods one for a shift and one for DayOff
-  //! be careful! I do not know if the group querry is going to work then
-  //! since some fields are going to be missing
 
   Map<String, Object> toDocument() {
     return {

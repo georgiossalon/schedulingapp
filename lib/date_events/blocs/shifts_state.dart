@@ -26,8 +26,6 @@ class LoadedShifts extends ShiftsState {
 
 class ShiftsNotLoaded extends ShiftsState {}
 
-//! the danger may be when I am creating a new shift after editing one
-//! that first the old data will get loaded and later the "new"
 class ShiftCreatedOrEdited extends ShiftsState {
   final String currentDesignation;
   final List<String> designations;
@@ -43,20 +41,116 @@ class ShiftCreatedOrEdited extends ShiftsState {
   final Employee oldEmployee;
   final bool employeeSpecific;
 
-  const ShiftCreatedOrEdited({
-    @required this.designations,
-    @required this.currentDesignation,
-    this.currentEmployee,
-    this.availableEmployees,
-    this.description,
-    this.shiftStart,
-    this.shiftEnd,
-    this.shiftDate,
-    this.id,
-    this.oldEmployee,
-    this.employeeSpecific,
-  });
+  ShiftCreatedOrEdited({
+    String currentDesignation,
+    List<String> designations,
+    Employee currentEmployee,
+    List<Employee> availableEmployees,
+    String description,
+    String shiftStart,
+    String shiftEnd,
+    DateTime shiftDate,
+    String id,
+    Employee oldEmployee,
+    bool employeeSpecific,
+  })  : this.currentDesignation = currentDesignation,
+        this.designations = designations,
+        this.currentEmployee = currentEmployee,
+        this.description = description,
+        this.shiftStart = shiftStart,
+        this.shiftEnd = shiftEnd,
+        this.shiftDate = shiftDate,
+        this.id = id,
+        this.oldEmployee = oldEmployee,
+        //! Rolly:
+        // always show the 'open' option
+        // if an employee is getting edited add him to the list for user help
+        // if there are available employees show them
+        this.availableEmployees = addOldEmployeeToTheAvailableEmployees(
+            availableEmployees, oldEmployee),
+        // [Employee(name: 'open')] +
+        //     // add the old employee only if his name is not open
+        //     (oldEmployee != null
+        //       ? oldEmployee.name != 'open'
+        //         ?[oldEmployee]
+        //         :[]
+        //       : []) +
+        //     (availableEmployees != null ? availableEmployees : []),
+        this.employeeSpecific = employeeSpecific;
 
+  // const ShiftCreatedOrEdited({
+  //   @required this.designations,
+  //   @required this.currentDesignation,
+  //   this.currentEmployee,
+  //   this.availableEmployees,
+  //   this.description,
+  //   this.shiftStart,
+  //   this.shiftEnd,
+  //   this.shiftDate,
+  //   this.id,
+  //   this.oldEmployee,
+  //   this.employeeSpecific,
+  // });
+
+  //todo: add the old employee if not null in the availability List
+  //todo... so that he is always visible in the dropdown. Thus, I will also avoid errors
+  //! this should only work when oldEmployee != null
+  static List<Employee> addOldEmployeeToTheAvailableEmployees(
+      List<Employee> availableEmployees, Employee oldEmployee) {
+    bool openNotInList = true;
+    // if the list is not empty
+    // check if the 'open' employee is included
+    if (availableEmployees != null) {
+      for (Employee employee in availableEmployees) {
+        if (employee.name == 'open') {
+          openNotInList = false;
+          break;
+        }
+      }
+      // if open employee not included, then add him
+      if (openNotInList) {
+        availableEmployees.add(Employee(name: 'open'));
+      }
+      // if old employee is not empty
+      if (oldEmployee != null) {
+        // and he is not the 'open' employee then
+        if (oldEmployee.name != 'open') {
+          // then check if the oldEmployee is already in the list
+          bool hOldIsNotInTheList = true;
+          for (Employee employee in availableEmployees) {
+            if (employee.name == oldEmployee.name) {
+              hOldIsNotInTheList = false;
+              break;
+            }
+          }
+          // the old employee is not in the availableEmployees List thus add
+          if (hOldIsNotInTheList) {
+            availableEmployees.add(oldEmployee);
+            return availableEmployees;
+          } else {
+            return availableEmployees;
+          }
+        }
+      } else {
+        return availableEmployees;
+      }
+    } else {
+      // in case there are no available employees then
+      // add the 'open' employee
+      List<Employee> hAvailableEmployees = new List<Employee>();
+      hAvailableEmployees.add(Employee(name: 'open'));
+      // check if an old employee exists
+      if (oldEmployee != null) {
+        // and he is not the 'open' employee then add him
+        if (oldEmployee.name != 'open') {
+          hAvailableEmployees.add(oldEmployee);
+          return hAvailableEmployees;
+        }
+      } else {
+        return hAvailableEmployees;
+      }
+    }
+  }
 
   @override
   List<Object> get props => [
@@ -139,10 +233,16 @@ class CreatedOrEditedDayOff extends ShiftsState {
   final String description;
   final String reason = 'Day Off';
 
-  CreatedOrEditedDayOff({this.dayOffDate, this.id, this.employeeId, this.employeeName, this.description});
+  CreatedOrEditedDayOff(
+      {this.dayOffDate,
+      this.id,
+      this.employeeId,
+      this.employeeName,
+      this.description});
 
   @override
-  List<Object> get props => [dayOffDate, id, employeeId, employeeName, description];
+  List<Object> get props =>
+      [dayOffDate, id, employeeId, employeeName, description];
 
   @override
   String toString() {
@@ -177,5 +277,4 @@ class FetchedAvailableEmployeesForDesignation extends ShiftsState {
   @override
   String toString() =>
       'AvailableEmployeesForDesignationFetched: { $availableEmployees }';
-
 }

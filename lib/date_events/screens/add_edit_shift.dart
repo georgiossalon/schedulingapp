@@ -53,33 +53,27 @@ class _AddEditShiftState extends State<AddEditShift> {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
         if (state is ShiftCreatedOrEdited) {
-          Employee open = Employee(name: 'open');
-          List<Employee> hList = [open];
-          state.availableEmployees != null
-              ? hList.addAll(state.availableEmployees)
-              : '';
           return InputDecorator(
             decoration: InputDecoration(
               icon: Icon(FontAwesomeIcons.user),
               labelText: 'Employee',
             ),
             child: DropdownButtonHideUnderline(
-              // -- String choosing
               child: DropdownButton<String>(
-                // items: state.employees.map((Employee employee) {
-                items: hList.map((Employee employee) {
+                items: state.availableEmployees.map((Employee employee) {
                   return new DropdownMenuItem<String>(
                     value: employee.name,
                     child: Text(employee.name),
                   );
                 }).toList(),
                 onChanged: (String newEmployeeName) {
+
+                  ///! Rolly
+                  //! How should I do it better?
                   //! I somehow need to get the employee from his name
                   //! I am comparing names in order to get the employee
                   //! This will cause mistakes when having equally named Employees
-                  //! How should I do it better?
-
-                  for (Employee employee in hList) {
+                  for (Employee employee in state.availableEmployees) {
                     if (employee.name == newEmployeeName) {
                       BlocProvider.of<ShiftsBloc>(context)
                           .add(ShiftsEmployeeChanged(

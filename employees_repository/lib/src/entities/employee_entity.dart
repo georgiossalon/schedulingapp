@@ -27,7 +27,7 @@ class EmployeeEntity extends Equatable {
       this.name,
       this.salary,
       this.weeklyHours,
-      this.busyMap} //todo map the parameters
+      this.busyMap} 
       );
 
   // @override
@@ -154,7 +154,7 @@ class EmployeeEntity extends Equatable {
         name: snap.data['name'],
         salary: snap.data['salary'],
         weeklyHours: snap.data['weeklyHours'],
-        busyMap: changeMapKeyForObject(snap.data['busy_map']) //todo probably have to transform the keys String to DateTime
+        busyMap: changeMapKeyForObject(snap.data['busy_map']) 
         );
   }
 

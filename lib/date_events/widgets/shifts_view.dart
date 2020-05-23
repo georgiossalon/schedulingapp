@@ -43,6 +43,7 @@ class ShiftsView extends StatelessWidget {
                 
                 BlocProvider.of<ShiftsBloc>(context).add(NewShiftCreated(
                   shiftDate: shiftCalendarSelectedDay,
+                  
                 ));
 
                 Navigator.of(context)

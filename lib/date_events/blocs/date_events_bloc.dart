@@ -24,8 +24,6 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
       yield* _mapLoadDateEventsToState(event);
     } else if (event is AddDateEvent) {
       yield* _mapAddDateEventToState(event);
-    // else if (event is UpdateDateEvent) {
-    //   yield* _mapUpdateDateEvent(event);
     } else if (event is DeleteDateEvent) {
       yield* _mapDeleteDateEventToState(event);
     } else if (event is RedoDateEvent) {

@@ -14,7 +14,8 @@ class CalendarContainerEventCards extends StatelessWidget {
   final BuildContext scaffoldContext;
   final bool isShift;
 
-  const CalendarContainerEventCards({Key key, this.dateEvent, this.scaffoldContext, this.isShift})
+  const CalendarContainerEventCards(
+      {Key key, this.dateEvent, this.scaffoldContext, this.isShift})
       : super(key: key);
 
   showSnackBar(context, deletedDateEvent) {
@@ -27,19 +28,19 @@ class CalendarContainerEventCards extends StatelessWidget {
           BlocProvider.of<DateEventsBloc>(context)
               .add(RedoDateEvent(deletedDateEvent));
           // add in employees busy_map
-           EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
-                      designation: dateEvent.description,
-                      dateEvent_date: dateEvent.dateEvent_date,
-                      description: dateEvent.description,
-                      employeeId: dateEvent.employeeId,
-                      employeeName: dateEvent.employeeName,
-                      end_shift: dateEvent.end_shift,
-                      id: dateEvent.id,
-                      reason: dateEvent.reason,
-                      start_shift: dateEvent.start_shift,
-                    );
-BlocProvider.of<EmployeesBloc>(context)
-                          .add(UpdateEmployeeBusyMap(employeeDateEvent: employeeDateEvent));
+          EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
+            designation: dateEvent.description,
+            dateEvent_date: dateEvent.dateEvent_date,
+            description: dateEvent.description,
+            employeeId: dateEvent.employeeId,
+            employeeName: dateEvent.employeeName,
+            end_shift: dateEvent.end_shift,
+            id: dateEvent.id,
+            reason: dateEvent.reason,
+            start_shift: dateEvent.start_shift,
+          );
+          BlocProvider.of<EmployeesBloc>(context)
+              .add(UpdateEmployeeBusyMap(employeeDateEvent: employeeDateEvent));
         },
       ),
     ));
@@ -48,9 +49,7 @@ BlocProvider.of<EmployeesBloc>(context)
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isShift
-          ? Colors.blueGrey
-          : Colors.red.shade100,
+      color: isShift ? Colors.blueGrey : Colors.red.shade100,
       height: 85.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,20 +59,19 @@ BlocProvider.of<EmployeesBloc>(context)
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                    isShift
-                        ? 'Shift'
-                        : 'Day Off',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
-                    ),
-                  ),
-              Text('Description: ${dateEvent.description}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
-                    ),
-                  ),
+                isShift ? 'Shift' : 'Day Off',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),
+              ),
+              Text(
+                'Description: ${dateEvent.description}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),
+              ),
               Row(
                 children: <Widget>[
                   Text(
@@ -140,9 +138,13 @@ BlocProvider.of<EmployeesBloc>(context)
                   // hide previous snackbars and show only the current one
                   Scaffold.of(context).hideCurrentSnackBar();
                   showSnackBar(scaffoldContext, dateEvent);
-                  // delete from the employees busy_map
-                   BlocProvider.of<EmployeesBloc>(context)
-                            .add(EmployeesBusyMapDateEventRemoved(oldEmployeeId: dateEvent.employeeId, dateTime: dateEvent.dateEvent_date));
+                  // delete from the employees busy_map if not assigned to the open employee
+                  if (dateEvent.employeeName != 'open') {
+                    BlocProvider.of<EmployeesBloc>(context).add(
+                        EmployeesBusyMapDateEventRemoved(
+                            oldEmployeeId: dateEvent.employeeId,
+                            dateTime: dateEvent.dateEvent_date));
+                  }
                 },
               ),
               GestureDetector(
@@ -154,11 +156,10 @@ BlocProvider.of<EmployeesBloc>(context)
                   ),
                 ),
                 onTap: () {
-
-                    Employee currentEmployee = Employee(
-                      id: dateEvent.employeeId,
-                      name: dateEvent.employeeName,
-                    );
+                  Employee currentEmployee = Employee(
+                    id: dateEvent.employeeId,
+                    name: dateEvent.employeeName,
+                  );
                   BlocProvider.of<ShiftsBloc>(context).add(ShiftEdited(
                     currentEmployee: currentEmployee,
                     currentDesignation: dateEvent.designation,

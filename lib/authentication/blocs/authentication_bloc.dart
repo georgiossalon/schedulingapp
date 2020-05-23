@@ -28,6 +28,7 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
+    //!Rolly
     //todo: currently if a user has signed in once, he does not have to re sign in
     //todo... in the future I might want to change that
     final isSignedIn = await _userRepository.isSignedIn();

@@ -21,7 +21,7 @@ abstract class EmployeesRepository {
   Future<void> deleteEmployeesDateEventBusyMapElement(String oldEmployeeId, DateTime dateTime);
 
   // create a stream for a given employee
-  //todo only give id instead of the whole object
+  
   // Stream<List<DateEvent>> allDateEventsForGivenEmployee(String employeeId, int numOfWeeks, DateTime currentDate);
   
   // Stream<List<DateEvent>> allShiftDateEventsForXWeeks(int numOfWeeks, DateTime currentDate);
@@ -35,8 +35,7 @@ abstract class EmployeesRepository {
   // Future<void> redoDateEvent(DateEvent dateEvent);
 
   //designations 
-  //todo I need a page where the user will add designations
-  //todo... when creating an employee there will be a dropdown to choose from
+  
   // Future<List<Designation>> designations();
   Stream<Designations> designations();
 
