@@ -12,14 +12,12 @@ class AddEditShift extends StatefulWidget {
 
   final DateTime daySelected;
   final bool isEditing;
-  final bool isShift; //todo: remove this
   final DateEvent dateEvent;
 
   AddEditShift({
     Key key,
     this.daySelected,
     this.isEditing,
-    this.isShift,
     this.dateEvent,
   }) : super(key: key);
 
@@ -31,10 +29,11 @@ class _AddEditShiftState extends State<AddEditShift> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool get isEditing => widget.isEditing;
-  bool get isShift => widget.isShift;
+  // bool get isShift => widget.isShift;
 
   Future<TimeOfDay> selectTime(
       BuildContext context, String selectedTime) async {
+        // the shift time saved within the saved is of String type
         TimeOfDay hSelectedTime = 
           TimeOfDay(hour:int.parse(selectedTime.split(":")[0]),minute: int.parse(selectedTime.split(":")[1]));
     final TimeOfDay _picked = await showTimePicker(
@@ -174,10 +173,8 @@ class _AddEditShiftState extends State<AddEditShift> {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
         return TextFormField(
-          enabled: isShift ? false : true,
-          initialValue: isEditing
-              ? isShift ? 'shift' : widget.dateEvent.reason
-              : isShift ? 'shift' : '',
+          enabled: false,
+          initialValue: 'shift',
           autofocus: !isEditing,
           decoration: InputDecoration(hintText: 'Reason for the Event'),
           validator: (val) {
@@ -244,12 +241,9 @@ class _AddEditShiftState extends State<AddEditShift> {
               //check if editing first
               isEditing
                   // then check if it is a shift or another event
-                  ? isShift
                       ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                      : 'Edit Event on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                  : isShift
-                      ? 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                      : 'Add Event on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'),
+                      : 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                      ),
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -298,7 +292,7 @@ class _AddEditShiftState extends State<AddEditShift> {
                     // save this shift as dateEvent in firestore
                     BlocProvider.of<ShiftsBloc>(context)
                         .add(UploadDateEventAdded(dateEvent: dateEvent));
-                    //todo: -- adding the new event into the busy map
+                    
                     //! Rolly: Opinion
                     EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
                       designation: dateEvent.description,

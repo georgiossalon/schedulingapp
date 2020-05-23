@@ -178,9 +178,9 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   @override
   Future<void> addNewDesignation(Designations designationsObj) {
-    designationsObj.designations.add(designationsObj.currentDesignation);
+    // designationsObj.designations.add(designationsObj.currentDesignation);
     // the first designation has to be passed as a List element
-    return _designationCollection.add(
+    return _designationCollection.document(designationsObj.id).setData(
         DesignationEntity(designations: designationsObj.designations)
             .toDocument());
   }
@@ -191,13 +191,13 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
   }
 
 
-  @override
-  Future<void> updateDesignation(Designations designationsObj) {
-    designationsObj.designations.add(designationsObj.currentDesignation);
-    return _designationCollection
-        .document(designationsObj.id)
-        .updateData(designationsObj.toEntity().toDocument());
-  }
+  // @override
+  // Future<void> updateDesignation(Designations designationsObj) {
+  //   designationsObj.designations.add(designationsObj.currentDesignation);
+  //   return _designationCollection
+  //       .document(designationsObj.id)
+  //       .updateData(designationsObj.toEntity().toDocument());
+  // }
 
  
 }

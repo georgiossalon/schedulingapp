@@ -27,9 +27,11 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
       yield* _mapLoadDesignationsToState();
     } else if (event is AddDesignation) {
       yield* _mapAddDesignationToState(event);
-    } else if (event is UpdateDesignation) {
-      yield* _mapUpdateDesignationToState(event);
-    } else if (event is DeleteDesignation) {
+    } 
+    // else if (event is UpdateDesignation) {
+    //   yield* _mapUpdateDesignationToState(event);
+    // } 
+    else if (event is DeleteDesignation) {
       yield* _mapDeleteDesignationToState(event);
     } else if (event is DesignationsUpdated) {
       yield* _mapDesignationsUpdatedToState(event);
@@ -63,21 +65,18 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
 
   Stream<DesignationsState> _mapAddDesignationToState(
       AddDesignation event) async* {
-        // if the list within the designations object is empty, I do not have
-        // a document in firestore. Thus, I have to create a new one
-        // else update the document by adding the newly created designation
-        //todo perhaps I can avoid the if statement here?
-    if (event.designationsObj.designations.isEmpty) {
+       
+    // if (event.designationsObj.designations.isEmpty) {
       _employeesRepository.addNewDesignation(event.designationsObj);
-    } else {
-      _employeesRepository.updateDesignation(event.designationsObj);
-    }
+    // } else {
+    //   _employeesRepository.updateDesignation(event.designationsObj);
+    // }
   }
 
-  Stream<DesignationsState> _mapUpdateDesignationToState(
-      UpdateDesignation event) async* {
-    _employeesRepository.updateDesignation(event.designationsObj);
-  }
+  // Stream<DesignationsState> _mapUpdateDesignationToState(
+  //     UpdateDesignation event) async* {
+  //   _employeesRepository.updateDesignation(event.designationsObj);
+  // }
 
   Stream<DesignationsState> _mapDeleteDesignationToState(
       DeleteDesignation event) async* {

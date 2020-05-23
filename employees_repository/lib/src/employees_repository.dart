@@ -43,8 +43,6 @@ abstract class EmployeesRepository {
 
   Future<void> deleteDesignation(Designations designationObj);
 
-  Future<void> updateDesignation(Designations designationObj);
-
   // Stream<Employee> fetchTheOpenEmployee();
 
 }

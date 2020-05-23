@@ -24,10 +24,8 @@ class ShiftsView extends StatelessWidget {
                 ),
               ));
         } else if (state is ShiftDateEventsLoaded) {
-          //todo this should only load after the shift dateEvents are read from firestore
-          final shiftsList = state.dateEvents;
           Map<DateTime, List<DateEvent>> map =
-              ShiftsView.shiftListToCalendarEventMap(shiftsList);
+              ShiftsView.shiftListToCalendarEventMap(state.dateEvents);
           return Scaffold(
             appBar: AppBar(
               title: Text('Shifts'),
@@ -40,17 +38,14 @@ class ShiftsView extends StatelessWidget {
               child: Icon(Icons.add),
               backgroundColor: Colors.pink,
               onPressed: () {
-                
                 BlocProvider.of<ShiftsBloc>(context).add(NewShiftCreated(
                   shiftDate: shiftCalendarSelectedDay,
-                  
                 ));
 
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return AddEditShift(
                     daySelected: shiftCalendarSelectedDay,
-                    isShift: true,
                     isEditing: false,
                   );
                 }));
@@ -70,8 +65,6 @@ class ShiftsView extends StatelessWidget {
       List<DateEvent> shiftList) {
     Map<DateTime, List<DateEvent>> map = {};
     for (int i = 0; i < shiftList.length; i++) {
-      //todo maybe map dateEvent to a shift object?
-      //todo... it maybe though to much hustle to put it back to the DateEventBloc (add/edit/delete/)
       DateEvent shift = shiftList[i];
       DateTime shiftDateTime = shift.dateEvent_date;
       if (map[shiftDateTime] == null) {

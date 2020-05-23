@@ -72,7 +72,7 @@ class EmployeeDateEventScreen extends StatelessWidget {
                           return AddEditShift(
                             daySelected: employeeDateEventSelectedDay,
                             isEditing: false,
-                            isShift: true,
+                            // isShift: true,
                           );
                         }));
                       }),

@@ -56,16 +56,16 @@ class DeleteDesignation extends DesignationsEvent {
   String toString() => 'DeleteDesignation { designation: $designationObj }';
 }
 
-class UpdateDesignation extends DesignationsEvent {
-  final Designations designationsObj;
+// class UpdateDesignation extends DesignationsEvent {
+//   final Designations designationsObj;
 
-  const UpdateDesignation({
-    @required this.designationsObj,
-  });
+//   const UpdateDesignation({
+//     @required this.designationsObj,
+//   });
 
-  @override
-  List<Object> get props => [designationsObj];
+//   @override
+//   List<Object> get props => [designationsObj];
 
-  @override
-  String toString() => 'UpdateDesignation { designationsObj: $designationsObj }';
-}
+//   @override
+//   String toString() => 'UpdateDesignation { designationsObj: $designationsObj }';
+// }

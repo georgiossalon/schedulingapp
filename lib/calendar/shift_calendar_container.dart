@@ -176,7 +176,7 @@ class CalendarContainerEventCards extends StatelessWidget {
                     return AddEditShift(
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
-                      isShift: true,
+                      // isShift: true,
                       dateEvent: dateEvent,
                     );
                   }));
