@@ -10,8 +10,7 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
   // final DesignationsBloc _designationsBloc; // dependency
   // StreamSubscription _designationsSubscription;
 
-  DateEventsBloc(
-      {@required DateEventsRepository dateEventsRepository})
+  DateEventsBloc({@required DateEventsRepository dateEventsRepository})
       : assert(dateEventsRepository != null),
         _dateEventsRepository = dateEventsRepository;
 
@@ -37,7 +36,6 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
     }
   }
 
-
   // ! Load only when I ask. For this case I have to use an employee and the number of weeks
   Stream<DateEventsState> _mapLoadDateEventsToState(
       LoadAllDateEventsForEmployeeForXWeeks event) async* {
@@ -50,9 +48,15 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
 
   Stream<DateEventsState> _mapDateEventsLoadAllShiftsForXWeeksToState(
       LoadAllShiftsForXWeeks event) async* {
+    //take the 0 Hours of the current day
+    // this will be used to calculate the Monday of the current week
+    // and all shifts in Monday should be included, thus I want from 0 hours
+    DateTime hDateTime = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0);
+
     _dateEventsSubscription?.cancel();
     _dateEventsSubscription = _dateEventsRepository
-        .allShiftDateEventsForXWeeks(event.numOfWeeks, DateTime.now())
+        .allShiftDateEventsForXWeeks(event.numOfWeeks, hDateTime)
         .listen((dateEvents) => add(ShiftDateEventsUpdated(dateEvents)));
   }
 

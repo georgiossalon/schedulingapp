@@ -100,11 +100,11 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
   Widget _buildDesignationField(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state is DesignationsLoading) {
+        if (state.designationsObj == null) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is DesignationsLoaded) {
+        } else if (state.designationsObj.designations != null) {
           return Container(
             height: 70.0,
             decoration: BoxDecoration(
@@ -153,8 +153,11 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                           // I need this map to see which designations are
                           // assigned to an employee
                           Map<String, bool> hCheck = new Map<String, bool>();
-                          for (var i = 0; i < state.designationsObj.designations.length; i++) {
-                            hCheck[state.designationsObj.designations[i]] = false;
+                          for (var i = 0;
+                              i < state.designationsObj.designations.length;
+                              i++) {
+                            hCheck[state.designationsObj.designations[i]] =
+                                false;
                           }
                           if (_designations.isNotEmpty) {
                             // this means I am editing an employee and I have
@@ -163,11 +166,12 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                               hCheck[designation] = true;
                             }
                           }
-                          
+
                           showDialog(
                               context: context,
                               builder: (context) => DesignationDialog(
-                                    allDesignations: state.designationsObj.designations,
+                                    allDesignations:
+                                        state.designationsObj.designations,
                                     hChecked: hCheck,
                                     employeesDesignations: _designations,
                                     parent: this,
@@ -186,29 +190,10 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
               ),
             ),
           );
-          // return InputDecorator(
-          //   decoration: InputDecoration(
-          //     icon: Icon(FontAwesomeIcons.tasks),
-          //     labelText: 'Designation',
-          //   ),
-          //   child: DropdownButtonHideUnderline(
-          //     child: DropdownButton<String>(
-          //       items: state.designations.map((Designation designation) {
-          //         return new DropdownMenuItem<String>(
-          //           value: designation.designation,
-          //           child: Text(designation.designation),
-          //         );
-          //       }).toList(),
-          //       onChanged: (String newValue) {
-          //         setState(() {
-          //           _designation = newValue;
-          //         });
-          //       },
-          //       value: _designation,
-          //     ),
-          //   ),
-          // );
-
+        } else {
+          return Container(
+            child: Text('ups'),
+          );
         }
       },
     );
@@ -346,7 +331,7 @@ class _AddEditEmployeeState extends State<AddEditEmployee> {
                   _email,
                   _hiringDate,
                   _busyMap == null
-                      ? Map<DateTime,String>()
+                      ? Map<DateTime, String>()
                       : widget.employee.busyMap);
               Navigator.pop(context);
             }
@@ -399,20 +384,17 @@ class _DesignationDialogState extends State<DesignationDialog> {
                             textAlign: TextAlign.center,
                           ),
                           width: 90.0,
-                          color: widget
-                                  .hChecked[allDesignations[index]]
+                          color: widget.hChecked[allDesignations[index]]
                               ? Colors.green
                               : Colors.grey,
                         ),
                       )),
                       Expanded(
                         child: SwitchListTile(
-                            value: widget
-                                .hChecked[allDesignations[index]],
+                            value: widget.hChecked[allDesignations[index]],
                             onChanged: (bool value) {
                               setState(() {
-                                widget.hChecked[
-                                    allDesignations[index]] = value;
+                                widget.hChecked[allDesignations[index]] = value;
                               });
                             }),
                       )
@@ -452,22 +434,20 @@ class _DesignationDialogState extends State<DesignationDialog> {
             onPressed: () {
               // so that I update the code in the parent widget
               widget.parent.setState(() {
-
-              widget.hChecked.forEach((k, v) {
-                if (v == true) {
-                  // The chosen designations have to get added to the employees
-                  // designations set
-                  if (!widget.employeesDesignations.contains(k)) {
-                    widget.employeesDesignations.add(k);
+                widget.hChecked.forEach((k, v) {
+                  if (v == true) {
+                    // The chosen designations have to get added to the employees
+                    // designations set
+                    if (!widget.employeesDesignations.contains(k)) {
+                      widget.employeesDesignations.add(k);
+                    }
+                  } else {
+                    // remove the values if existant from the designation list
+                    if (widget.employeesDesignations.contains(k)) {
+                      widget.employeesDesignations.remove(k);
+                    }
                   }
-                } else {
-                  // remove the values if existant from the designation list
-                  if (widget.employeesDesignations.contains(k)) {
-                    widget.employeesDesignations.remove(k);
-                  }
-                  
-                }
-              });
+                });
               });
               Navigator.of(context).pop();
               //todo when clicking on set also the main widget should get rebuild

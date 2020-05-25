@@ -31,16 +31,17 @@ class _AddEditShiftState extends State<AddEditShift> {
   bool get isEditing => widget.isEditing;
   // bool get isShift => widget.isShift;
 
-  Future<TimeOfDay> selectTime(
+  static Future<TimeOfDay> selectTime(
       BuildContext context, String selectedTime) async {
-        // the shift time saved within the saved is of String type
-        TimeOfDay hSelectedTime = 
-          TimeOfDay(hour:int.parse(selectedTime.split(":")[0]),minute: int.parse(selectedTime.split(":")[1]));
+    // the shift time saved within the saved is of String type
+    TimeOfDay hSelectedTime = selectedTime == null
+        ? TimeOfDay.now()
+        : TimeOfDay(
+            hour: int.parse(selectedTime.split(":")[0]),
+            minute: int.parse(selectedTime.split(":")[1]));
     final TimeOfDay _picked = await showTimePicker(
-      context: context, 
-      initialTime: hSelectedTime == null 
-          ? TimeOfDay.now()
-          : hSelectedTime,
+      context: context,
+      initialTime: hSelectedTime == null ? TimeOfDay.now() : hSelectedTime,
     );
 
     if (_picked != null) {
@@ -50,68 +51,183 @@ class _AddEditShiftState extends State<AddEditShift> {
     }
   }
 
-  Widget _buildEmployeeDropdown() {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.pink,
+            title: Text(
+                //check if editing first
+                isEditing
+                    // then check if it is a shift or another event
+                    ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
+                    : 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'),
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Form(
+                //! Rolly: validation method with bloc. Also why need autovalidate?
+                autovalidate: true,
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    //! Rolly: How to pass the isEditing value down? 
+                    //! I can not use const for widget
+                    _ReasonField(
+                      isEditing: isEditing,
+                    ),
+                    _DescriptionField(
+                      isEditing: isEditing,
+                    ),
+                    const _DesignationDropdown(),
+                    const _EmployeeDropdown(),
+                    //!Rolly: how to use the selectTime method in from this classs
+                    const _StartShiftField(),
+                    const _EndShiftField(),
+                  ],
+                )),
+          ),
+          floatingActionButton:
+              FloatingActionButton(
+            tooltip: isEditing ? 'Save Changes' : 'Add Shift',
+            child: Icon(isEditing ? Icons.check : Icons.add),
+            backgroundColor: Colors.pink,
+            onPressed: () {
+          //! Rolly Opinion, using this instead of BlocBuilder<ShiftsBloc> to get state
+              var state =
+                  (context.bloc<ShiftsBloc>().state as ShiftCreatedOrEdited);
+              if (_formKey.currentState.validate()) {
+                _formKey.currentState.save();
+
+                DateEvent dateEvent = DateEvent(
+                  dateEvent_date: state.shiftDate,
+                  description: state.description,
+                  designation: state.currentDesignation,
+                  employeeId: state.currentEmployee != null
+                      ? state.currentEmployee.id
+                      : null,
+                  employeeName: state.currentEmployee != null
+                      ? state.currentEmployee.name
+                      : null,
+                  end_shift: state.shiftEnd,
+                  reason: state.reason,
+                  start_shift: state.shiftStart,
+                  id: state.id,
+                );
+
+                // save this shift as dateEvent in firestore
+                BlocProvider.of<ShiftsBloc>(context).add(UploadDateEventAdded(
+                  dateEvent: dateEvent,
+                  // oldEmployee: state.oldEmployee,
+                  // availableEmployees: state.availableEmployees,
+                  // currentEmployee: state.currentEmployee,
+                  // designationsList: state.designations,
+                ));
+
+                //! Rolly: Opinion
+                EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
+                  designation: dateEvent.description,
+                  dateEvent_date: dateEvent.dateEvent_date,
+                  description: dateEvent.description,
+                  employeeId: dateEvent.employeeId,
+                  employeeName: dateEvent.employeeName,
+                  end_shift: dateEvent.end_shift,
+                  id: dateEvent.id,
+                  reason: dateEvent.reason,
+                  start_shift: dateEvent.start_shift,
+                );
+                //! - currently I am saving all dateEvents into the busy_map of an employee
+                //! after a while I will be having too many of them
+                //! In addition, when I am editing shifts I should delete from the old employee
+                //! the dateEvent from its busyMap
+                // remove the dateEvent from the old employees busy_map
+                if (state.oldEmployee != null) {
+                  if (state.oldEmployee.id != employeeDateEvent.employeeId) {
+                    BlocProvider.of<EmployeesBloc>(context).add(
+                        EmployeesBusyMapDateEventRemoved(
+                            oldEmployeeId: state.oldEmployee.id,
+                            dateTime: dateEvent.dateEvent_date));
+                  }
+                }
+                // add in employees busy_map
+                if (dateEvent.employeeId != null) {
+                  BlocProvider.of<EmployeesBloc>(context).add(
+                      UpdateEmployeeBusyMap(
+                          employeeDateEvent: employeeDateEvent));
+                }
+                Navigator.pop(context);
+              }
+            },
+          )
+          // } else {
+          //   return Container(
+          //     child: Text('ups'),
+          //   );
+          // }
+          //   },
+          // ),
+          ),
+    );
+  }
+}
+
+class _DescriptionField extends StatelessWidget {
+  final bool isEditing;
+
+  const _DescriptionField({Key key, this.isEditing}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ShiftsBloc, ShiftsState>(builder: (context, state) {
+      if (state is ShiftCreatedOrEdited) {
+        return TextFormField(
+            initialValue: isEditing ? state.description : '',
+            decoration: InputDecoration(hintText: 'Description (optional)'),
+            onChanged: (value) {
+              BlocProvider.of<ShiftsBloc>(context).add(ShiftsDescriptionChanged(
+                description: value,
+              ));
+            },
+            onSaved: (value) {});
+      } else {
+        return Container(
+          child: Text('ups'),
+        );
+      }
+    });
+  }
+}
+
+class _ReasonField extends StatelessWidget {
+  final bool isEditing;
+
+  const _ReasonField({Key key, @required this.isEditing}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
-        if (state is ShiftCreatedOrEdited) {
-          return InputDecorator(
-            decoration: InputDecoration(
-              icon: Icon(FontAwesomeIcons.user),
-              labelText: 'Employee',
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                items: state.availableEmployees.map((Employee employee) {
-                  return new DropdownMenuItem<String>(
-                    value: employee.name,
-                    child: Text(employee.name),
-                  );
-                }).toList(),
-                onChanged: (String newEmployeeName) {
-                  ///! Rolly
-                  //! How should I do it better?
-                  //! I somehow need to get the employee from his name
-                  //! I am comparing names in order to get the employee
-                  //! This will cause mistakes when having equally named Employees
-                  for (Employee employee in state.availableEmployees) {
-                    if (employee.name == newEmployeeName) {
-                      BlocProvider.of<ShiftsBloc>(context)
-                          .add(ShiftsEmployeeChanged(
-                        employee: employee,
-                      ));
-                      //! should I avoid using such parameters? and only use Bloc
-                      break;
-                    }
-                  }
-                },
-                value: state.currentEmployee != null
-                    ? state.currentEmployee.name
-                    : 'open',
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            padding: EdgeInsets.all(5.0),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5.0),
-              child: Text(
-                'No Employee for this Designation',
-                style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            height: 40.0,
-          );
-        }
+        return TextFormField(
+          enabled: false,
+          initialValue: 'shift',
+          autofocus: !isEditing,
+          decoration: InputDecoration(hintText: 'Reason for the Event'),
+          validator: (val) {
+            return val.trim().isEmpty ? 'Please give a Reason' : null;
+          },
+          onSaved: (value) {},
+        );
       },
     );
   }
+}
 
-  Widget _buildDesignationField() {
+class _DesignationDropdown extends StatelessWidget {
+  const _DesignationDropdown({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
         if (state is ShiftCreatedOrEdited) {
@@ -148,75 +264,73 @@ class _AddEditShiftState extends State<AddEditShift> {
       },
     );
   }
+}
 
-  Widget _buildDescriptionField() {
-    return BlocBuilder<ShiftsBloc, ShiftsState>(builder: (context, state) {
-      if (state is ShiftCreatedOrEdited) {
-        return TextFormField(
-            initialValue: isEditing ? widget.dateEvent.description : '',
-            decoration: InputDecoration(hintText: 'Description (optional)'),
-            onChanged: (value) {
-              BlocProvider.of<ShiftsBloc>(context).add(ShiftsDescriptionChanged(
-                description: value,
-              ));
-            },
-            onSaved: (value) {});
-      } else {
-        return Container(
-          child: Text('ups'),
-        );
-      }
-    });
-  }
+class _EmployeeDropdown extends StatelessWidget {
+  const _EmployeeDropdown({Key key}) : super(key: key);
 
-  Widget _buildReasonField() {
-    return BlocBuilder<ShiftsBloc, ShiftsState>(
-      builder: (context, state) {
-        return TextFormField(
-          enabled: false,
-          initialValue: 'shift',
-          autofocus: !isEditing,
-          decoration: InputDecoration(hintText: 'Reason for the Event'),
-          validator: (val) {
-            return val.trim().isEmpty ? 'Please give a Reason' : null;
-          },
-          onSaved: (value) {},
-        );
-      },
-    );
-  }
-
-  Widget _buildStartShiftField() {
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
         if (state is ShiftCreatedOrEdited) {
-          return RaisedButton(
-            child: Text(
-                state.shiftStart == null ? 'Select Start' : state.shiftStart),
-            onPressed: () async {
-              TimeOfDay timeOfDay = await selectTime(context, state.shiftStart);
-              if (timeOfDay != null) {
-                BlocProvider.of<ShiftsBloc>(context).add(ShiftsStartTimeChanged(
-                  shiftStart: '${timeOfDay.hour}:${timeOfDay.minute}',
-                ));
-              } else {
-                //todo add parameter and use it for the validator
-              }
-            },
+          return InputDecorator(
+            decoration: InputDecoration(
+              icon: Icon(FontAwesomeIcons.user),
+              labelText: 'Employee',
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Employee>(
+                  items: state.availableEmployees.map((Employee employee) {
+                    return new DropdownMenuItem<Employee>(
+                      value: employee,
+                      child: Text(employee.name),
+                    );
+                  }).toList(),
+                  onChanged: (Employee employee) {
+                    BlocProvider.of<ShiftsBloc>(context)
+                        .add(ShiftsEmployeeChanged(
+                      employee: employee,
+                    ));
+                  },
+                  value: state.currentEmployee),
+            ),
+          );
+        } else {
+          return Container(
+            padding: EdgeInsets.all(5.0),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                'No Employee for this Designation',
+                style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            height: 40.0,
           );
         }
       },
     );
   }
+}
 
-  Widget _buildEndShiftField() {
+class _EndShiftField extends StatelessWidget {
+  const _EndShiftField({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ShiftsBloc, ShiftsState>(
       builder: (context, state) {
         if (state is ShiftCreatedOrEdited) {
           return RaisedButton(
             child: Text(state.shiftEnd == null ? 'Select End' : state.shiftEnd),
             onPressed: () async {
-              TimeOfDay timeOfDay = await selectTime(context, state.shiftEnd);
+              TimeOfDay timeOfDay =
+                  await _AddEditShiftState.selectTime(context, state.shiftEnd);
               if (timeOfDay != null) {
                 BlocProvider.of<ShiftsBloc>(context).add(ShiftsEndTimeChanged(
                   shiftEnd: '${timeOfDay.hour}:${timeOfDay.minute}',
@@ -226,117 +340,45 @@ class _AddEditShiftState extends State<AddEditShift> {
               }
             },
           );
+        } else {
+          return Container(
+            child: Text('ups'),
+          );
         }
       },
     );
   }
+}
+
+class _StartShiftField extends StatelessWidget {
+  const _StartShiftField({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.pink,
-          title: Text(
-              //check if editing first
-              isEditing
-                  // then check if it is a shift or another event
-                      ? 'Edit Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                      : 'Add Shift on ${widget.daySelected.day}.${widget.daySelected.month}.${widget.daySelected.year}'
-                      ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-              //! Rolly: validation method with bloc. Also why need autovalidate?
-              autovalidate: true,
-              key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  _buildReasonField(),
-                  _buildDescriptionField(),
-                  _buildDesignationField(),
-                  _buildEmployeeDropdown(),
-                  _buildStartShiftField(),
-                  _buildEndShiftField(),
-                ],
-              )),
-        ),
-        floatingActionButton: BlocBuilder<ShiftsBloc, ShiftsState>(
-          builder: (context, state) {
-            if (state is ShiftCreatedOrEdited) {
-              return FloatingActionButton(
-                tooltip: isEditing ? 'Save Changes' : 'Add Shift',
-                child: Icon(isEditing ? Icons.check : Icons.add),
-                backgroundColor: Colors.pink,
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
-
-                    DateEvent dateEvent = DateEvent(
-                      dateEvent_date: state.shiftDate,
-                      description: state.description,
-                      designation: state.currentDesignation,
-                      employeeId: state.currentEmployee != null
-                          ? state.currentEmployee.id
-                          : null,
-                      employeeName: state.currentEmployee != null
-                          ? state.currentEmployee.name
-                          : null,
-                      end_shift: state.shiftEnd,
-                      reason: state.reason,
-                      start_shift: state.shiftStart,
-                      id: state.id,
-                    );
-
-                    // save this shift as dateEvent in firestore
-                    BlocProvider.of<ShiftsBloc>(context)
-                        .add(UploadDateEventAdded(dateEvent: dateEvent));
-                    
-                    //! Rolly: Opinion
-                    EmployeeDateEvent employeeDateEvent = EmployeeDateEvent(
-                      designation: dateEvent.description,
-                      dateEvent_date: dateEvent.dateEvent_date,
-                      description: dateEvent.description,
-                      employeeId: dateEvent.employeeId,
-                      employeeName: dateEvent.employeeName,
-                      end_shift: dateEvent.end_shift,
-                      id: dateEvent.id,
-                      reason: dateEvent.reason,
-                      start_shift: dateEvent.start_shift,
-                    );
-                    //! - currently I am saving all dateEvents into the busy_map of an employee
-                    //! after a while I will be having too many of them
-                    //! In addition, when I am editing shifts I should delete from the old employee
-                    //! the dateEvent from its busyMap
-                    // remove the dateEvent from the old employees busy_map
-                    if (state.oldEmployee != null) {
-                      if (state.oldEmployee.id !=
-                          employeeDateEvent.employeeId) {
-                        BlocProvider.of<EmployeesBloc>(context).add(
-                            EmployeesBusyMapDateEventRemoved(
-                                oldEmployeeId: state.oldEmployee.id,
-                                dateTime: dateEvent.dateEvent_date));
-                      }
-                    }
-                    // add in employees busy_map
-                    if (dateEvent.employeeId != null) {
-                      BlocProvider.of<EmployeesBloc>(context).add(
-                          UpdateEmployeeBusyMap(
-                              employeeDateEvent: employeeDateEvent));
-                    }
-                    Navigator.pop(context);
-                  }
-                },
-              );
-            } else {
-              return Container(
-                child: Text('ups'),
-              );
-            }
-          },
-        ),
-      ),
+    return BlocBuilder<ShiftsBloc, ShiftsState>(
+      builder: (context, state) {
+        if (state is ShiftCreatedOrEdited) {
+          return RaisedButton(
+            child: Text(
+                state.shiftStart == null ? 'Select Start' : state.shiftStart),
+            onPressed: () async {
+              TimeOfDay timeOfDay = await _AddEditShiftState.selectTime(
+                  context, state.shiftStart);
+              if (timeOfDay != null) {
+                BlocProvider.of<ShiftsBloc>(context).add(ShiftsStartTimeChanged(
+                  shiftStart: '${timeOfDay.hour}:${timeOfDay.minute}',
+                ));
+              } else {
+                //todo add parameter and use it for the validator
+              }
+            },
+          );
+        } else {
+          return Container(
+            child: Text('ups'),
+          );
+        }
+      },
     );
   }
 }

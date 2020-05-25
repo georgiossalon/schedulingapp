@@ -26,7 +26,7 @@ class LoadedShifts extends ShiftsState {
 
 class ShiftsNotLoaded extends ShiftsState {}
 
-class ShiftCreatedOrEdited extends ShiftsState {
+@immutable class ShiftCreatedOrEdited extends ShiftsState {
   final String currentDesignation;
   final List<String> designations;
   final Employee currentEmployee;
@@ -41,107 +41,19 @@ class ShiftCreatedOrEdited extends ShiftsState {
   final Employee oldEmployee;
   final bool employeeSpecific;
 
-  ShiftCreatedOrEdited({
-    String currentDesignation,
-    List<String> designations,
-    Employee currentEmployee,
-    List<Employee> availableEmployees,
-    String description,
-    String shiftStart,
-    String shiftEnd,
-    DateTime shiftDate,
-    String id,
-    Employee oldEmployee,
-    bool employeeSpecific,
-  })  : this.currentDesignation = currentDesignation,
-        this.designations = designations,
-        this.currentEmployee = currentEmployee,
-        this.description = description,
-        this.shiftStart = shiftStart,
-        this.shiftEnd = shiftEnd,
-        this.shiftDate = shiftDate,
-        this.id = id,
-        this.oldEmployee = oldEmployee,
-        //! Rolly:
-        // always show the 'open' option
-        // if an employee is getting edited add him to the list for user help
-        // if there are available employees show them
-        this.availableEmployees = addOldEmployeeToTheAvailableEmployees(
-            availableEmployees, oldEmployee),
-        this.employeeSpecific = employeeSpecific;
-
-  // const ShiftCreatedOrEdited({
-  //   @required this.designations,
-  //   @required this.currentDesignation,
-  //   this.currentEmployee,
-  //   this.availableEmployees,
-  //   this.description,
-  //   this.shiftStart,
-  //   this.shiftEnd,
-  //   this.shiftDate,
-  //   this.id,
-  //   this.oldEmployee,
-  //   this.employeeSpecific,
-  // });
-
-  static List<Employee> addOldEmployeeToTheAvailableEmployees(
-      List<Employee> availableEmployees, Employee oldEmployee) {
-    bool openNotInList = true;
-    // if the list is not empty
-    // check if the 'open' employee is included
-    if (availableEmployees != null) {
-      for (Employee employee in availableEmployees) {
-        if (employee.name == 'open') {
-          openNotInList = false;
-          break;
-        }
-      }
-      // if open employee not included, then add him
-      if (openNotInList) {
-        availableEmployees.add(Employee(name: 'open'));
-      }
-      // if old employee is not empty
-      if (oldEmployee != null) {
-        // and he is not the 'open' employee then
-        if (oldEmployee.name != 'open') {
-          // then check if the oldEmployee is already in the list
-          bool hOldIsNotInTheList = true;
-          for (Employee employee in availableEmployees) {
-            if (employee.name == oldEmployee.name) {
-              hOldIsNotInTheList = false;
-              break;
-            }
-          }
-          // the old employee is not in the availableEmployees List thus add
-          if (hOldIsNotInTheList) {
-            availableEmployees.add(oldEmployee);
-            return availableEmployees;
-          } else {
-            // else return the list without the old employee
-            return availableEmployees;
-          }
-        }
-      } else {
-        // since there is no old employee return the list
-        return availableEmployees;
-      }
-    } else {
-      // in case there are no available employees then
-      // add the 'open' employee
-      List<Employee> hAvailableEmployees = new List<Employee>();
-      hAvailableEmployees.add(Employee(name: 'open'));
-      // check if an old employee exists
-      if (oldEmployee != null) {
-        // and he is not the 'open' employee then add him
-        if (oldEmployee.name != 'open') {
-          hAvailableEmployees.add(oldEmployee);
-          return hAvailableEmployees;
-        }
-      } else {
-        return hAvailableEmployees;
-      }
-    }
-  }
+  const ShiftCreatedOrEdited({
+    @required this.designations,
+    @required this.currentDesignation,
+    this.currentEmployee,
+    this.availableEmployees,
+    this.description,
+    this.shiftStart,
+    this.shiftEnd,
+    this.shiftDate,
+    this.id,
+    this.oldEmployee,
+    this.employeeSpecific,
+  });
 
   @override
   List<Object> get props => [

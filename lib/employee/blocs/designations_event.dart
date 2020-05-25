@@ -11,14 +11,52 @@ abstract class DesignationsEvent extends Equatable {
 
 class LoadDesignations extends DesignationsEvent {}
 
-class AssignDesignationsToEmployee extends DesignationsEvent {
-  final String designationsString;
+// class AssignDesignationsToEmployee extends DesignationsEvent {
+//   final String designationsString;
 
-  const AssignDesignationsToEmployee(this.designationsString);
+//   const AssignDesignationsToEmployee(this.designationsString);
+
+//   @override
+//   List<Object> get props => [designationsString];
+// }
+
+class DesignationCreated extends DesignationsEvent {
+  final Designations designationsObj;
+
+  DesignationCreated({this.designationsObj});
 
   @override
-  List<Object> get props => [designationsString];
+  List<Object> get props => [designationsObj];
+
+  @override
+  String toString() => 'DesignationCreated(designationsObj: $designationsObj)';
 }
+
+class DesignationUploaded extends DesignationsEvent {
+  final Designations designationsObj;
+
+  DesignationUploaded({this.designationsObj});
+
+  @override
+  List<Object> get props => [designationsObj];
+
+  @override
+  String toString() => 'DesignationUploaded(designationsObj: $designationsObj)';
+}
+
+class DesignationChanged extends DesignationsEvent {
+  final String designationChanged;
+
+  DesignationChanged({this.designationChanged});
+
+  @override
+  List<Object> get props => [designationChanged];
+
+  @override
+  String toString() => 'DesignationChanged(designationChanged: $designationChanged)';
+}
+
+
 
 class DesignationsUpdated extends DesignationsEvent {
   final Designations designationsObj;

@@ -17,7 +17,7 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
         _employeesRepository = employeesRepository;
 
   @override
-  DesignationsState get initialState => DesignationsLoading();
+  DesignationsState get initialState => DesignationsState.designationsLoading();
 
   @override
   Stream<DesignationsState> mapEventToState(
@@ -27,18 +27,39 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
       yield* _mapLoadDesignationsToState();
     } else if (event is AddDesignation) {
       yield* _mapAddDesignationToState(event);
-    } 
-    // else if (event is UpdateDesignation) {
-    //   yield* _mapUpdateDesignationToState(event);
-    // } 
-    else if (event is DeleteDesignation) {
+    } else if (event is DeleteDesignation) {
       yield* _mapDeleteDesignationToState(event);
     } else if (event is DesignationsUpdated) {
       yield* _mapDesignationsUpdatedToState(event);
-    } 
-    // else if (event is AssignDesignationsToEmployee) {
-    //   yield* _mapAssignDesignationsToEmployee(event);
-    // }
+    } else if (event is DesignationCreated) {
+      yield* _mapDesignationCreatedToState(event);
+    } else if (event is DesignationUploaded) {
+      yield* _mapDesignationUploadedToState(event);
+    } else if (event is DesignationChanged) {
+      yield* _mapDesignationChangedToState(event);
+    }
+  }
+
+  Stream<DesignationsState> _mapDesignationUploadedToState(
+      DesignationUploaded event) async* {
+    _employeesRepository.addNewDesignation(event.designationsObj);
+  }
+
+  Stream<DesignationsState> _mapDesignationChangedToState(
+      DesignationChanged event) async* {
+    yield DesignationsState.editedDesignation(
+        designations: state.designationsObj.designations,
+        currentDesignation: event.designationChanged,
+        id: state.designationsObj.id);
+  }
+
+  Stream<DesignationsState> _mapDesignationCreatedToState(
+      DesignationCreated event) async* {
+    yield DesignationsState.editedDesignation(
+      designations: event.designationsObj.designations,
+      currentDesignation: event.designationsObj.currentDesignation,
+      id: event.designationsObj.id,
+    );
   }
 
   Stream<DesignationsState> _mapLoadDesignationsToState() async* {
@@ -60,23 +81,17 @@ class DesignationsBloc extends Bloc<DesignationsEvent, DesignationsState> {
 
   Stream<DesignationsState> _mapDesignationsUpdatedToState(
       DesignationsUpdated event) async* {
-    yield DesignationsLoaded(event.designationsObj);
+        List<String> hDesignations = List.from(event.designationsObj.designations);
+        !hDesignations.contains('open') ? hDesignations.add('open'): null; // always have the 'open' designation in the list
+    yield DesignationsState.loadedDesignations(
+        designations: hDesignations,
+        id: event.designationsObj.id);
   }
 
   Stream<DesignationsState> _mapAddDesignationToState(
       AddDesignation event) async* {
-       
-    // if (event.designationsObj.designations.isEmpty) {
-      _employeesRepository.addNewDesignation(event.designationsObj);
-    // } else {
-    //   _employeesRepository.updateDesignation(event.designationsObj);
-    // }
+    _employeesRepository.addNewDesignation(event.designationsObj);
   }
-
-  // Stream<DesignationsState> _mapUpdateDesignationToState(
-  //     UpdateDesignation event) async* {
-  //   _employeesRepository.updateDesignation(event.designationsObj);
-  // }
 
   Stream<DesignationsState> _mapDeleteDesignationToState(
       DeleteDesignation event) async* {

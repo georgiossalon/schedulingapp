@@ -273,9 +273,7 @@ class UploadDateEventAdded extends ShiftsEvent {
   List<Object> get props => [dateEvent];
 
   @override
-  String toString() {
-    return 'ShiftAsDateEventAdded: { $dateEvent }';
-  }
+  String toString() => 'UploadDateEventAdded(dateEvent: $dateEvent)';
 }
 
 class ShiftsDescriptionChanged extends ShiftsEvent {

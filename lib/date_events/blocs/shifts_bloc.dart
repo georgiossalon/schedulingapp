@@ -4,10 +4,6 @@ import 'package:employees_repository/employees_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
-// import 'package:shifts_repository/shifts_repository.dart';
-
-import 'package:rxdart/rxdart.dart';
-
 import 'package:date_events_repository/date_events_repository.dart';
 
 class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
@@ -74,13 +70,13 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     }
   }
 
-Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
-     DayOffDescriptionChanged event) async* {
-   if (state is CreatedOrEditedDayOff) {
-     yield (state as CreatedOrEditedDayOff)
-         .copyWith(description: event.description);
-   }
- }
+  Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
+      DayOffDescriptionChanged event) async* {
+    if (state is CreatedOrEditedDayOff) {
+      yield (state as CreatedOrEditedDayOff)
+          .copyWith(description: event.description);
+    }
+  }
 
   Stream<ShiftsState> _mapShiftsShiftStartChangedToState(
       ShiftsStartTimeChanged event) async* {
@@ -112,13 +108,73 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
                 // then I have to update the State
                 availableEmployees: employees,
                 currentDesignation: event.designation,
-                currentEmployee: Employee(name: 'open'), // reset employee on designation change
+                currentEmployee: Employee(
+                    name: 'open'), // reset employee on designation change
                 shiftDate: currentState.shiftDate,
                 description: currentState.description,
                 shiftEnd: currentState.shiftEnd,
                 shiftStart: currentState.shiftStart,
                 id: currentState.id,
               )));
+    }
+  }
+
+  static List<Employee> addOldEmployeeToTheAvailableEmployees(
+      {List<Employee> availableEmployees, Employee oldEmployee}) {
+    bool openNotInList = true;
+    // if the list is not empty
+    // check if the 'open' employee is included
+    if (availableEmployees != null) {
+      for (Employee employee in availableEmployees) {
+        if (employee.name == 'open') {
+          openNotInList = false;
+          break;
+        }
+      }
+      // if open employee not included, then add him
+      if (openNotInList) {
+        availableEmployees.add(Employee(name: 'open'));
+      }
+      // if old employee is not empty
+      if (oldEmployee != null) {
+        // and he is not the 'open' employee then
+        if (oldEmployee.name != 'open') {
+          // then check if the oldEmployee is already in the list
+          bool hOldIsNotInTheList = true;
+          for (Employee employee in availableEmployees) {
+            if (employee.name == oldEmployee.name) {
+              hOldIsNotInTheList = false;
+              break;
+            }
+          }
+          // the old employee is not in the availableEmployees List thus add
+          if (hOldIsNotInTheList) {
+            availableEmployees.add(oldEmployee);
+            return availableEmployees;
+          } else {
+            // else return the list without the old employee
+            return availableEmployees;
+          }
+        }
+      } else {
+        // since there is no old employee return the list
+        return availableEmployees;
+      }
+    } else {
+      // in case there are no available employees then
+      // add the 'open' employee
+      List<Employee> hAvailableEmployees = new List<Employee>();
+      hAvailableEmployees.add(Employee(name: 'open'));
+      // check if an old employee exists
+      if (oldEmployee != null) {
+        // and he is not the 'open' employee then add him
+        if (oldEmployee.name != 'open') {
+          hAvailableEmployees.add(oldEmployee);
+          return hAvailableEmployees;
+        }
+      } else {
+        return hAvailableEmployees;
+      }
     }
   }
 
@@ -142,22 +198,38 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
   Stream<ShiftsState> _mapUploadDateEventToState(
       UploadDateEventAdded event) async* {
     //! what happens to the state? In this case I do not have Event -> State
+    //! Rolly
+    //! discuss in this case why does the initial event with
+    //! unchanged values get called. It depends on the subscription.
+    _employeeSubscription?.cancel();
     _dateEventsRepository.addOrUpdateDateEvent(event.dateEvent);
+    // yield ShiftCreatedOrEdited(
+    //     designations: event.designationsList,
+    //     currentDesignation: event.dateEvent.designation,
+    //     currentEmployee: event.currentEmployee,
+    //     availableEmployees: event.availableEmployees, // these are pre-calculated including open and old
+    //     shiftDate: event.dateEvent.dateEvent_date,
+    //     description: event.dateEvent.description,
+    //     shiftEnd: event.dateEvent.end_shift,
+    //     shiftStart: event.dateEvent.start_shift,
+    //     id: event.dateEvent.id,
+    //     oldEmployee: event.oldEmployee);
   }
 
   // 1) I CreateNewShift (event) -> ShiftCreatedOrEdited (state)
   // 2) EditShift(event) -> PassShiftData(event) -> ShiftCreatedOrEdited(state)
 
   Stream<ShiftsState> _mapCreateNewShiftToState(NewShiftCreated event) async* {
-    final designations = await _designationsBloc
-        .firstWhere((state) => state is DesignationsLoaded);
+    final designationsState = await _designationsBloc
+        .firstWhere((state) => state.designationsObj.designations.isNotEmpty);
     yield ShiftCreatedOrEdited(
-      designations:
-          (designations as DesignationsLoaded).designationsObj.designations,
+      designations: designationsState.designationsObj.designations,
       currentDesignation: 'open',
       shiftDate: event.shiftDate,
       employeeSpecific: false,
       currentEmployee: Employee(name: 'open'),
+      availableEmployees: addOldEmployeeToTheAvailableEmployees(
+        availableEmployees: null, oldEmployee: null),
     );
   }
 
@@ -174,7 +246,7 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
       employeeSpecific: true,
     );
   }
-  
+
   Stream<ShiftsState> _mapNewDayOffCreatedToState(
       NewDayOffCreated event) async* {
     yield CreatedOrEditedDayOff(
@@ -203,15 +275,20 @@ Stream<ShiftsState> _mapDayOffDescriptionChangedToState(
   }
 
   Stream<ShiftsState> _mapPassShiftDataToState(ShiftDataPushed event) async* {
-    final designations = await _designationsBloc
-        .firstWhere((state) => state is DesignationsLoaded);
+    final designationsState = await _designationsBloc
+        .firstWhere((state) => state.designationsObj.designations.isNotEmpty);
 
+    //  List<Employee> allAvailableEmployees =  [Employee.open()];//event.availableEmployees..addAll([Employee.open(), if state.]);
+    //  if (state is ShiftCreatedOrEdited) {
+    //    if ((state as ShiftCreatedOrEdited).oldEmployee != )
+    //  }
     yield ShiftCreatedOrEdited(
-        designations:
-            (designations as DesignationsLoaded).designationsObj.designations,
+        designations: designationsState.designationsObj.designations,
         currentDesignation: event.currentDesignation,
         currentEmployee: event.currentEmployee,
-        availableEmployees: event.availableEmployees,
+        availableEmployees: addOldEmployeeToTheAvailableEmployees(
+            availableEmployees: event.availableEmployees,
+            oldEmployee: event.oldEmployee), //event.availableEmployees,
         shiftDate: event.shiftDate,
         description: event.description,
         shiftEnd: event.shiftEnd,

@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-
-typedef OnSaveCallBack = Function(
-  String designation,
-);
+import 'package:snapshot_test/employee/blocs/designations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddEditDesignation extends StatefulWidget {
   static const String screenId = 'add_edit_designation';
 
   final bool isEditing;
-  final OnSaveCallBack onSave;
-  final String designation;
 
-  AddEditDesignation({Key key, this.isEditing, this.onSave, this.designation})
-      : super(key: key);
+  AddEditDesignation({Key key, this.isEditing}) : super(key: key);
 
   @override
   _AddEditDesignationState createState() => _AddEditDesignationState();
@@ -21,21 +16,26 @@ class AddEditDesignation extends StatefulWidget {
 class _AddEditDesignationState extends State<AddEditDesignation> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _designation;
-
   bool get isEditing => widget.isEditing;
 
   Widget _buildDesignationField() {
-    return TextFormField(
-      initialValue: isEditing ? widget.designation : '',
-      decoration: InputDecoration(labelText: 'Designation'),
-      validator: (String value) {
-        return value.trim().isEmpty
-            ? 'Please set a Designation for the Employee'
-            : null;
-      },
-      onSaved: (String value) {
-        _designation = value.trim();
+    return BlocBuilder<DesignationsBloc, DesignationsState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue:
+              isEditing ? state.designationsObj.currentDesignation : '',
+          decoration: InputDecoration(labelText: 'Designation'),
+          validator: (String value) {
+            return value.trim().isEmpty
+                ? 'Please set a Designation for the Employee'
+                : null;
+          },
+          onChanged: (String value) {
+            // _designation = value.trim();
+            BlocProvider.of<DesignationsBloc>(context)
+                .add(DesignationChanged(designationChanged: value));
+          },
+        );
       },
     );
   }
@@ -43,13 +43,11 @@ class _AddEditDesignationState extends State<AddEditDesignation> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.pink,
-            title: Text(isEditing
-                ? 'Edit Designation: ${widget.designation}'
-                : 'Add Designation'),
-          ),
+          backgroundColor: Colors.pink,
+          title: Text(isEditing ? 'Edit Designation' : 'Add Designation'),
+        ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Form(
@@ -57,20 +55,25 @@ class _AddEditDesignationState extends State<AddEditDesignation> {
             child: _buildDesignationField(),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-            tooltip: isEditing ? 'Save Changes' : 'Add Employee',
-            child: Icon(isEditing ? Icons.check : Icons.add),
-            backgroundColor: Colors.pink,
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                widget.onSave(
-                  _designation,
-                );
-                Navigator.pop(context);
-              }
-            },
-          ),
+        floatingActionButton: BlocBuilder<DesignationsBloc, DesignationsState>(
+          builder: (context, state) {
+            return FloatingActionButton(
+              tooltip: isEditing ? 'Save Changes' : 'Add Employee',
+              child: Icon(isEditing ? Icons.check : Icons.add),
+              backgroundColor: Colors.pink,
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _formKey.currentState.save();
+                  //todo: add designation event to save in firestore
+                  BlocProvider.of<DesignationsBloc>(context).add(
+                    DesignationUploaded(designationsObj: state.designationsObj)
+                  );
+                  Navigator.pop(context);
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }

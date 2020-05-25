@@ -1,3 +1,4 @@
+
 import 'package:employees_repository/employees_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
@@ -16,11 +17,11 @@ class DesignationList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DesignationsBloc, DesignationsState>(
       builder: (context, state) {
-        if (state is DesignationsLoading) {
+        if (state.designationsObj == null) {
           return Container(
             child: Text('Loading'),
           );
-        } else if (state is DesignationsLoaded) {
+        } else if (state.designationsObj.designations != null) {
           return SafeArea(
             child: Scaffold(
               appBar: AppBar(
@@ -38,33 +39,35 @@ class DesignationList extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
+                    //  todo use DesignationCreated event
+                    BlocProvider.of<DesignationsBloc>(context)
+                        .add(DesignationCreated(designationsObj: state.designationsObj));
+
                     return AddEditDesignation(
-                      onSave: (
-                        designation,
-                      ) {
-                        //todo problem when adding a totaly new designation
-                        //todo... to non existing document
-                        //todo... and adding a new designation to an existing document
-                        BlocProvider.of<DesignationsBloc>(context).add(
-                          AddDesignation(
-                            designationsObj: Designations(
-                                currentDesignation: designation,
-                                designations:
-                                    state.designationsObj.designations,
-                                id: state.designationsObj
-                                    .id //! id at the first time null
-                                ),
-                          ),
-                        );
-                        //todo add the designation to the open Employee
-                        //! this must have as a pre-requisite an open employee in the list
-                      },
+                      // onSave: (
+                      //   designation,
+                      // ) {
+                      //   BlocProvider.of<DesignationsBloc>(context).add(
+                      //     AddDesignation(
+                      //       designationsObj: Designations(
+                      //           designations:
+                      //               state.designationsObj.designations,
+                      //           id: state.designationsObj
+                      //               .id //! id at the first time null
+                      //           ),
+                      //     ),
+                      //   );
+                      // },
                       isEditing: false,
                     );
                   }));
                 },
               ),
             ),
+          );
+        } else {
+          return Container(
+            child: Text('ups'),
           );
         }
       },

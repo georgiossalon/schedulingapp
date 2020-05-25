@@ -152,6 +152,8 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
     String formatedDate = formatter.format(date);
     return _employeeCollection
         .where('designations', arrayContains: designation)
+        //todo: the following line does not work for when the map does not
+        //todo... have the following date entry
         .where('busy_map.$formatedDate', isNull: true) 
         .snapshots()
         .map((snapshot) {
@@ -178,10 +180,14 @@ class FirebaseEmployeesRepository implements EmployeesRepository {
 
   @override
   Future<void> addNewDesignation(Designations designationsObj) {
+    // the currentDesignation has to get added to the designations List first
     // designationsObj.designations.add(designationsObj.currentDesignation);
-    // the first designation has to be passed as a List element
+    //todo: 
+    List<String> h = List.from(designationsObj.designations)..add(designationsObj.currentDesignation);
+    // h.add(designationsObj.currentDesignation);
+    //todo: instead of uploading the whole new list just upload the new designation
     return _designationCollection.document(designationsObj.id).setData(
-        DesignationEntity(designations: designationsObj.designations)
+        DesignationEntity(designations: h)
             .toDocument());
   }
 

@@ -14,7 +14,8 @@ class Employee {
   final double salary;
   final double weeklyHours;
   final Map<DateTime, String> busyMap;
-  Employee(
+  
+  const Employee(
       {this.designations,
       this.email,
       this.hiringDate,
@@ -32,6 +33,8 @@ class Employee {
         dateTimeHiringDate.day, 12);
     }
   }
+
+  factory Employee.open() => const Employee(name: 'open');
 
   Employee copyWith(
       {List<String> designations,

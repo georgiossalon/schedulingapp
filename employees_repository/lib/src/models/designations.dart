@@ -1,18 +1,17 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employees_repository/employees_repository.dart';
 
 import '../entities/entities.dart';
 
 class Designations {
   final List<String> designations;
+  final String currentDesignation; // for when I am creating a new one
   final String id;
-  final String currentDesignation;
   Designations({
     this.designations,
+    this.currentDesignation,
     this.id,
-    this.currentDesignation
   });
 
   Designations copyWith({
@@ -22,8 +21,8 @@ class Designations {
   }) {
     return Designations(
       designations: designation ?? this.designations,
+      currentDesignation: currentDesignation ?? this.currentDesignation,
       id: id ?? this.id,
-      currentDesignation: currentDesignation ?? this.currentDesignation
     );
   }
 
