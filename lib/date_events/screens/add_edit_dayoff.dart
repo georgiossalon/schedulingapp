@@ -16,7 +16,7 @@ class AddEditDayOff extends StatefulWidget {
       {Key key,
       @required this.isEditing,
       @required this.daySelected,
-      @required this.dateEvent})
+       this.dateEvent})
       : super(key: key);
 
   @override

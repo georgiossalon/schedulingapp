@@ -13,9 +13,10 @@ class CalendarContainerEventCards extends StatelessWidget {
   final DateEvent dateEvent;
   final BuildContext scaffoldContext;
   final bool isShift;
+  final bool isShiftsView;
 
   const CalendarContainerEventCards(
-      {Key key, this.dateEvent, this.scaffoldContext, this.isShift})
+      {Key key, this.dateEvent, this.scaffoldContext, this.isShift, this.isShiftsView})
       : super(key: key);
 
   showSnackBar(context, deletedDateEvent) {
@@ -169,6 +170,7 @@ class CalendarContainerEventCards extends StatelessWidget {
                     shiftEnd: dateEvent.end_shift,
                     id: dateEvent.id,
                     oldEmployee: currentEmployee,
+                    isShiftsView: isShiftsView,
                   ));
 
                   Navigator.of(context)
@@ -176,7 +178,6 @@ class CalendarContainerEventCards extends StatelessWidget {
                     return AddEditShift(
                       daySelected: ShiftsView.shiftCalendarSelectedDay,
                       isEditing: true,
-                      // isShift: true,
                       dateEvent: dateEvent,
                     );
                   }));

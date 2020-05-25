@@ -39,7 +39,7 @@ class ShiftsNotLoaded extends ShiftsState {}
   final String reason = 'shift';
   final String id;
   final Employee oldEmployee;
-  final bool employeeSpecific;
+  final bool isShiftsView;
 
   const ShiftCreatedOrEdited({
     @required this.designations,
@@ -52,7 +52,7 @@ class ShiftsNotLoaded extends ShiftsState {}
     this.shiftDate,
     this.id,
     this.oldEmployee,
-    this.employeeSpecific,
+    @required this.isShiftsView,
   });
 
   @override
@@ -69,12 +69,12 @@ class ShiftsNotLoaded extends ShiftsState {}
         reason,
         id,
         oldEmployee,
-        employeeSpecific,
+        isShiftsView,
       ];
 
   @override
   String toString() =>
-      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason, id: $id, oldEmployee: $oldEmployee, employeeSpecific: $employeeSpecific }';
+      'New Shift Created { defaultDesignation: $currentDesignation, defaultEmployee: $currentEmployee, designation: $designations, availableEmployees: $availableEmployees, defaultEmployeeName: $defaultEmployeeName, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, shiftDate: $shiftDate, reason: $reason, id: $id, oldEmployee: $oldEmployee, isShiftsView: $isShiftsView }';
 
   ShiftCreatedOrEdited copyWith({
     String currentDesignation,
@@ -87,6 +87,7 @@ class ShiftsNotLoaded extends ShiftsState {}
     DateTime shiftDate,
     String id,
     Employee oldEmployee,
+    bool isShiftsView,
   }) {
     return ShiftCreatedOrEdited(
       currentDesignation: currentDesignation ?? this.currentDesignation,
@@ -99,6 +100,7 @@ class ShiftsNotLoaded extends ShiftsState {}
       shiftDate: shiftDate ?? this.shiftDate,
       id: id ?? this.id,
       oldEmployee: oldEmployee ?? this.oldEmployee,
+      isShiftsView: isShiftsView ?? this.isShiftsView,
     );
   }
 }

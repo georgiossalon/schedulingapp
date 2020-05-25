@@ -230,6 +230,7 @@ class _CalendarState extends State<CalendarWidget> {
                   dateEvent: event,
                   scaffoldContext: context,
                   isShift: event.reason == 'shift' ? true : false,
+                  isShiftsView: widget.isShiftsView,
                 );
               },
             ),

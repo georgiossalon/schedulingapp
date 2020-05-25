@@ -101,6 +101,8 @@ class EmployeeDateEventScreen extends StatelessWidget {
               ),
             ),
           );
+        } else {
+          return Container(child: Text('ups'),);
         }
       },
     );

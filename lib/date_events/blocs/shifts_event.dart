@@ -76,33 +76,36 @@ class ShiftDeleted extends ShiftsEvent {
 
 class NewShiftCreated extends ShiftsEvent {
   final DateTime shiftDate;
+  final bool isShiftsView;
 
-  NewShiftCreated({@required this.shiftDate});
+  NewShiftCreated({@required this.shiftDate, @required this.isShiftsView});
 
   @override
-  List<Object> get props => [shiftDate];
+  List<Object> get props => [shiftDate, isShiftsView];
 
   @override
   String toString() {
-    return 'NewShiftCreated: { shiftDate: $shiftDate }';
+    return 'NewShiftCreated: { shiftDate: $shiftDate, isShiftsView: $isShiftsView }';
   }
 }
 
 class NewShiftEmployeeSpecificCreated extends ShiftsEvent {
   final DateTime shiftDate;
   final Employee employee;
+  final bool isShiftsView;
 
   NewShiftEmployeeSpecificCreated({
     this.shiftDate,
     this.employee,
+    this.isShiftsView
   });
 
   @override
-  List<Object> get props => [shiftDate, employee];
+  List<Object> get props => [shiftDate, employee,isShiftsView];
 
   @override
   String toString() {
-    return 'NewShiftEmployeeSpecificCreated: { shiftDate: $shiftDate, employee: $employee } ';
+    return 'NewShiftEmployeeSpecificCreated: { shiftDate: $shiftDate, employee: $employee, isShiftsView: $isShiftsView } ';
   }
 }
 
@@ -168,6 +171,7 @@ class ShiftEdited extends ShiftsEvent {
   final String shiftEnd;
   final String id;
   final Employee oldEmployee;
+  final bool isShiftsView;
 
   ShiftEdited({
     @required this.currentEmployee,
@@ -178,6 +182,7 @@ class ShiftEdited extends ShiftsEvent {
     @required this.shiftDate,
     this.id,
     this.oldEmployee,
+    @required this.isShiftsView
   });
 
   @override
@@ -190,11 +195,12 @@ class ShiftEdited extends ShiftsEvent {
         shiftDate,
         id,
         oldEmployee,
+        isShiftsView
       ];
 
   @override
   String toString() {
-    return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate, id: $id, oldEmployee: $oldEmployee }';
+    return 'ShiftEdited: { currentEmployee: $currentEmployee, description: $description, shiftStart: $shiftStart, shiftEnd: $shiftEnd, currentDesignation: $currentDesignation, shiftDate: $shiftDate, id: $id, oldEmployee: $oldEmployee, isShiftsView: $isShiftsView }';
   }
 }
 
@@ -232,6 +238,7 @@ class ShiftDataPushed extends ShiftsEvent {
   final String description;
   final String id;
   final Employee oldEmployee;
+  final bool isShiftsView;
 
   ShiftDataPushed({
     @required this.currentEmployee,
@@ -243,6 +250,7 @@ class ShiftDataPushed extends ShiftsEvent {
     this.description,
     this.id,
     this.oldEmployee,
+    @required this.isShiftsView,
   });
 
   @override
@@ -256,11 +264,12 @@ class ShiftDataPushed extends ShiftsEvent {
         description,
         id,
         oldEmployee,
+        isShiftsView,
       ];
 
   @override
   String toString() {
-    return 'ShiftDataPushed: { currentEmployee: $currentEmployee, currentDesignation: $currentDesignation, shiftDate: $shiftDate, availableEmployees: $availableEmployees, shiftStart: $shiftStart, shiftEnd: $shiftEnd, description: $description, id: $id, oldEmployee: $oldEmployee }';
+    return 'ShiftDataPushed: { currentEmployee: $currentEmployee, currentDesignation: $currentDesignation, shiftDate: $shiftDate, availableEmployees: $availableEmployees, shiftStart: $shiftStart, shiftEnd: $shiftEnd, description: $description, id: $id, oldEmployee: $oldEmployee, isShiftsView: $isShiftsView }';
   }
 }
 

@@ -39,10 +39,12 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
   // ! Load only when I ask. For this case I have to use an employee and the number of weeks
   Stream<DateEventsState> _mapLoadDateEventsToState(
       LoadAllDateEventsForEmployeeForXWeeks event) async* {
+        DateTime h = DateTime.now();
+        DateTime hDateTime = DateTime(h.year,h.month,h.day,0,0);
     _dateEventsSubscription?.cancel();
     _dateEventsSubscription = _dateEventsRepository
         .allDateEventsForGivenEmployee(
-            event.employeeId, event.numOfWeeks, DateTime.now())
+            event.employeeId, event.numOfWeeks, hDateTime)
         .listen((dateEvents) => add(DateEventsUpdated(dateEvents)));
   }
 

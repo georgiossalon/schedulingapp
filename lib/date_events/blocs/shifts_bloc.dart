@@ -115,6 +115,7 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
                 shiftEnd: currentState.shiftEnd,
                 shiftStart: currentState.shiftStart,
                 id: currentState.id,
+                isShiftsView: currentState.isShiftsView
               )));
     }
   }
@@ -226,10 +227,10 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       designations: designationsState.designationsObj.designations,
       currentDesignation: 'open',
       shiftDate: event.shiftDate,
-      employeeSpecific: false,
       currentEmployee: Employee(name: 'open'),
       availableEmployees: addOldEmployeeToTheAvailableEmployees(
-        availableEmployees: null, oldEmployee: null),
+          availableEmployees: null, oldEmployee: null),
+       isShiftsView: event.isShiftsView
     );
   }
 
@@ -243,7 +244,7 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       shiftDate: event.shiftDate,
       currentEmployee: event.employee,
       availableEmployees: [event.employee],
-      employeeSpecific: true,
+      isShiftsView: event.isShiftsView
     );
   }
 
@@ -263,7 +264,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
         .availableEmployeesForGivenDesignation(
             event.currentDesignation, event.shiftDate)
         .listen((employees) => add(ShiftDataPushed(
-            availableEmployees: employees,
+            availableEmployees:
+                event.isShiftsView ? employees : [event.currentEmployee],
             currentDesignation: event.currentDesignation,
             currentEmployee: event.currentEmployee,
             shiftDate: event.shiftDate,
@@ -271,7 +273,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
             shiftEnd: event.shiftEnd,
             description: event.description,
             id: event.id,
-            oldEmployee: event.oldEmployee)));
+            oldEmployee: event.oldEmployee,
+            isShiftsView: event.isShiftsView)));
   }
 
   Stream<ShiftsState> _mapPassShiftDataToState(ShiftDataPushed event) async* {
@@ -283,18 +286,23 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     //    if ((state as ShiftCreatedOrEdited).oldEmployee != )
     //  }
     yield ShiftCreatedOrEdited(
-        designations: designationsState.designationsObj.designations,
+        designations: event.isShiftsView
+            ? designationsState.designationsObj.designations
+            : [event.currentDesignation],
         currentDesignation: event.currentDesignation,
         currentEmployee: event.currentEmployee,
-        availableEmployees: addOldEmployeeToTheAvailableEmployees(
-            availableEmployees: event.availableEmployees,
-            oldEmployee: event.oldEmployee), //event.availableEmployees,
+        availableEmployees: event.isShiftsView
+            ? addOldEmployeeToTheAvailableEmployees(
+                availableEmployees: event.availableEmployees,
+                oldEmployee: event.oldEmployee)
+            : [event.currentEmployee], //event.availableEmployees,
         shiftDate: event.shiftDate,
         description: event.description,
         shiftEnd: event.shiftEnd,
         shiftStart: event.shiftStart,
         id: event.id,
-        oldEmployee: event.oldEmployee);
+        oldEmployee: event.oldEmployee,
+        isShiftsView: event.isShiftsView);
   }
 
   @override
