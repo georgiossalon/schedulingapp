@@ -68,7 +68,18 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
       yield* _mapNewDayOffCreatedToState(event);
     } else if (event is DayOffDescriptionChanged) {
       yield* _mapDayOffDescriptionChangedToState(event);
+    } else if (event is DayOffEdited) {
+      yield* _mapDayOffEditedToState(event);
     }
+  }
+
+  Stream<ShiftsState> _mapDayOffEditedToState (DayOffEdited event) async* {
+    yield CreatedOrEditedDayOff(
+      dayOffDate: event.dayOffDate,
+      description: event.description,
+      employeeId: event.employeeId,
+      id: event.id,
+    );
   }
 
   Stream<ShiftsState> _mapDayOffDescriptionChangedToState(

@@ -94,14 +94,11 @@ class NewShiftEmployeeSpecificCreated extends ShiftsEvent {
   final Employee employee;
   final bool isShiftsView;
 
-  NewShiftEmployeeSpecificCreated({
-    this.shiftDate,
-    this.employee,
-    @required this.isShiftsView
-  });
+  NewShiftEmployeeSpecificCreated(
+      {this.shiftDate, this.employee, @required this.isShiftsView});
 
   @override
-  List<Object> get props => [shiftDate, employee,isShiftsView];
+  List<Object> get props => [shiftDate, employee, isShiftsView];
 
   @override
   String toString() {
@@ -114,19 +111,15 @@ class NewDayOffCreated extends ShiftsEvent {
   final String employeeId;
   final String employeeName;
 
-  NewDayOffCreated({
-    this.dayOffDate,
-    this.employeeId,
-    this.employeeName
-  });
+  NewDayOffCreated({this.dayOffDate, this.employeeId, this.employeeName});
 
   @override
   List<Object> get props => [dayOffDate, employeeId, employeeName];
 
   @override
   String toString() {
-  return 'NewDayOffCreated: dayOffDate: $dayOffDate, employee: $employeeId, employeeName: $employeeName } ';
-   }
+    return 'NewDayOffCreated: dayOffDate: $dayOffDate, employee: $employeeId, employeeName: $employeeName } ';
+  }
 }
 
 class DayOffEdited extends ShiftsEvent {
@@ -136,7 +129,12 @@ class DayOffEdited extends ShiftsEvent {
   final String description;
   final String reason = 'Day Off';
 
-  DayOffEdited({this.dayOffDate, this.employeeId, this.id, this.description});
+  DayOffEdited({
+    @required this.dayOffDate,
+    @required this.employeeId,
+    @required this.id,
+    @required this.description,
+  });
 
   @override
   List<Object> get props => [dayOffDate, employeeId, id, description];
@@ -173,17 +171,16 @@ class ShiftEdited extends ShiftsEvent {
   final Employee oldEmployee;
   final bool isShiftsView;
 
-  ShiftEdited({
-    @required this.currentEmployee,
-    @required this.description,
-    @required this.shiftStart,
-    @required this.shiftEnd,
-    @required this.currentDesignation,
-    @required this.shiftDate,
-    this.id,
-    this.oldEmployee,
-    @required this.isShiftsView
-  });
+  ShiftEdited(
+      {@required this.currentEmployee,
+      @required this.description,
+      @required this.shiftStart,
+      @required this.shiftEnd,
+      @required this.currentDesignation,
+      @required this.shiftDate,
+      this.id,
+      this.oldEmployee,
+      @required this.isShiftsView});
 
   @override
   List<Object> get props => [

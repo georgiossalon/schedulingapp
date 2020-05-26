@@ -66,7 +66,8 @@ class CalendarShiftContainer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
                 ),
-              ),Text(
+              ),
+              Text(
                 'Designation: ${dateEvent.designation}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -110,19 +111,19 @@ class CalendarShiftContainer extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
                 textAlign: TextAlign.left,
               ),
-              Visibility(
-                visible: false,
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      '${dateEvent.id}',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 17.0),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-              ),
+              // Visibility(
+              //   visible: false,
+              //   child: Row(
+              //     children: <Widget>[
+              //       Text(
+              //         '${dateEvent.id}',
+              //         style: TextStyle(
+              //             fontWeight: FontWeight.bold, fontSize: 17.0),
+              //         textAlign: TextAlign.left,
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
           Row(
@@ -144,8 +145,8 @@ class CalendarShiftContainer extends StatelessWidget {
                   //! scaffoldContext? This should somehow work with the BlocListener?
                   //todo use BlocListener instead of passing the context
                   showSnackBar(scaffoldContext, dateEvent);
-                  BlocProvider.of<EmployeesBloc>(context).add(
-                      EmployeesBusyMapDateEventRemoved(
+                  BlocProvider.of<EmployeesBloc>(context)
+                      .add(EmployeesBusyMapDateEventRemoved(
                           oldEmployee: Employee(
                             id: dateEvent.employeeId,
                             name: dateEvent.employeeName,

@@ -58,8 +58,7 @@ class _AddEditDayOffState extends State<AddEditDayOff> {
               BlocProvider.of<ShiftsBloc>(context).add(DayOffDescriptionChanged(
                 description: value,
               ));
-            },
-            onSaved: (value) {});
+            },);
       } else {
         return Container(
           child: Text('ups'),

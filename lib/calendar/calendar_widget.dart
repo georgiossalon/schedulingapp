@@ -241,6 +241,8 @@ class _CalendarState extends State<CalendarWidget> {
                       //todo: iplement this container for the day offs
                     : CalendarDayOffContainer(
                       dateEvent: dateEvent,
+                      scaffoldContext: context,
+                      isShiftsView: widget.isShiftsView,
                     );
               },
             ),
