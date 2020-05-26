@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:snapshot_test/employee/blocs/designations.dart';
 import 'package:snapshot_test/date_events/blocs/shifts.dart';
 import 'package:date_events_repository/date_events_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
   // final ShiftsRepository _shiftsRepository;
@@ -99,12 +100,14 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     if (state is ShiftCreatedOrEdited) {
       ShiftCreatedOrEdited currentState = (state as ShiftCreatedOrEdited)
           .copyWith(currentDesignation: event.designation);
-      // I need to fetch all available employees first
-      _employeeSubscription?.cancel();
-      _employeeSubscription = _employeeRepository
-          .availableEmployeesForGivenDesignation(
-              event.designation, currentState.shiftDate)
-          .listen((employees) => add(ShiftDataPushed(
+      //! For the case where I am at the shiftsView I need to fetch all available employees
+      if (currentState.isShiftsView) {
+        // I need to fetch all available employees first
+        _employeeSubscription?.cancel();
+        _employeeSubscription = _employeeRepository
+            .availableEmployeesForGivenDesignation(
+                event.designation, currentState.shiftDate)
+            .listen((employees) => add(ShiftDataPushed(
                 // then I have to update the State
                 availableEmployees: employees,
                 currentDesignation: event.designation,
@@ -115,8 +118,29 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
                 shiftEnd: currentState.shiftEnd,
                 shiftStart: currentState.shiftStart,
                 id: currentState.id,
-                isShiftsView: currentState.isShiftsView
-              )));
+                isShiftsView: currentState.isShiftsView)));
+      } else {
+        //! For the specific employee availability case
+        //! I can yield directly the state without fetching any available employees
+        List<String> specificEmployeeDesignations = await Firestore.instance
+          .collection('Employees')
+          .document(currentState.currentEmployee.id)
+          .get()
+          .then((doc) => List.from(doc.data['designations']).cast<String>());
+      yield ShiftCreatedOrEdited(
+          // an employee may have multiple designations
+          designations: specificEmployeeDesignations,
+          currentDesignation: event.designation,
+          currentEmployee: currentState.currentEmployee,
+          availableEmployees: [currentState.currentEmployee],
+          shiftDate: currentState.shiftDate,
+          description: currentState.description,
+          shiftEnd: currentState.shiftEnd,
+          shiftStart: currentState.shiftStart,
+          id: currentState.id,
+          oldEmployee: currentState.oldEmployee,
+          isShiftsView: currentState.isShiftsView);
+      }
     }
   }
 
@@ -224,28 +248,26 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     final designationsState = await _designationsBloc
         .firstWhere((state) => state.designationsObj.designations.isNotEmpty);
     yield ShiftCreatedOrEdited(
-      designations: designationsState.designationsObj.designations,
-      currentDesignation: 'open',
-      shiftDate: event.shiftDate,
-      currentEmployee: Employee(name: 'open'),
-      availableEmployees: addOldEmployeeToTheAvailableEmployees(
-          availableEmployees: null, oldEmployee: null),
-       isShiftsView: event.isShiftsView
-    );
+        designations: designationsState.designationsObj.designations,
+        currentDesignation: 'open',
+        shiftDate: event.shiftDate,
+        currentEmployee: Employee(name: 'open'),
+        availableEmployees: addOldEmployeeToTheAvailableEmployees(
+            availableEmployees: null, oldEmployee: null),
+        isShiftsView: event.isShiftsView);
   }
 
   Stream<ShiftsState> _mapNewShiftEmployeeSpecificCreatedToState(
       NewShiftEmployeeSpecificCreated event) async* {
     yield ShiftCreatedOrEdited(
-      //! in this case I only have one designation per employee
-      //! and I show the first designation
-      currentDesignation: event.employee.designations[0],
-      designations: event.employee.designations,
-      shiftDate: event.shiftDate,
-      currentEmployee: event.employee,
-      availableEmployees: [event.employee],
-      isShiftsView: event.isShiftsView
-    );
+        //! in this case I only have one designation per employee
+        //! and I show the first designation
+        currentDesignation: event.employee.designations[0],
+        designations: event.employee.designations,
+        shiftDate: event.shiftDate,
+        currentEmployee: event.employee,
+        availableEmployees: [event.employee],
+        isShiftsView: event.isShiftsView);
   }
 
   Stream<ShiftsState> _mapNewDayOffCreatedToState(
@@ -259,22 +281,51 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
 
   Stream<ShiftsState> _mapEditShiftToState(ShiftEdited event) async* {
     _employeeSubscription?.cancel();
-    // First get available employees for the designation
-    _employeeSubscription = _employeeRepository
-        .availableEmployeesForGivenDesignation(
-            event.currentDesignation, event.shiftDate)
-        .listen((employees) => add(ShiftDataPushed(
-            availableEmployees:
-                event.isShiftsView ? employees : [event.currentEmployee],
-            currentDesignation: event.currentDesignation,
-            currentEmployee: event.currentEmployee,
-            shiftDate: event.shiftDate,
-            shiftStart: event.shiftStart,
-            shiftEnd: event.shiftEnd,
-            description: event.description,
-            id: event.id,
-            oldEmployee: event.oldEmployee,
-            isShiftsView: event.isShiftsView)));
+    //! Rolly: Opinion on using an if-else statement in here
+    //! If I am on the shifts View. Otherwise I need to different
+    //! events, meaning I need also two different containers
+    //! (CalendarShiftContainer) one for the isShiftsView and one for the non
+    if (event.isShiftsView) {
+      // First get available employees for the designation
+      _employeeSubscription = _employeeRepository
+          .availableEmployeesForGivenDesignation(
+              event.currentDesignation, event.shiftDate)
+          .listen((employees) => add(ShiftDataPushed(
+              availableEmployees:
+                  event.isShiftsView ? employees : [event.currentEmployee],
+              currentDesignation: event.currentDesignation,
+              currentEmployee: event.currentEmployee,
+              shiftDate: event.shiftDate,
+              shiftStart: event.shiftStart,
+              shiftEnd: event.shiftEnd,
+              description: event.description,
+              id: event.id,
+              oldEmployee: event.oldEmployee,
+              isShiftsView: event.isShiftsView)));
+    } else {
+      //! I am at a given employee's availability screen
+      //! thus, I do not need to fetch all employees
+      //! also I can yield directly the state without pushing any data
+      //! I still have to fetch the employee's designations from the database
+      List<String> specificEmployeeDesignations = await Firestore.instance
+          .collection('Employees')
+          .document(event.currentEmployee.id)
+          .get()
+          .then((doc) => List.from(doc.data['designations']).cast<String>());
+      yield ShiftCreatedOrEdited(
+          // an employee may have multiple designations
+          designations: specificEmployeeDesignations,
+          currentDesignation: event.currentDesignation,
+          currentEmployee: event.currentEmployee,
+          availableEmployees: [event.currentEmployee],
+          shiftDate: event.shiftDate,
+          description: event.description,
+          shiftEnd: event.shiftEnd,
+          shiftStart: event.shiftStart,
+          id: event.id,
+          oldEmployee: event.oldEmployee,
+          isShiftsView: event.isShiftsView);
+    }
   }
 
   Stream<ShiftsState> _mapPassShiftDataToState(ShiftDataPushed event) async* {
@@ -285,17 +336,17 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
     //  if (state is ShiftCreatedOrEdited) {
     //    if ((state as ShiftCreatedOrEdited).oldEmployee != )
     //  }
+    //! this case only appears for the isShiftsView
+    //! the non isShiftsView is handled within the method _mapEditShiftToState
     yield ShiftCreatedOrEdited(
-        designations: event.isShiftsView
-            ? designationsState.designationsObj.designations
-            : [event.currentDesignation],
+        // an employee may have multiple designations
+        // this is handy for when I am assigning a shift for a given employee
+        designations: designationsState.designationsObj.designations,
         currentDesignation: event.currentDesignation,
         currentEmployee: event.currentEmployee,
-        availableEmployees: event.isShiftsView
-            ? addOldEmployeeToTheAvailableEmployees(
-                availableEmployees: event.availableEmployees,
-                oldEmployee: event.oldEmployee)
-            : [event.currentEmployee], //event.availableEmployees,
+        availableEmployees: addOldEmployeeToTheAvailableEmployees(
+            availableEmployees: event.availableEmployees,
+            oldEmployee: event.oldEmployee),
         shiftDate: event.shiftDate,
         description: event.description,
         shiftEnd: event.shiftEnd,

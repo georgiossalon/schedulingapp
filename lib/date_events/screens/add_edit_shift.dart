@@ -72,7 +72,7 @@ class _AddEditShiftState extends State<AddEditShift> {
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    //! Rolly: How to pass the isEditing value down? 
+                    //! Rolly: How to pass the isEditing value down?
                     //! I can not use const for widget
                     _ReasonField(
                       isEditing: isEditing,
@@ -88,13 +88,12 @@ class _AddEditShiftState extends State<AddEditShift> {
                   ],
                 )),
           ),
-          floatingActionButton:
-              FloatingActionButton(
+          floatingActionButton: FloatingActionButton(
             tooltip: isEditing ? 'Save Changes' : 'Add Shift',
             child: Icon(isEditing ? Icons.check : Icons.add),
             backgroundColor: Colors.pink,
             onPressed: () {
-          //! Rolly Opinion, using this instead of BlocBuilder<ShiftsBloc> to get state
+              //! Rolly Opinion, using this instead of BlocBuilder<ShiftsBloc> to get state
               var state =
                   (context.bloc<ShiftsBloc>().state as ShiftCreatedOrEdited);
               if (_formKey.currentState.validate()) {
@@ -141,21 +140,20 @@ class _AddEditShiftState extends State<AddEditShift> {
                 //! after a while I will be having too many of them
                 //! In addition, when I am editing shifts I should delete from the old employee
                 //! the dateEvent from its busyMap
+
                 // remove the dateEvent from the old employees busy_map
-                if (state.oldEmployee != null) {
-                  if (state.oldEmployee.id != employeeDateEvent.employeeId) {
-                    BlocProvider.of<EmployeesBloc>(context).add(
-                        EmployeesBusyMapDateEventRemoved(
-                            oldEmployeeId: state.oldEmployee.id,
-                            dateTime: dateEvent.dateEvent_date));
-                  }
-                }
+                //!Rolly
+                //! I moved the if-statements into the Bloc
+                BlocProvider.of<EmployeesBloc>(context).add(
+                    EmployeesBusyMapDateEventRemoved(
+                        oldEmployeeId: state.oldEmployee.id,
+                        currentEmployeeId: employeeDateEvent.employeeId,
+                        dateTime: dateEvent.dateEvent_date));
                 // add in employees busy_map
-                if (dateEvent.employeeId != null) {
-                  BlocProvider.of<EmployeesBloc>(context).add(
-                      UpdateEmployeeBusyMap(
-                          employeeDateEvent: employeeDateEvent));
-                }
+                BlocProvider.of<EmployeesBloc>(context).add(
+                    UpdateEmployeeBusyMap(
+                        employeeDateEvent: employeeDateEvent,
+                        oldEmployeeId: state.oldEmployee.id));
                 Navigator.pop(context);
               }
             },

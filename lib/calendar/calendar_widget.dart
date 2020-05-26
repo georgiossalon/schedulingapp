@@ -5,8 +5,12 @@ import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../core/date_info.dart';
-import 'shift_calendar_container.dart';
+import 'calendar_dayoff_container.dart';
+import 'calendar_shift_container.dart';
 
+//todo: Review the implementation of this widget
+//todo... Think where I can use Bloc
+//todo... and how to have the current date selected to show the events
 class CalendarWidget extends StatefulWidget {
   Map<DateTime, List<dynamic>> map;
   bool isShiftsView;
@@ -220,18 +224,24 @@ class _CalendarState extends State<CalendarWidget> {
             child: ListView.builder(
               itemCount: searchOnlyIfMapNotNull(widget.map),
               itemBuilder: (context, index) {
-                final DateEvent event = widget.map[
+                final DateEvent dateEvent = widget.map[
                             utcTo12oclock(_calendarController.selectedDay)] !=
                         null
                     ? widget.map[utcTo12oclock(_calendarController.selectedDay)]
                         [index]
                     : null;
-                return CalendarContainerEventCards(
-                  dateEvent: event,
-                  scaffoldContext: context,
-                  isShift: event.reason == 'shift' ? true : false,
-                  isShiftsView: widget.isShiftsView,
-                );
+                //! Rolly: How to distinguish between a shift and a DayOff
+                //! without using an if-statement within the UI?
+                // todo add the DayOff Card
+                return dateEvent.reason == 'shift'
+                    ? CalendarShiftContainer(
+                        dateEvent: dateEvent,
+                        scaffoldContext: context,
+                        isShiftsView: widget.isShiftsView)
+                      //todo: iplement this container for the day offs
+                    : CalendarDayOffContainer(
+                      dateEvent: dateEvent,
+                    );
               },
             ),
           ),

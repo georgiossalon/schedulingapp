@@ -9,16 +9,17 @@ import 'package:snapshot_test/date_events/widgets/shifts_view.dart';
 import 'package:date_events_repository/date_events_repository.dart';
 import 'package:snapshot_test/employee/blocs/employees.dart';
 
-class CalendarContainerEventCards extends StatelessWidget {
+class CalendarShiftContainer extends StatelessWidget {
   final DateEvent dateEvent;
   final BuildContext scaffoldContext;
-  final bool isShift;
+  // final bool isShift;
   final bool isShiftsView;
 
-  const CalendarContainerEventCards(
-      {Key key, this.dateEvent, this.scaffoldContext, this.isShift, this.isShiftsView})
+  const CalendarShiftContainer(
+      {Key key, this.dateEvent, this.scaffoldContext, this.isShiftsView})
       : super(key: key);
 
+  //! Rolly: How should I implement this snackBar?
   showSnackBar(context, deletedDateEvent) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Shift Deleted!'),
@@ -50,7 +51,7 @@ class CalendarContainerEventCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isShift ? Colors.blueGrey : Colors.red.shade100,
+      color: Colors.blueGrey,
       height: 85.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +61,7 @@ class CalendarContainerEventCards extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                isShift ? 'Shift' : 'Day Off',
+                'Shift',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
@@ -98,11 +99,6 @@ class CalendarContainerEventCards extends StatelessWidget {
                   ),
                 ],
               ),
-              // Text(
-              //   'Designation: ${dateEvent.designation}',
-              //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-              //   textAlign: TextAlign.left,
-              // ),
               Text(
                 'Employee: ${dateEvent.employeeName}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
@@ -138,14 +134,15 @@ class CalendarContainerEventCards extends StatelessWidget {
                       .add(DeleteDateEvent(dateEvent));
                   // hide previous snackbars and show only the current one
                   Scaffold.of(context).hideCurrentSnackBar();
+                  //!Rolly: how to implement the snackBar witout passing the
+                  //! scaffoldContext? This should somehow work with the BlocListener?
+                  //todo use BlocListener instead of passing the context
                   showSnackBar(scaffoldContext, dateEvent);
-                  // delete from the employees busy_map if not assigned to the open employee
-                  if (dateEvent.employeeName != 'open') {
-                    BlocProvider.of<EmployeesBloc>(context).add(
-                        EmployeesBusyMapDateEventRemoved(
-                            oldEmployeeId: dateEvent.employeeId,
-                            dateTime: dateEvent.dateEvent_date));
-                  }
+                  BlocProvider.of<EmployeesBloc>(context).add(
+                      EmployeesBusyMapDateEventRemoved(
+                          oldEmployeeId: dateEvent.employeeId,
+                          oldEmployeeName: dateEvent.employeeName,
+                          dateTime: dateEvent.dateEvent_date));
                 },
               ),
               GestureDetector(

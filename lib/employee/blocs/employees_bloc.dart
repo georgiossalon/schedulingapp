@@ -42,8 +42,22 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     }
   }
 
-  Stream<EmployeesState> _mapEmployeesBusyMapDateEventRemovedToState(EmployeesBusyMapDateEventRemoved event) async* {
-    _employeesRepository.deleteEmployeesDateEventBusyMapElement(event.oldEmployeeId, event.dateTime);
+  Stream<EmployeesState> _mapEmployeesBusyMapDateEventRemovedToState(
+      EmployeesBusyMapDateEventRemoved event) async* {
+    //!Rolly: It this okay to use here if-statement like this?
+    // delete from the employees busy_map if not assigned to the open employee
+    // the open employee does not have an id
+    // also if there is no old employee, then the value is set to null
+    // and I nothing gets deleted from the busy_map
+    if (event.oldEmployeeId != null) {
+      // only if the old and current employees are different, then delete
+      // this may occur since the user may edit the shift and still leave it
+      // to the same employee
+      if (event.oldEmployeeId != event.currentEmployeeId) {
+        _employeesRepository.deleteEmployeesDateEventBusyMapElement(
+            event.oldEmployeeId, event.dateTime);
+      }
+    }
   }
 
   Stream<EmployeesState> _mapLoadEmployeesToState() async* {
@@ -71,7 +85,21 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(
       UpdateEmployeeBusyMap event) async* {
-    _employeesRepository.updateEmployeesBusyMap( event.employeeDateEvent);
+        //! Rolly: Opinion about the if-statements
+    // The 'open' employee does not have a an employeeId and also not a busy_map 
+    if (event.employeeDateEvent.employeeId != null) {
+      // if there is an old employee
+      if (event.oldEmployeeId != null) {
+        // add only if it is not the same. This may happen when the user
+        // edits an event
+        if (event.employeeDateEvent.employeeId != event.oldEmployeeId) {
+          _employeesRepository.updateEmployeesBusyMap(event.employeeDateEvent);
+        }
+      } else {
+        // there is no old (same) employee thus add
+        _employeesRepository.updateEmployeesBusyMap(event.employeeDateEvent);
+      }
+    }
   }
 
   Stream<EmployeesState> _mapAddEmployeeToState(AddEmployee event) async* {

@@ -66,10 +66,6 @@ class DateEventsBloc extends Bloc<DateEventsEvent, DateEventsState> {
     _dateEventsRepository.addOrUpdateDateEvent(event.dateEvent);
   }
 
-  // Stream<DateEventsState> _mapUpdateDateEvent(UpdateDateEvent event) async* {
-  //   _employeesRepository.updateDateEvent(event.dateEvent);
-  // }
-
   Stream<DateEventsState> _mapDeleteDateEventToState(
       DeleteDateEvent event) async* {
     _dateEventsRepository.deleteDateEvent(event.dateEvent);
