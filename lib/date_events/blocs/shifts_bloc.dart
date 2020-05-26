@@ -180,6 +180,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
             // else return the list without the old employee
             return availableEmployees;
           }
+        } else {
+          return availableEmployees;
         }
       } else {
         // since there is no old employee return the list
@@ -195,6 +197,8 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
         // and he is not the 'open' employee then add him
         if (oldEmployee.name != 'open') {
           hAvailableEmployees.add(oldEmployee);
+          return hAvailableEmployees;
+        } else {
           return hAvailableEmployees;
         }
       } else {
@@ -291,8 +295,7 @@ class ShiftsBloc extends Bloc<ShiftsEvent, ShiftsState> {
           .availableEmployeesForGivenDesignation(
               event.currentDesignation, event.shiftDate)
           .listen((employees) => add(ShiftDataPushed(
-              availableEmployees:
-                  event.isShiftsView ? employees : [event.currentEmployee],
+              availableEmployees: employees,
               currentDesignation: event.currentDesignation,
               currentEmployee: event.currentEmployee,
               shiftDate: event.shiftDate,
