@@ -52,7 +52,7 @@ class CalendarShiftContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.blueGrey,
-      height: 85.0,
+      height: 100.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -62,6 +62,12 @@ class CalendarShiftContainer extends StatelessWidget {
             children: <Widget>[
               Text(
                 'Shift',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),
+              ),Text(
+                'Designation: ${dateEvent.designation}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,
@@ -140,7 +146,10 @@ class CalendarShiftContainer extends StatelessWidget {
                   showSnackBar(scaffoldContext, dateEvent);
                   BlocProvider.of<EmployeesBloc>(context).add(
                       EmployeesBusyMapDateEventRemoved(
-                          oldEmployeeId: dateEvent.employeeId,
+                          oldEmployee: Employee(
+                            id: dateEvent.employeeId,
+                            name: dateEvent.employeeName,
+                          ),
                           oldEmployeeName: dateEvent.employeeName,
                           dateTime: dateEvent.dateEvent_date));
                 },

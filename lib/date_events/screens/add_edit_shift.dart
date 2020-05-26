@@ -146,14 +146,14 @@ class _AddEditShiftState extends State<AddEditShift> {
                 //! I moved the if-statements into the Bloc
                 BlocProvider.of<EmployeesBloc>(context).add(
                     EmployeesBusyMapDateEventRemoved(
-                        oldEmployeeId: state.oldEmployee.id,
+                        oldEmployee: state.oldEmployee,
                         currentEmployeeId: employeeDateEvent.employeeId,
                         dateTime: dateEvent.dateEvent_date));
                 // add in employees busy_map
                 BlocProvider.of<EmployeesBloc>(context).add(
                     UpdateEmployeeBusyMap(
                         employeeDateEvent: employeeDateEvent,
-                        oldEmployeeId: state.oldEmployee.id));
+                        oldEmployee: state.oldEmployee));
                 Navigator.pop(context);
               }
             },

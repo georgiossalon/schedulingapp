@@ -97,7 +97,7 @@ class NewShiftEmployeeSpecificCreated extends ShiftsEvent {
   NewShiftEmployeeSpecificCreated({
     this.shiftDate,
     this.employee,
-    this.isShiftsView
+    @required this.isShiftsView
   });
 
   @override

@@ -49,13 +49,16 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     // the open employee does not have an id
     // also if there is no old employee, then the value is set to null
     // and I nothing gets deleted from the busy_map
-    if (event.oldEmployeeId != null) {
+    if (event.oldEmployee != null) {
+      // if the old employee is not the 'open' employee
+      if (event.oldEmployee.id != null) {
       // only if the old and current employees are different, then delete
       // this may occur since the user may edit the shift and still leave it
       // to the same employee
-      if (event.oldEmployeeId != event.currentEmployeeId) {
-        _employeesRepository.deleteEmployeesDateEventBusyMapElement(
-            event.oldEmployeeId, event.dateTime);
+        if (event.oldEmployee.id != event.currentEmployeeId) {
+          _employeesRepository.deleteEmployeesDateEventBusyMapElement(
+              event.oldEmployee.id, event.dateTime);
+        }
       }
     }
   }
@@ -85,14 +88,14 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Stream<EmployeesState> _mapUpdateEmployeeBusyMapToState(
       UpdateEmployeeBusyMap event) async* {
-        //! Rolly: Opinion about the if-statements
-    // The 'open' employee does not have a an employeeId and also not a busy_map 
+    //! Rolly: Opinion about the if-statements
+    // The 'open' employee does not have a an employeeId and also not a busy_map
     if (event.employeeDateEvent.employeeId != null) {
       // if there is an old employee
-      if (event.oldEmployeeId != null) {
+      if (event.oldEmployee != null) {
         // add only if it is not the same. This may happen when the user
         // edits an event
-        if (event.employeeDateEvent.employeeId != event.oldEmployeeId) {
+        if (event.employeeDateEvent.employeeId != event.oldEmployee.id) {
           _employeesRepository.updateEmployeesBusyMap(event.employeeDateEvent);
         }
       } else {

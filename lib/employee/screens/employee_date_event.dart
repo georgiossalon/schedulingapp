@@ -65,6 +65,7 @@ class EmployeeDateEventScreen extends StatelessWidget {
                             .add(NewShiftEmployeeSpecificCreated(
                           employee: employee,
                           shiftDate: employeeDateEventSelectedDay,
+                          isShiftsView: false,
                         ));
                         //todo do not allow to add an event on a day where there is a registered event
                         Navigator.of(context)

@@ -37,29 +37,29 @@ class UpdateEmployee extends EmployeesEvent {
 
 class UpdateEmployeeBusyMap extends EmployeesEvent {
   final EmployeeDateEvent employeeDateEvent;
-  final String oldEmployeeId;
+  final Employee oldEmployee;
 
   const UpdateEmployeeBusyMap({
     @required this.employeeDateEvent,
-    this.oldEmployeeId,
+    this.oldEmployee,
   });
 
   @override
-  List<Object> get props => [employeeDateEvent, oldEmployeeId];
+  List<Object> get props => [employeeDateEvent, oldEmployee];
 
   @override
   String toString() =>
-      'UpdateEmployeeBusyMap { employeeDateEvent: $employeeDateEvent, oldEmployeeId: $oldEmployeeId}';
+      'UpdateEmployeeBusyMap { employeeDateEvent: $employeeDateEvent, oldEmployee: $oldEmployee}';
 }
 
 class EmployeesBusyMapDateEventRemoved extends EmployeesEvent {
-  final String oldEmployeeId;
+  final Employee oldEmployee;
   final String currentEmployeeId;
   final String oldEmployeeName;
   final DateTime dateTime;
 
   EmployeesBusyMapDateEventRemoved({
-    @required this.oldEmployeeId,
+    @required this.oldEmployee,
     this.oldEmployeeName,
     this.currentEmployeeId,
     @required this.dateTime,
@@ -67,11 +67,11 @@ class EmployeesBusyMapDateEventRemoved extends EmployeesEvent {
 
   @override
   List<Object> get props =>
-      [oldEmployeeId, oldEmployeeName, currentEmployeeId, dateTime];
+      [oldEmployee, oldEmployeeName, currentEmployeeId, dateTime];
 
   @override
   String toString() {
-    return 'EmployeesBusyMapDateEventRemoved: { oldEmployeeId: $oldEmployeeId, oldEmployeeName: $oldEmployeeName, currentEmployeeId: $currentEmployeeId, dateTime: $dateTime }';
+    return 'EmployeesBusyMapDateEventRemoved: { oldEmployee: $oldEmployee, oldEmployeeName: $oldEmployeeName, currentEmployeeId: $currentEmployeeId, dateTime: $dateTime }';
   }
 }
 
